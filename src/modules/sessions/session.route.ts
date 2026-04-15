@@ -15,4 +15,4 @@ const service = new SessionService(repository);
 const controller = new SessionController(service);
 
 sessionRoutes.get("/", controller.find);
-sessionRoutes.delete("/:id", controller.deleteOne);
+sessionRoutes.delete("/:sessionId", controller.deleteOne);

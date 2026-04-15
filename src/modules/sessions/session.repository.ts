@@ -3,4 +3,11 @@ export class SessionRepository {
   constructor(model: any) {
     this.model = model;
   }
+
+  find(){
+    return this.model.find();
+  };
+  deleteOne(sessionId:string){
+    return this.model.findByIdAndDelete(sessionId);
+  };
 }

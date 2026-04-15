@@ -1,12 +1,20 @@
 import catchErrors from "../../utils/catchErrors";
+import { SessionService } from "./session.service";
 
 export class SessionController {
-  private service;
-  constructor(service: any) {
-    this.service = service;
+  private sessionService;
+  constructor(sessionService: SessionService) {
+    this.sessionService = sessionService;
   }
 
-  find = catchErrors(async (req, res) => {});
+  find = catchErrors(async (req, res) => {
+   const sessions =  await this.sessionService.find();
+   return res.status(200).json(sessions);
+  });
 
-  deleteOne = catchErrors(async (req, res) => {});
+  deleteOne = catchErrors(async ({params}, res) => {
+   const {sessionId}= params
+    await this.sessionService.deleteOne(sessionId)
+    return res.sendStatus(201);
+  });
 }
