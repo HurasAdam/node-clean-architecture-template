@@ -31,4 +31,8 @@ export class UserRepository {
   deleteOne() {
     console.log("TODO");
   }
+
+  findByEmailWithRole(email: string) {
+    return this.model.findOne({ email }).populate("role");
+  }
 }

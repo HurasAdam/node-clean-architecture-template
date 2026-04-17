@@ -13,9 +13,11 @@ export class AuthService {
     this.sessionRepository = sessionRepository;
   }
 
-  async login(payload: LoginUserDto) {}
+  async login(payload: LoginUserDto) {
+    this.userRepository.findByEmailWithRole(payload.email);
+  }
 
-  async findMe(id: string) {
+  async me(id: string) {
     const user = await this.userRepository.findOneById(id);
     return {
       id: user._id,

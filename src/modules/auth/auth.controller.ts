@@ -15,7 +15,7 @@ export class AuthController {
   });
 
   findMe = catchErrors(async (req, res) => {
-    const user = await this.service.findMe("69d96c62486202e673deb59f");
+    const user = await this.service.me("69d96c62486202e673deb59f");
     return res.status(200).json(user);
   });
 
