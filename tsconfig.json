@@ -12,7 +12,10 @@
     "strictNullChecks": true /* When type checking, take into account 'null' and 'undefined'. */,
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
     "sourceMap": true /* Create source map files for emitted JavaScript files. */,
-
+    "typeRoots": [
+      "./src/types",
+      "node_modules/@types"
+    ] /* Specify multiple folders that act like './node_modules/@types'. */,
     "paths": {
       "@/*": ["./src/*"]
     } /* Specify a set of entries that re-map imports to additional lookup locations. */,
@@ -111,6 +114,5 @@
     /* Completeness */
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
   },
-  "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }

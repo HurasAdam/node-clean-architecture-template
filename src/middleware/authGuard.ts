@@ -29,7 +29,11 @@ export class AuthMiddleware {
         payload.userId.toString(),
         payload.sessionId.toString(),
       );
+
       req.user = user;
+      req.userId = payload.userId.toString();
+      req.sessionId = payload.sessionId.toString();
+
       next();
     },
   );
