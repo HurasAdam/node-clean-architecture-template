@@ -8,13 +8,14 @@ export class SessionController {
   }
 
   find = catchErrors(async (req, res) => {
-   const sessions =  await this.sessionService.find();
-   return res.status(200).json(sessions);
+    const sessions = await this.sessionService.find();
+    return res.status(200).json(sessions);
   });
 
-  deleteOne = catchErrors(async ({params}, res) => {
-   const {sessionId}= params
-    await this.sessionService.deleteOne(sessionId)
+  deleteOne = catchErrors(async ({ params }, res) => {
+    const { sessionId } = params;
+    await this.sessionService.deleteOne(sessionId);
+
     return res.sendStatus(201);
   });
 }

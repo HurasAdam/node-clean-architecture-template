@@ -24,7 +24,7 @@ function getEnv(key: string, defaultValue?: string): string {
   if (!value) throw new Error(`Missing environment variable -- ${key}`);
   return value;
 }
-
+export const APP_ORIGIN = getEnv("APP_ORIGIN");
 export const MONGO_URI = getEnv("MONGO_URI");
 export const SERVER_PORT = getEnv("SERVER_PORT", "4000");
 export const JWT_SECRET = getEnv("JWT_SECRET");

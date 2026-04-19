@@ -11,6 +11,6 @@ export const authRoutes = Router();
 
 const controller = new AuthController(authService);
 
-authRoutes.get("/me", controller.findMe);
+authRoutes.get("/me", authGuard.authenticate, controller.findMe);
 authRoutes.post("/login", controller.login);
 authRoutes.get("/logout", authGuard.authenticate, controller.logout);

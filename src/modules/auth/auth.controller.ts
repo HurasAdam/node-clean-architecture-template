@@ -33,7 +33,8 @@ export class AuthController {
   });
 
   findMe = catchErrors(async (req, res) => {
-    const user = await this.service.me("69d96c62486202e673deb59f");
+    const { userId } = req;
+    const user = await this.service.me(userId);
     return res.status(200).json(user);
   });
 
