@@ -4,10 +4,10 @@
  */
 
 import { Router } from "express";
-import { authGuard } from "../modules/auth/auth.provider";
+import { container } from "../app/initContainer";
 import { authRoutes } from "../modules/auth/auth.route";
-import { sessionRoutes } from "../modules/sessions/session.route";
-import { userRoutes } from "../modules/users/user.route";
+import { sessionRoutes } from "../modules/sessions/presentation/session.route";
+import { userRoutes } from "../modules/users/presentation/user.route";
 
 export const routes = Router();
 
@@ -25,6 +25,6 @@ routes.get("/", (req, res) => {
   });
 });
 
-routes.use("/users", authGuard.authenticate, userRoutes);
+routes.use("/users", container.authGuard.authenticate, userRoutes);
 routes.use("/auth", authRoutes);
-routes.use("sessions", authGuard.authenticate, sessionRoutes);
+routes.use("/sessions", container.authGuard.authenticate, sessionRoutes);

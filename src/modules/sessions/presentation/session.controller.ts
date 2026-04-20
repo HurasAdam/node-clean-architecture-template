@@ -1,5 +1,5 @@
-import catchErrors from "../../utils/catchErrors";
-import { SessionService } from "./session.service";
+import catchErrors from "../../../utils/catchErrors";
+import { SessionService } from "../application/session.service";
 
 export class SessionController {
   private sessionService;

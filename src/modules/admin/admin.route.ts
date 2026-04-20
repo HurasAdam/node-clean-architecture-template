@@ -1,6 +1,6 @@
 import { Router } from "express";
+import { UserRepository } from "../users/infrastructure/mongoose/user.repository";
 import UserModel from "../users/user.model";
-import { UserRepository } from "../users/user.repository";
 
 const adminRoutes = Router();
 

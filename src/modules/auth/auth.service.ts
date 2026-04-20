@@ -6,16 +6,16 @@ import {
   signToken,
   verifyToken,
 } from "../../utils/jwt";
-import { SessionRepository } from "../sessions/session.repository";
-import { UserRepository } from "../users/user.repository";
+import { ISessionRepository } from "../sessions/domain/session.repository.interface";
+import { IUserRepository } from "../users/domain/user.repository.interface";
 import { LoginUserDto } from "./dto/login-user.dto";
 
 export class AuthService {
-  private userRepository: UserRepository;
-  private sessionRepository: SessionRepository;
+  private userRepository: IUserRepository;
+  private sessionRepository: ISessionRepository;
   constructor(
-    userRepository: UserRepository,
-    sessionRepository: SessionRepository,
+    userRepository: IUserRepository,
+    sessionRepository: ISessionRepository,
   ) {
     this.userRepository = userRepository;
     this.sessionRepository = sessionRepository;
@@ -80,7 +80,7 @@ export class AuthService {
   async me(id: string) {
     const user = await this.userRepository.findOneById(id);
     return {
-      id: user._id,
+      id: user.id,
       name: user.name,
       surname: user.surname,
       email: user.email,
@@ -93,6 +93,6 @@ export class AuthService {
 
     const session = await this.sessionRepository.findOneById(sessionId);
     appAssert(session, FORBIDDEN, "Session invalidated");
-    return { user: user.omitPassword(), session };
+    return { user: user, session };
   }
 }

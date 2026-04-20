@@ -1,4 +1,6 @@
-export class SessionRepository {
+import { ISessionRepository } from "../../domain/session.repository.interface";
+
+export class SessionRepository implements ISessionRepository {
   private model;
   constructor(model: any) {
     this.model = model;

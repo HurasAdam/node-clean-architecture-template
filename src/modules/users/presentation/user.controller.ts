@@ -1,7 +1,7 @@
-import { validateObjectIdParam } from "../../common/dto/param-id.dto";
-import catchErrors from "../../utils/catchErrors";
-import { createUserDto } from "./dto/create-user.dto";
-import { UserService } from "./user.service";
+import { validateObjectIdParam } from "../../../common/dto/param-id.dto";
+import catchErrors from "../../../utils/catchErrors";
+import { UserService } from "../application/user.service";
+import { createUserDto } from "../dto/create-user.dto";
 
 export class UserController {
   private service;

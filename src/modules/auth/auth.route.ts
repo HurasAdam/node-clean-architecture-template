@@ -1,6 +1,5 @@
 import { Router } from "express";
-import { AuthController } from "./auth.controller";
-import { authGuard, authService } from "./auth.provider";
+import { container } from "../../app/initContainer";
 
 export const authRoutes = Router();
 
@@ -9,8 +8,14 @@ export const authRoutes = Router();
  * /auth
  */
 
-const controller = new AuthController(authService);
-
-authRoutes.get("/me", authGuard.authenticate, controller.findMe);
-authRoutes.post("/login", controller.login);
-authRoutes.get("/logout", authGuard.authenticate, controller.logout);
+authRoutes.get(
+  "/me",
+  container.authGuard.authenticate,
+  container.auth.controller.findMe,
+);
+authRoutes.post("/login", container.auth.controller.login);
+authRoutes.get(
+  "/logout",
+  container.authGuard.authenticate,
+  container.auth.controller.logout,
+);

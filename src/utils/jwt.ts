@@ -1,8 +1,9 @@
 import jwt, { SignOptions, VerifyOptions } from "jsonwebtoken";
 import { JWT_REFRESH_SECRET, JWT_SECRET } from "../config/env";
 import Audience from "../constants/audience";
-import { SessionDocument } from "../modules/sessions/session.model";
-import { UserDocument } from "../modules/users/user.model";
+
+import { SessionDocument } from "../modules/sessions/infrastructure/session.model";
+import { UserDocument } from "../modules/users/infrastructure/mongoose/user.model";
 
 /**
  * ===== PAYLOAD TYPES =====
