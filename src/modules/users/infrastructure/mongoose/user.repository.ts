@@ -3,10 +3,11 @@ import { Model } from "mongoose";
 import { User } from "../../domain/user.entity";
 import { IUserRepository } from "../../domain/user.repository.interface";
 import { CreateUserDto } from "../../dto/create-user.dto";
+import { UserDocument } from "./user.model";
 
 export class UserRepository implements IUserRepository {
   private model;
-  constructor(model: Model<any>) {
+  constructor(model: Model<UserDocument>) {
     this.model = model;
   }
 

@@ -8,6 +8,7 @@ import { Container } from "../app/initContainer";
 
 import { createAuthRoutes } from "../modules/auth/presentation/auth.route";
 import { createSessionRoutes } from "../modules/sessions/presentation/session.route";
+import { createTagRoutes } from "../modules/tags/presentation/tag.route";
 import { createUserRoutes } from "../modules/users/presentation/user.route";
 
 /**
@@ -34,16 +35,37 @@ export function createApiRouter(container: Container) {
     });
   });
 
+  /**
+   * Auth
+   */
+  router.use("/auth", createAuthRoutes(container));
+
+  /**
+   * Sessions
+   */
+  router.use(
+    "/sessions",
+    container.authGuard.authenticate,
+    createSessionRoutes(container),
+  );
+
+  /**
+   * Users
+   */
   router.use(
     "/users",
     container.authGuard.authenticate,
     createUserRoutes(container),
   );
-  router.use("/auth", createAuthRoutes(container));
+
+  /**
+   * Tags
+   */
+
   router.use(
-    "/sessions",
+    "/tags",
     container.authGuard.authenticate,
-    createSessionRoutes(container),
+    createTagRoutes(container),
   );
 
   return router;
