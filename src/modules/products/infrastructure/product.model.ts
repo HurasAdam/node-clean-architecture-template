@@ -1,3 +1,8 @@
+/**
+ * @copyright 2026 Adam Huras
+ * @license Apache-2.0
+ */
+
 import { Document, Schema, Types, model } from "mongoose";
 
 export interface ProductDocument extends Document {
