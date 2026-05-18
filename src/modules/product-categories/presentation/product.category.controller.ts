@@ -3,7 +3,7 @@
  * @license Apache-2.0
  */
 
-import { CREATED } from "../../../constants/http";
+import { CREATED, NO_CONTENT } from "../../../constants/http";
 import catchErrors from "../../../utils/catchErrors";
 import { ProductCategoryService } from "../application/product-category.service";
 import { createProductCategoryDto } from "../dto/create-product-category.dto";
@@ -39,5 +39,11 @@ export class ProductCategoryController {
     const payload = updateProductCategoryDto.parse(body);
     const response = await this.service.updateOne(id, payload);
     res.status(200).json(response);
+  });
+
+  deleteOne = catchErrors(async ({ params }, res) => {
+    const { id } = params;
+    await this.service.deleteOne(id);
+    return res.sendStatus(NO_CONTENT);
   });
 }

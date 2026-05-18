@@ -38,5 +38,11 @@ export const createProductCategoryRoutes = (container: Container) => {
     container.productCategory.controller.updateOne,
   );
 
+  router.delete(
+    "/:id",
+    container.authGuard.authenticate,
+    container.productCategory.controller.deleteOne,
+  );
+
   return router;
 };

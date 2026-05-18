@@ -58,7 +58,11 @@ export class ProductCategoryService {
     return this.productCategoryRepository.updateOne(id, data);
   }
 
-  deleteOne(id: string) {
+  async deleteOne(id: string) {
+    const exists = await this.productCategoryRepository.findOne(id);
+
+    appAssert(exists, NOT_FOUND, "Product category not found");
+
     return this.productCategoryRepository.deleteOne(id);
   }
 
