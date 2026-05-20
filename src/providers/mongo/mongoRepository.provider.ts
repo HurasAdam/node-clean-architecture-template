@@ -7,6 +7,8 @@ import ArticleModel from "../../modules/articles/infrastructure/article.model";
 import { ArticleRepository } from "../../modules/articles/infrastructure/mongoose/article.repository";
 import { ProductCategoryRepository } from "../../modules/product-categories/infrastructure/mongoose/product-category.repository";
 import ProductCategoryModel from "../../modules/product-categories/infrastructure/product-category.model";
+import { ProductTopicRepository } from "../../modules/product-topics/infrastructure/mongoose/product-topic.repository";
+import ProductTopicModel from "../../modules/product-topics/infrastructure/product-topic.model";
 import { ProductRepository } from "../../modules/products/infrastructure/mongoose/product.repository";
 import ProductModel from "../../modules/products/infrastructure/product.model";
 import RoleModel from "../../modules/roles/infrastructure/mongoose/role.model";
@@ -29,6 +31,7 @@ export function createMongoRepositoryProvider(): IRepositoryProvider {
     productCategoryRepository: new ProductCategoryRepository(
       ProductCategoryModel,
     ),
+    productTopicRepository: new ProductTopicRepository(ProductTopicModel),
     tagRepository: new TagRepository(TagModel),
   };
 }

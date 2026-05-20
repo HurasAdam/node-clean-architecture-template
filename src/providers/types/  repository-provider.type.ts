@@ -1,5 +1,6 @@
 import { IArticleRepository } from "../../modules/articles/domain/article.repository.interface";
 import { IProductCategoryRepository } from "../../modules/product-categories/domain/product-category.repository.interface";
+import { IProductTopicRepository } from "../../modules/product-topics/domain/product-topic.repository.interface";
 import { IProductRepository } from "../../modules/products/domain/product.repository.interface";
 import { IRoleRepository } from "../../modules/roles/domain/role.repository.interface";
 import { ISessionRepository } from "../../modules/sessions/domain/session.repository.interface";
@@ -13,5 +14,6 @@ export interface IRepositoryProvider {
   articleRepository: IArticleRepository;
   productRepository: IProductRepository;
   productCategoryRepository: IProductCategoryRepository;
+  productTopicRepository: IProductTopicRepository;
   tagRepository: ITagRepository;
 }
