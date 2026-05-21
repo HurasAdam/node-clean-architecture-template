@@ -8,6 +8,7 @@ import { createAdminModule } from "../modules/admin/admin.module";
 import { createArticleModule } from "../modules/articles/article.module";
 import { createAuthModule } from "../modules/auth/auth.module";
 import { createProductCategoryModule } from "../modules/product-categories/product-category.module";
+import { createProductTopicModule } from "../modules/product-topics/product-topic.module";
 import { createProductModule } from "../modules/products/product.module";
 import { createRoleModule } from "../modules/roles/role.module";
 import { createSessionModule } from "../modules/sessions/session.module";
@@ -37,6 +38,11 @@ export function initContainer() {
   const productCategoryModule = createProductCategoryModule({
     productRepository: repositories.productRepository,
     productCategoryRepository: repositories.productCategoryRepository,
+  });
+
+  const productTopicModule = createProductTopicModule({
+    productTopicRepository: repositories.productTopicRepository,
+    productRepository: repositories.productRepository,
   });
 
   //
@@ -73,6 +79,7 @@ export function initContainer() {
     article: articleModule,
     product: productModule,
     productCategory: productCategoryModule,
+    productTopic: productTopicModule,
   };
 }
 

@@ -1,10 +1,10 @@
-import { Router } from 'express';
-import { Container } from '../../../app/initContainer';
+import { Router } from "express";
+import { Container } from "../../../app/initContainer";
 
-export const createProductTopicRoutes = (container:Container)=>{
+export const createProductTopicRoutes = (container: Container) => {
+  const router = Router();
 
-const router = Router()
+  router.post("/", container.productTopic.controller.create);
 
-router.post("/",container.)
-
-}
+  return router;
+};

@@ -9,6 +9,7 @@ import { createAdminRoutes } from "../modules/admin/presentation/admin.route";
 import { createArticleRoutes } from "../modules/articles/presentation/article.route";
 import { createAuthRoutes } from "../modules/auth/presentation/auth.route";
 import { createProductCategoryRoutes } from "../modules/product-categories/presentation/product-category.route";
+import { createProductTopicRoutes } from "../modules/product-topics/presentation/product-topic.route";
 import { createProductRoutes } from "../modules/products/presentation/product.route";
 import { createRoleRoutes } from "../modules/roles/presentation/role.route";
 import { createSessionRoutes } from "../modules/sessions/presentation/session.route";
@@ -119,6 +120,16 @@ export function createApiRouter(container: Container) {
     "/product-categories",
     container.authGuard.authenticate,
     createProductCategoryRoutes(container),
+  );
+
+  /**
+   * Product topics
+   */
+
+  router.use(
+    "/product-topics",
+    container.authGuard.authenticate,
+    createProductTopicRoutes(container),
   );
 
   return router;

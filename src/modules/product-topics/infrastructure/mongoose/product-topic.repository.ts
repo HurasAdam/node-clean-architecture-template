@@ -1,5 +1,6 @@
 import { Model } from "mongoose";
 import { IProductTopicRepository } from "../../domain/product-topic.repository.interface";
+import { CreateProductTopicDto } from "../../dto/create-product-topic.dto";
 import { ProductTopicDocument } from "../product-topic.model";
 
 export class ProductTopicRepository implements IProductTopicRepository {
@@ -8,8 +9,8 @@ export class ProductTopicRepository implements IProductTopicRepository {
     this.model = model;
   }
 
-  create(userId: string, data: unknown) {
-    return this.model.create(userId, data);
+  create(userId: string, data: CreateProductTopicDto) {
+    return this.model.create({ ...data, createdBy: userId });
   }
   find() {
     return this.model.find();
