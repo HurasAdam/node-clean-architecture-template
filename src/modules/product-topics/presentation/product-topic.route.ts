@@ -8,6 +8,7 @@ export const createProductTopicRoutes = (container: Container) => {
   router.get("/", container.productTopic.controller.find);
   router.get("/:id", container.productTopic.controller.findOne);
   router.patch("/:id", container.productTopic.controller.updateOne);
+  router.delete("/:id", container.productTopic.controller.deleteOne);
 
   return router;
 };

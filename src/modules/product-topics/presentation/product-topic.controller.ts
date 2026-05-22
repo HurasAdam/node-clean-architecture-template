@@ -32,8 +32,15 @@ export class ProductTopicController {
     const { id } = params;
     const payload = updateProductTopicDto.parse(body);
 
-    console.log("P:", payload);
     await this.service.updateOne(id, payload);
+    return res.sendStatus(NO_CONTENT);
+  });
+
+  deleteOne = catchErrors(async ({ params }, res) => {
+    const { id } = params;
+
+    await this.service.deleteOne(id);
+
     return res.sendStatus(NO_CONTENT);
   });
 }

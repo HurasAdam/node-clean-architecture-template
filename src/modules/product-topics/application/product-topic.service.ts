@@ -52,4 +52,11 @@ export class ProductTopicService {
 
     return this.productTopicRepository.updateOne(id, payload);
   }
+
+  async deleteOne(id: string) {
+    const exists = await this.productTopicRepository.findOne(id);
+    appAssert(exists, NOT_FOUND, "Topic not found");
+
+    this.productTopicRepository.deleteOne(id);
+  }
 }
