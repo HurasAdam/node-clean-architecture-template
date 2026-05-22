@@ -31,6 +31,7 @@ export function initContainer() {
   const productModule = createProductModule({
     productRepository: repositories.productRepository,
     productCategoryRepository: repositories.productCategoryRepository,
+    productTopicRepository: repositories.productTopicRepository,
   });
   const roleModule = createRoleModule({
     roleRepository: repositories.roleRepository,
