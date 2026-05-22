@@ -3,6 +3,7 @@ import appAssert from "../../../utils/appAssert";
 import { IProductRepository } from "../../products/domain/product.repository.interface";
 import { IProductTopicRepository } from "../domain/product-topic.repository.interface";
 import { CreateProductTopicDto } from "../dto/create-product-topic.dto";
+import { UpdateProductTopicDto } from "../dto/update-product-topic.dto";
 
 export class ProductTopicService {
   private productTopicRepository: IProductTopicRepository;
@@ -20,9 +21,35 @@ export class ProductTopicService {
 
     appAssert(product, NOT_FOUND, "Product not found");
 
-    const alreadyExist = this.productTopicRepository.findByName(payload.name);
+    const alreadyExist = await this.productTopicRepository.findByName(
+      payload.name,
+    );
+
     appAssert(!alreadyExist, CONFLICT, "Topic already exists");
 
     return this.productTopicRepository.create(userId, payload);
+  }
+
+  find() {
+    return this.productTopicRepository.find();
+  }
+
+  findOne(id: string) {
+    return this.productTopicRepository.findOne(id);
+  }
+
+  async updateOne(id: string, payload: UpdateProductTopicDto) {
+    const topic = await this.productTopicRepository.findOne(id);
+    appAssert(topic, NOT_FOUND, "Product topic not found");
+
+    if (payload.name) {
+      const alreadyExist = await this.productTopicRepository.findByName(
+        payload.name,
+      );
+
+      appAssert(!alreadyExist, CONFLICT, "Product topic name already exists");
+    }
+
+    return this.productTopicRepository.updateOne(id, payload);
   }
 }

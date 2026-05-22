@@ -3,7 +3,7 @@
  * @license Apache-2.0
  */
 
-import { model, Schema, Types } from "mongoose";
+import { Document, model, Schema, Types } from "mongoose";
 
 export interface ProductTopicDocument extends Document {
   name: string;
@@ -12,12 +12,14 @@ export interface ProductTopicDocument extends Document {
 }
 
 const productTopicschema = {
-  name: { type: String, required: true, unique: true, trim: true },
+  name: { type: String, required: true, trim: true },
   product: { type: Schema.Types.ObjectId, ref: "Product", required: true },
   createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
 };
 
 const schema = new Schema(productTopicschema, { timestamps: true });
+
+schema.index({ name: 1, product: 1 }, { unique: true });
 
 const ProductTopicModel = model<ProductTopicDocument>("ProductTopic", schema);
 export default ProductTopicModel;
