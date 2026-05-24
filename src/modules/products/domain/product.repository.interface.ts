@@ -5,6 +5,7 @@
 
 import { CreateProductDto } from "../dto/create-product.dto";
 import { FindProductsQueryDto } from "../dto/find-products-query.dto";
+import { UpdateProductDto } from "../dto/update-product.dto";
 import { Product } from "./product.entity";
 
 export interface IProductRepository {
@@ -12,5 +13,6 @@ export interface IProductRepository {
   find(query: FindProductsQueryDto): Promise<Product[]>;
   findOne(id: string): Promise<Product | null>;
   findByName(name: string): Promise<Product | null>;
+  updateOne(id: string, payload: UpdateProductDto): Promise<Product | null>;
   deleteOne(): any;
 }

@@ -8,6 +8,7 @@ import { Product } from "../../domain/product.entity";
 import { IProductRepository } from "../../domain/product.repository.interface";
 import { CreateProductDto } from "../../dto/create-product.dto";
 import { FindProductsQueryDto } from "../../dto/find-products-query.dto";
+import { UpdateProductDto } from "../../dto/update-product.dto";
 import { ProductDocument } from "../product.model";
 
 export class ProductRepository implements IProductRepository {
@@ -54,6 +55,18 @@ export class ProductRepository implements IProductRepository {
     const doc = await this.model.findOne({ name });
 
     return doc ? this.toDomain(doc) : null;
+  }
+
+  async updateOne(
+    id: string,
+    payload: UpdateProductDto,
+  ): Promise<Product | null> {
+    const doc = await this.model.findByIdAndUpdate(id, payload, {
+      new: true,
+    });
+    if (!doc) return null;
+
+    return this.toDomain(doc);
   }
 
   async findByProductId() {}

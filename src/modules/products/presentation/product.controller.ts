@@ -8,6 +8,7 @@ import catchErrors from "../../../utils/catchErrors";
 import { ProductService } from "../application/product.service";
 import { createProductDto } from "../dto/create-product.dto";
 import { findProductsQueryDto } from "../dto/find-products-query.dto";
+import { updateProductDto } from "../dto/update-product.dto";
 
 export class ProductController {
   private productService;
@@ -27,9 +28,24 @@ export class ProductController {
     const products = await this.productService.find(query);
     return res.status(OK).json(products);
   });
+
+  findOne = catchErrors(async ({ params }, res) => {
+    const { id } = params;
+    const product = await this.productService.findOne(id);
+    return res.status(OK).json(product);
+  });
+
   findOneWithDetails = catchErrors(async ({ params }, res) => {
     const { id } = params;
     const product = await this.productService.findOneWithDetails(id);
     return res.status(OK).json(product);
+  });
+
+  updateOne = catchErrors(async ({ params, body }, res) => {
+    const { id } = params;
+    const payload = updateProductDto.parse(body);
+    await this.productService.updateOne(id, payload);
+
+    return res.sendStatus(NO_CONTENT);
   });
 }
