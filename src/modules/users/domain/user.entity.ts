@@ -10,5 +10,6 @@ export class User {
     public surname: string,
     public email: string,
     public role: string,
+    public isActive: boolean,
   ) {}
 }

@@ -13,8 +13,39 @@ import { Container } from "../../../app/initContainer";
 
 export const createUserRoutes = (container: Container) => {
   const router = Router();
+
+  /**
+   * GET /users
+   * returns basic users list (id, name, surname, email)
+   */
   router.get("/", container.user.controller.find);
+
+  /**
+   * GET /users/options
+   * returns users formatted for select inputs (value/label)
+   */
+
+  router.get("/options", container.user.controller.find);
+
+  /**
+   * GET /users/details
+   * returns full users data with user role details
+   */
+
+  router.get("/details", container.user.controller.findWithDetails);
+
+  /**
+   * GET /users/:userId
+   * returns single user
+   */
+
   router.get("/:userId", container.user.controller.findOne);
+
+  /**
+   * POST /users
+   * creates new user
+   */
+
   router.post("/create", container.user.controller.create);
 
   return router;

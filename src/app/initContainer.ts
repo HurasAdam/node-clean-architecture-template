@@ -21,6 +21,7 @@ export function initContainer() {
 
   const userModule = createUserModule({
     userRepository: repositories.userRepository,
+    roleRepository: repositories.roleRepository,
   });
   const sessionModule = createSessionModule({
     sessionRepository: repositories.sessionRepository,

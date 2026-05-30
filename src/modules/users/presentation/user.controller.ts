@@ -15,10 +15,15 @@ export class UserController {
     return res.sendStatus(201);
   });
 
-  find = async (req, res) => {
+  find = catchErrors(async (req, res) => {
     const users = await this.service.find();
     return res.status(200).json(users);
-  };
+  });
+
+  findWithDetails = catchErrors(async (req, res) => {
+    const users = await this.service.findWithDetails();
+    return res.status(200).json(users);
+  });
 
   findOne = catchErrors(async ({ params }, res) => {
     const { userId } = validateObjectIdParam("userId").parse(params);
