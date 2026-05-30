@@ -13,6 +13,7 @@ const roleSchema = {
     type: String,
     required: true,
     unique: true,
+    uppercase: true,
   },
 
   permissions: {
