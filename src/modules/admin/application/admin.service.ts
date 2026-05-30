@@ -32,4 +32,23 @@ export class AdminService {
       role: role.id,
     });
   }
+
+  async findUserWithDetails(id: string) {
+    const user = await this.userRepository.findOneById(id);
+    appAssert(user, NOT_FOUND, "User not found");
+
+    const role = await this.roleRepository.findOneById(user.role);
+
+    return {
+      ...user,
+      role: role
+        ? {
+            id: role.id,
+            name: role.name,
+            iconKey: role.iconKey,
+            labelColor: role.labelColor,
+          }
+        : null,
+    };
+  }
 }

@@ -1,3 +1,4 @@
+import { OK } from "../../../constants/http";
 import catchErrors from "../../../utils/catchErrors";
 import { createUserDto } from "../../users/dto/create-user.dto";
 import { AdminService } from "../application/admin.service";
@@ -13,5 +14,11 @@ export class AdminController {
     await this.service.create(payload);
 
     return res.sendStatus(201);
+  });
+
+  findUserWithDetails = catchErrors(async ({ params }, res) => {
+    const { id } = params;
+    const serviceResponse = await this.service.findUserWithDetails(id);
+    return res.status(OK).json(serviceResponse);
   });
 }

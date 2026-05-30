@@ -16,5 +16,7 @@ export function createAdminRoutes(container: Container) {
 
   router.post("/create-user", container.admin.controller.create);
 
+  router.get("/users/:id", container.admin.controller.findUserWithDetails);
+
   return router;
 }
