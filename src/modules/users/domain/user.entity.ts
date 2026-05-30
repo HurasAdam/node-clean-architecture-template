@@ -11,5 +11,8 @@ export class User {
     public email: string,
     public role: string,
     public isActive: boolean,
+    public lastLogin: Date | null,
+    public mustChangePassword: boolean,
+    public createdAt: Date,
   ) {}
 }

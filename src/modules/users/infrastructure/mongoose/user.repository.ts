@@ -23,6 +23,9 @@ export class UserRepository implements IUserRepository {
       doc.email,
       doc.role,
       doc.isActive,
+      doc.lastLogin,
+      doc.mustChangePassword,
+      doc.createdAt,
     );
   }
   async create(data: CreateUserDto) {
