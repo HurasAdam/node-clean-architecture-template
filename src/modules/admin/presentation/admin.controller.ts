@@ -10,7 +10,7 @@ export class AdminController {
 
   create = catchErrors(async ({ body }, res) => {
     const payload = createUserDto.parse(body);
-    this.service.create(payload);
+    await this.service.create(payload);
 
     return res.sendStatus(201);
   });
