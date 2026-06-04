@@ -51,4 +51,28 @@ export class AdminService {
         : null,
     };
   }
+
+  async resetPassword(id: string) {
+    const user = await this.userRepository.findOneById(id);
+    appAssert(user, NOT_FOUND, "User not found");
+
+    const tempPassword = this.generateTemporaryPassword();
+
+    await this.userRepository.updatePassword(id, tempPassword);
+
+    return { temporaryPassword: tempPassword };
+  }
+
+  private generateTemporaryPassword(length = 10): string {
+    const chars =
+      "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789!@#$%&*";
+
+    let result = "";
+
+    for (let i = 0; i < length; i++) {
+      result += chars[Math.floor(Math.random() * chars.length)];
+    }
+
+    return result;
+  }
 }

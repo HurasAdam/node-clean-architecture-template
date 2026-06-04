@@ -18,5 +18,10 @@ export function createAdminRoutes(container: Container) {
 
   router.get("/users/:id", container.admin.controller.findUserWithDetails);
 
+  router.post(
+    "/users/:id/reset-password",
+    container.admin.controller.resetPassword,
+  );
+
   return router;
 }

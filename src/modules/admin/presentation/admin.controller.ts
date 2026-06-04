@@ -21,4 +21,10 @@ export class AdminController {
     const serviceResponse = await this.service.findUserWithDetails(id);
     return res.status(OK).json(serviceResponse);
   });
+
+  resetPassword = catchErrors(async ({ params }, res) => {
+    const { id } = params;
+    const serviceResponse = await this.service.resetPassword(id);
+    return res.status(OK).json(serviceResponse);
+  });
 }

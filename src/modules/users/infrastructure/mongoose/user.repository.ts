@@ -66,4 +66,16 @@ export class UserRepository implements IUserRepository {
   findByEmailWithRole(email: string) {
     return this.model.findOne({ email }).populate("role");
   }
+
+  async updatePassword(userId: string, password: string) {
+    const user = await this.model.findById(userId);
+    if (!user) return null;
+
+    user.password = password;
+    user.mustChangePassword = true;
+
+    await user.save();
+
+    return this.toDomain(user);
+  }
 }
