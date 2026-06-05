@@ -75,4 +75,14 @@ export class AdminService {
 
     return result;
   }
+
+  async updateUserRole(userId: string, roleId: string) {
+    const user = await this.userRepository.findOneById(userId);
+    appAssert(user, NOT_FOUND, "User not found");
+
+    const role = await this.roleRepository.findOneById(roleId);
+    appAssert(role, NOT_FOUND, "Role not found");
+
+    return this.userRepository.updateRole(userId, role.id);
+  }
 }

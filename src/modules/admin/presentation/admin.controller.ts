@@ -1,4 +1,4 @@
-import { OK } from "../../../constants/http";
+import { CREATED, OK } from "../../../constants/http";
 import catchErrors from "../../../utils/catchErrors";
 import { createUserDto } from "../../users/dto/create-user.dto";
 import { AdminService } from "../application/admin.service";
@@ -26,5 +26,13 @@ export class AdminController {
     const { id } = params;
     const serviceResponse = await this.service.resetPassword(id);
     return res.status(OK).json(serviceResponse);
+  });
+
+  updateUserRole = catchErrors(async ({ params, body }, res) => {
+    const { id } = params;
+    const { roleId } = body;
+
+    const serviceResponse = await this.service.updateUserRole(id, roleId);
+    return res.sendStatus(CREATED);
   });
 }

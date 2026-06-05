@@ -78,4 +78,15 @@ export class UserRepository implements IUserRepository {
 
     return this.toDomain(user);
   }
+
+  async updateRole(userId: string, roleId: string) {
+    const user = await this.model.findById(userId);
+    if (!user) return null;
+
+    user.role = roleId;
+
+    await user.save();
+
+    return this.toDomain(user);
+  }
 }

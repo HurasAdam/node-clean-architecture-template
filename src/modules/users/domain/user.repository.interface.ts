@@ -20,5 +20,7 @@ export interface IUserRepository {
   deleteOne(id: string): Promise<User | null>;
 
   findByEmailWithRole(email: string): Promise<any>;
-  updatePassword(id:string, password:string):
+  updatePassword(id: string, password: string): Promise<any>;
+
+  updateRole(id: string, roleId: String): Promise<User | null>;
 }
