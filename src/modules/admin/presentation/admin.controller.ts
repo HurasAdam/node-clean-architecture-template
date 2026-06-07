@@ -1,4 +1,4 @@
-import { CREATED, OK } from "../../../constants/http";
+import { CREATED, NO_CONTENT, OK } from "../../../constants/http";
 import catchErrors from "../../../utils/catchErrors";
 import { createUserDto } from "../../users/dto/create-user.dto";
 import { AdminService } from "../application/admin.service";
@@ -26,6 +26,17 @@ export class AdminController {
     const { id } = params;
     const serviceResponse = await this.service.resetPassword(id);
     return res.status(OK).json(serviceResponse);
+  });
+
+  updateUser = catchErrors(async ({ params, body }, res) => {
+    const { id } = params;
+    const { name, surname } = body;
+
+    await this.service.updateUser(id, {
+      name,
+      surname,
+    });
+    return res.sendStatus(NO_CONTENT);
   });
 
   updateUserRole = catchErrors(async ({ params, body }, res) => {

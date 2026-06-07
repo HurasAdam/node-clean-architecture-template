@@ -23,6 +23,8 @@ export function createAdminRoutes(container: Container) {
     container.admin.controller.resetPassword,
   );
 
+  router.patch("/users/:id", container.admin.controller.updateUser);
+
   router.patch("/users/:id/role", container.admin.controller.updateUserRole);
 
   return router;

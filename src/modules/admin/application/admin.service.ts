@@ -4,6 +4,7 @@ import appAssert from "../../../utils/appAssert";
 import { IRoleRepository } from "../../roles/domain/role.repository.interface";
 import { IUserRepository } from "../../users/domain/user.repository.interface";
 import { CreateUserDto } from "../../users/dto/create-user.dto";
+import { UpdateUserDto } from "../dto/update-user.dto";
 
 export class AdminService {
   private userRepository: IUserRepository;
@@ -74,6 +75,12 @@ export class AdminService {
     }
 
     return result;
+  }
+
+  async updateUser(id: string, payload: UpdateUserDto) {
+    const user = await this.userRepository.updateById(id, payload);
+    appAssert(user, NOT_FOUND, "User not found");
+    return user;
   }
 
   async updateUserRole(userId: string, roleId: string) {

@@ -4,6 +4,7 @@
  */
 
 import { Model } from "mongoose";
+import { UpdateUserDto } from "../../../admin/dto/update-user.dto";
 import { User } from "../../domain/user.entity";
 import { IUserRepository } from "../../domain/user.repository.interface";
 import { CreateUserDto } from "../../dto/create-user.dto";
@@ -65,6 +66,18 @@ export class UserRepository implements IUserRepository {
 
   findByEmailWithRole(email: string) {
     return this.model.findOne({ email }).populate("role");
+  }
+
+  async updateById(id: string, data: UpdateUserDto) {
+    const user = await this.model.findById(id);
+    if (!user) return null;
+
+    user.name = data.name;
+    user.surname = data.surname;
+
+    await user.save();
+
+    return this.toDomain(user);
   }
 
   async updatePassword(userId: string, password: string) {
