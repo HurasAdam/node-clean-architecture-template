@@ -13,6 +13,7 @@ import { createProductModule } from "../modules/products/product.module";
 import { createRoleModule } from "../modules/roles/role.module";
 import { createSessionModule } from "../modules/sessions/session.module";
 import { createTagModule } from "../modules/tags/tag.module";
+import { createUsefullLinkCategoryModule } from "../modules/useful-link-categories/usefullLinkCategory.module";
 import { createUserModule } from "../modules/users/user.module";
 import { initRepositories } from "./initRepositories";
 
@@ -45,6 +46,10 @@ export function initContainer() {
   const productTopicModule = createProductTopicModule({
     productTopicRepository: repositories.productTopicRepository,
     productRepository: repositories.productRepository,
+  });
+
+  const usefullLinkCategoryModule = createUsefullLinkCategoryModule({
+    usefullLinkCategoryRepository: repositories.usefullLinkCategoryRepository,
   });
 
   //
@@ -82,6 +87,7 @@ export function initContainer() {
     product: productModule,
     productCategory: productCategoryModule,
     productTopic: productTopicModule,
+    usefullLinkCategory: usefullLinkCategoryModule,
   };
 }
 

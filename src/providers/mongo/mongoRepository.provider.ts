@@ -17,6 +17,8 @@ import { SessionRepository } from "../../modules/sessions/infrastructure/mongoos
 import SessionModel from "../../modules/sessions/infrastructure/session.model";
 import { TagRepository } from "../../modules/tags/infrastructure/mongoose/tag.repository";
 import TagModel from "../../modules/tags/infrastructure/tag.model";
+import { UsefulLinkCategoryModel } from "../../modules/useful-link-categories/infrastructure/mongoose/usefullLinkCategory.model";
+import { UsefullLinkCategoryRepository } from "../../modules/useful-link-categories/infrastructure/mongoose/usefullLinkCategory.repository";
 import UserModel from "../../modules/users/infrastructure/mongoose/user.model";
 import { UserRepository } from "../../modules/users/infrastructure/mongoose/user.repository";
 import { IRepositoryProvider } from "../types/  repository-provider.type";
@@ -33,5 +35,8 @@ export function createMongoRepositoryProvider(): IRepositoryProvider {
     ),
     productTopicRepository: new ProductTopicRepository(ProductTopicModel),
     tagRepository: new TagRepository(TagModel),
+    usefullLinkCategoryRepository: new UsefullLinkCategoryRepository(
+      UsefulLinkCategoryModel,
+    ),
   };
 }
