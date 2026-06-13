@@ -1,9 +1,10 @@
-import { Document, Schema, model } from "mongoose";
+import { Document, Schema, Types, model } from "mongoose";
 
 export interface UsefulLinkCategoryDocument extends Document {
   name: string;
   isActive: boolean;
   order: Number;
+  createdBy: Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -26,6 +27,7 @@ const usefulLinkCategorySchema = new Schema<UsefulLinkCategoryDocument>(
       type: Number,
       default: 0,
     },
+    createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
   },
   {
     timestamps: true,
