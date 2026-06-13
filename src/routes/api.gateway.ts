@@ -14,6 +14,7 @@ import { createProductRoutes } from "../modules/products/presentation/product.ro
 import { createRoleRoutes } from "../modules/roles/presentation/role.route";
 import { createSessionRoutes } from "../modules/sessions/presentation/session.route";
 import { createTagRoutes } from "../modules/tags/presentation/tag.route";
+import { createUsefullLinkCategoryRoutes } from "../modules/useful-link-categories/presentation/usefullLinkCategory.route";
 import { createUserRoutes } from "../modules/users/presentation/user.route";
 
 /**
@@ -130,6 +131,16 @@ export function createApiRouter(container: Container) {
     "/product-topics",
     container.authGuard.authenticate,
     createProductTopicRoutes(container),
+  );
+
+  /**
+   * Usefull link categories
+   */
+
+  router.use(
+    "/usefull-link-categories",
+    container.authGuard.authenticate,
+    createUsefullLinkCategoryRoutes(container),
   );
 
   return router;
