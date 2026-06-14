@@ -19,6 +19,8 @@ import { TagRepository } from "../../modules/tags/infrastructure/mongoose/tag.re
 import TagModel from "../../modules/tags/infrastructure/tag.model";
 import { UsefulLinkCategoryModel } from "../../modules/useful-link-categories/infrastructure/mongoose/usefullLinkCategory.model";
 import { UsefullLinkCategoryRepository } from "../../modules/useful-link-categories/infrastructure/mongoose/usefullLinkCategory.repository";
+import UsefullLinkModel from "../../modules/useful-links/infrastructure/mongoose/usefullLink.model";
+import { UsefullLinkRepository } from "../../modules/useful-links/infrastructure/mongoose/usefullLink.repository";
 import UserModel from "../../modules/users/infrastructure/mongoose/user.model";
 import { UserRepository } from "../../modules/users/infrastructure/mongoose/user.repository";
 import { IRepositoryProvider } from "../types/  repository-provider.type";
@@ -35,6 +37,7 @@ export function createMongoRepositoryProvider(): IRepositoryProvider {
     ),
     productTopicRepository: new ProductTopicRepository(ProductTopicModel),
     tagRepository: new TagRepository(TagModel),
+    usefullLinkRepository: new UsefullLinkRepository(UsefullLinkModel),
     usefullLinkCategoryRepository: new UsefullLinkCategoryRepository(
       UsefulLinkCategoryModel,
     ),

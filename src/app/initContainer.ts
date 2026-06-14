@@ -14,6 +14,7 @@ import { createRoleModule } from "../modules/roles/role.module";
 import { createSessionModule } from "../modules/sessions/session.module";
 import { createTagModule } from "../modules/tags/tag.module";
 import { createUsefullLinkCategoryModule } from "../modules/useful-link-categories/usefullLinkCategory.module";
+import { createUsefullLinkModule } from "../modules/useful-links/usefullLink.module";
 import { createUserModule } from "../modules/users/user.module";
 import { initRepositories } from "./initRepositories";
 
@@ -46,6 +47,11 @@ export function initContainer() {
   const productTopicModule = createProductTopicModule({
     productTopicRepository: repositories.productTopicRepository,
     productRepository: repositories.productRepository,
+  });
+
+  const usefullLinkModule = createUsefullLinkModule({
+    usefullLinkRepository: repositories.usefullLinkRepository,
+    usefullLinkCategoryRepository: repositories.usefullLinkCategoryRepository,
   });
 
   const usefullLinkCategoryModule = createUsefullLinkCategoryModule({
@@ -87,6 +93,7 @@ export function initContainer() {
     product: productModule,
     productCategory: productCategoryModule,
     productTopic: productTopicModule,
+    usefullLink: usefullLinkModule,
     usefullLinkCategory: usefullLinkCategoryModule,
   };
 }

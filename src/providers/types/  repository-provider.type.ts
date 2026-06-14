@@ -6,6 +6,7 @@ import { IRoleRepository } from "../../modules/roles/domain/role.repository.inte
 import { ISessionRepository } from "../../modules/sessions/domain/session.repository.interface";
 import { ITagRepository } from "../../modules/tags/domain/tag.repository.interface";
 import { IUsefullLinkCategoryRepository } from "../../modules/useful-link-categories/domain/usefullLinkCategory.repository.interface";
+import { IUsefullLinkRepository } from "../../modules/useful-links/domain/usefullLink.repository.interface";
 import { IUserRepository } from "../../modules/users/domain/user.repository.interface";
 
 export interface IRepositoryProvider {
@@ -17,5 +18,6 @@ export interface IRepositoryProvider {
   productCategoryRepository: IProductCategoryRepository;
   productTopicRepository: IProductTopicRepository;
   tagRepository: ITagRepository;
+  usefullLinkRepository: IUsefullLinkRepository;
   usefullLinkCategoryRepository: IUsefullLinkCategoryRepository;
 }
