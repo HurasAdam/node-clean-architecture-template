@@ -20,6 +20,7 @@ export class UsefullLinkCategoryRepository implements IUsefullLinkCategoryReposi
       doc.name,
       doc.isActive,
       doc.createdAt,
+      doc.order,
     );
   }
 
@@ -37,6 +38,16 @@ export class UsefullLinkCategoryRepository implements IUsefullLinkCategoryReposi
       query.name = { $regex: filters.name, $options: "i" };
     }
     const docs = await this.model.find(query);
+
+    return docs.map((doc) => this.toDomain(doc));
+  }
+
+  async findByIds(ids: string[]): Promise<UsefullLinkCategory[]> {
+    const docs = await this.model
+      .find({
+        _id: { $in: ids },
+      })
+      .sort({ order: 1 });
 
     return docs.map((doc) => this.toDomain(doc));
   }

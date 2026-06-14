@@ -4,5 +4,6 @@ export class UsefullLinkCategory {
     public name: string,
     public isActive: boolean,
     public createdAt: Date,
+    public order: Number,
   ) {}
 }

@@ -1,4 +1,4 @@
-import { CREATED } from "../../../constants/http";
+import { CREATED, OK } from "../../../constants/http";
 import catchErrors from "../../../utils/catchErrors";
 import { usefullLinkCategoryService } from "../application/usefullLinkCategory.service";
 
@@ -16,6 +16,7 @@ export class UsefullLinkCategoryController {
   });
 
   find = catchErrors(async (req, res) => {
-    return this.usefullLinkCategoryService.find();
+    const serviceResponse = await this.usefullLinkCategoryService.find();
+    return res.status(OK).json(serviceResponse);
   });
 }
