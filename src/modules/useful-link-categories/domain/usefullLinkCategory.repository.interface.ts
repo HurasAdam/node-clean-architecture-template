@@ -9,7 +9,7 @@ export interface IUsefullLinkCategoryRepository {
   create(userId: string, data: unknown): Promise<any>;
   find(): Promise<unknown[]>;
   findByIds: (ids: string[]) => Promise<UsefullLinkCategory[]>;
-  findOne(id: string): Promise<unknown | null>;
+  findOne(id: string): Promise<UsefullLinkCategory | null>;
   findByName(name: string): Promise<unknown | null>;
   updateOne(id: string, payload: unknown): Promise<unknown | null>;
   deleteOne(): any;

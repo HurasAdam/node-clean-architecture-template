@@ -16,6 +16,10 @@ export function createUsefullLinkRoutes(container: Container) {
     container.usefullLink.controller.findWithCategory,
   );
   router.get("/:id", container.usefullLink.controller.findOne);
+  router.get(
+    "/:id/details",
+    container.usefullLink.controller.findOneWithDetails,
+  );
 
   return router;
 }

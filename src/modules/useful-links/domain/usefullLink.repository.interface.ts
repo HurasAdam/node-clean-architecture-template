@@ -8,7 +8,7 @@ import { UsefullLink } from "./usefullLink.entity";
 export interface IUsefullLinkRepository {
   create(userId: string, data: unknown): Promise<any>;
   find(): Promise<UsefullLink[]>;
-  findOne(id: string): Promise<unknown | null>;
+  findOne(id: string): Promise<UsefullLink | null>;
   findByName(name: string): Promise<unknown | null>;
   updateOne(id: string, payload: unknown): Promise<unknown | null>;
   deleteOne(): any;

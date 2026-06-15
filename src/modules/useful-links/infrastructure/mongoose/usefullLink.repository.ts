@@ -20,6 +20,7 @@ export class UsefullLinkRepository implements IUsefullLinkRepository {
       doc.name,
       doc.url,
       doc.isFeatured,
+      doc.createdBy.toString(),
       doc.createdAt,
       doc.updatedAt,
       doc.linkCategory?.toString(),

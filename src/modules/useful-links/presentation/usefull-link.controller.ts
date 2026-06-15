@@ -31,4 +31,12 @@ export class UsefullLinkController {
     const serviceResponse = await this.usefullLinkService.findOne(id);
     return res.status(OK).json(serviceResponse);
   });
+
+  findOneWithDetails = catchErrors(async ({ params }, res) => {
+    const { id } = params;
+
+    const serviceResponse =
+      await this.usefullLinkService.findOneWithDetails(id);
+    return res.status(OK).json(serviceResponse);
+  });
 }

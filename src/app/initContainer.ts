@@ -52,6 +52,7 @@ export function initContainer() {
   const usefullLinkModule = createUsefullLinkModule({
     usefullLinkRepository: repositories.usefullLinkRepository,
     usefullLinkCategoryRepository: repositories.usefullLinkCategoryRepository,
+    userRepository: repositories.userRepository,
   });
 
   const usefullLinkCategoryModule = createUsefullLinkCategoryModule({
