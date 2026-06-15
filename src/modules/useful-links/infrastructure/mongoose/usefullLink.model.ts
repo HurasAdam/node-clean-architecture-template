@@ -5,9 +5,11 @@ export interface UsefullLinkDocument extends Document {
   url: string;
   description?: string;
   isFeatured: boolean;
-  createdAt: Date;
-  updatedAt: Date;
   linkCategory: Schema.Types.ObjectId;
+  createdAt: Date;
+  createdBy: Schema.Types.ObjectId;
+
+  updatedAt: Date;
 }
 
 const UsefullLinkSchema = new Schema<UsefullLinkDocument>(
@@ -17,6 +19,7 @@ const UsefullLinkSchema = new Schema<UsefullLinkDocument>(
     description: { type: String, default: "" },
     isFeatured: { type: Boolean, default: false },
     linkCategory: { type: Schema.Types.ObjectId, ref: "usefulLinkCategory" },
+    createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
   },
 
   { timestamps: true },

@@ -4,6 +4,7 @@ export class UsefullLink {
     public name: string,
     public url: string,
     public isFeatured: boolean,
+    public createdBy: string,
     public createdAt: Date,
     public updatedAt: Date,
     public linkCategory: string,
