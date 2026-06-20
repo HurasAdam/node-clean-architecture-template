@@ -12,14 +12,19 @@ export class ProductTopicRepository implements IProductTopicRepository {
   }
 
   private toDomain(doc: ProductTopicDocument) {
-    return new ProductTopic(doc._id.toString(), doc.name);
+    return new ProductTopic(
+      doc._id.toString(),
+      doc.name,
+      doc.product.toString(),
+    );
   }
 
   create(userId: string, data: CreateProductTopicDto) {
     return this.model.create({ ...data, createdBy: userId });
   }
-  find() {
-    return this.model.find();
+  async find() {
+    const docs = await this.model.find();
+    return docs.map((doc) => this.toDomain(doc));
   }
   async findOne(id: string) {
     const doc = await this.model.findById(id);

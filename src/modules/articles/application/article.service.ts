@@ -4,6 +4,7 @@
  */
 
 import { IArticleRepository } from "../domain/article.repository.interface";
+import { CreateArticleDto } from "../dto/create-article.dto";
 
 export class ArticleService {
   private articleRepository: IArticleRepository;
@@ -11,7 +12,9 @@ export class ArticleService {
     this.articleRepository = articleRepository;
   }
 
-  create() {}
+  create(userId: string, payload: CreateArticleDto) {
+    this.articleRepository.create(userId, payload);
+  }
 
   find() {}
 

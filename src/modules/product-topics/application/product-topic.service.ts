@@ -30,8 +30,27 @@ export class ProductTopicService {
     return this.productTopicRepository.create(userId, payload);
   }
 
-  find() {
-    return this.productTopicRepository.find();
+  async find() {
+    const topics = await this.productTopicRepository.find();
+    const products = await this.productRepository.find({});
+
+    const productMap = new Map(products.map((p) => [p.id, p]));
+
+    return topics.map((topic) => {
+      const product = productMap.get(topic.product.toString());
+
+      return {
+        id: topic.id,
+        name: topic.name,
+        product: product
+          ? {
+              id: product.id,
+              name: product.name,
+              labelColor: product.labelColor,
+            }
+          : null,
+      };
+    });
   }
 
   findOne(id: string) {

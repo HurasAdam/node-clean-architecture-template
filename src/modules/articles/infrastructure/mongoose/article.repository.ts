@@ -15,7 +15,7 @@ export class ArticleRepository implements IArticleRepository {
     this.model = model;
   }
 
-  create(data: CreateArticleDto) {
+  create(userId: string, data: CreateArticleDto) {
     return this.model.create(data);
   }
 

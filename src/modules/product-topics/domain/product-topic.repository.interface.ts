@@ -3,9 +3,11 @@
  * @license Apache-2.0
  */
 
+import { ProductTopic } from "./product-topic.entity";
+
 export interface IProductTopicRepository {
   create(userId: string, data: unknown): Promise<unknown>;
-  find(): Promise<unknown[]>;
+  find(): Promise<ProductTopic[]>;
   findOne(id: string): Promise<unknown | null>;
   findByName(name: string): Promise<unknown | null>;
   findByProductId(id: string): Promise<unknown | null>;

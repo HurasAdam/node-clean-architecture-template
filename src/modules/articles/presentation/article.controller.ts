@@ -5,6 +5,7 @@
 
 import catchErrors from "../../../utils/catchErrors";
 import { ArticleService } from "../application/article.service";
+import { createArticleDto } from "../dto/create-article.dto";
 
 export class ArticleController {
   private service;
@@ -12,7 +13,11 @@ export class ArticleController {
     this.service = articleService;
   }
 
-  create = catchErrors(async (req, res) => {});
+  create = catchErrors(async ({ userId, body }, res) => {
+    const payload = createArticleDto.parse(body);
+
+    await this.service.create(userId, payload);
+  });
 
   find = catchErrors(async (req, res) => {});
 

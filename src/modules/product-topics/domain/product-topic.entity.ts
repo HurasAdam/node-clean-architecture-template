@@ -7,5 +7,6 @@ export class ProductTopic {
   constructor(
     public readonly id: string,
     public name: string,
+    public product: string,
   ) {}
 }
