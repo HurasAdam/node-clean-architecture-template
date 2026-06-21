@@ -3,7 +3,7 @@
  * @license Apache-2.0
  */
 
-import { CREATED, NO_CONTENT } from "../../../constants/http";
+import { CREATED, NO_CONTENT, OK } from "../../../constants/http";
 import catchErrors from "../../../utils/catchErrors";
 import { ProductCategoryService } from "../application/product-category.service";
 import { createProductCategoryDto } from "../dto/create-product-category.dto";
@@ -26,6 +26,13 @@ export class ProductCategoryController {
     const response = await this.service.find();
 
     return res.status(200).json(response);
+  });
+
+  findByProduct = catchErrors(async ({ params }, res) => {
+    const { productId } = params;
+    const serviceResponse = await this.service.findByProductId(productId);
+
+    return res.status(OK).json(serviceResponse);
   });
 
   findOne = catchErrors(async ({ params }, res) => {

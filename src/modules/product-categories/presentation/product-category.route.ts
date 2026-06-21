@@ -27,6 +27,12 @@ export const createProductCategoryRoutes = (container: Container) => {
   );
 
   router.get(
+    "/product/:productId",
+    container.authGuard.authenticate,
+    container.productCategory.controller.findByProduct,
+  );
+
+  router.get(
     "/:id",
     container.authGuard.authenticate,
     container.productCategory.controller.findOne,
