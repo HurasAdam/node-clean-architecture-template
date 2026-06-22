@@ -34,7 +34,18 @@ export class TagService {
     return this.tagRepository.create(userId, data);
   }
 
-  async find(query: FindTagsQueryDto): Promise<TagResponseDto[]> {
+  async find(query: FindTagsQueryDto): Promise<{ id: string; name: string }[]> {
+    const tags = await this.tagRepository.find(query);
+
+    return tags.map((tag) => {
+      return {
+        id: tag.id,
+        name: tag.name,
+      };
+    });
+  }
+
+  async findWithDetails(query: FindTagsQueryDto): Promise<TagResponseDto[]> {
     const tags = await this.tagRepository.find(query);
 
     const userIds = [...new Set(tags.map((t) => t.createdBy))];

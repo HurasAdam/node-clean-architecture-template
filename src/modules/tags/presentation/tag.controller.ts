@@ -32,6 +32,14 @@ export class TagController {
     return res.status(200).json(serviceResponse);
   });
 
+  findWithDetails = catchErrors(async (req, res) => {
+    const query = findTagsQueryDto.parse(req.query);
+
+    const serviceResponse = await this.service.findWithDetails(query);
+
+    return res.status(200).json(serviceResponse);
+  });
+
   findOne = catchErrors(async ({ params }, res) => {
     const { id } = params;
     const serviceResponse = await this.service.findOne(id);

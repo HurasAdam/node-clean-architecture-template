@@ -16,6 +16,7 @@ export const createTagRoutes = (container: Container) => {
 
   router.post("/", container.tag.controller.create);
   router.get("/", container.tag.controller.find);
+  router.get("/details", container.tag.controller.findWithDetails);
   router.get("/:id", container.tag.controller.findOne);
   router.patch("/:id", container.tag.controller.updateOne);
 
