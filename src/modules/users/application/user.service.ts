@@ -55,6 +55,28 @@ export class UserService {
     );
   }
 
+  async findWorkspaceCandidates() {
+    const [users, roles] = await Promise.all([
+      this.userRepository.find(),
+      this.roleRepository.find({}),
+    ]);
+
+    const roleMap = new Map(roles.map((role) => [role.id, role]));
+
+    return users
+      .filter((user) => {
+        const role = roleMap.get(user.role);
+
+        return role?.name !== "ADMIN";
+      })
+      .map((user) => ({
+        id: user.id,
+        name: user.name,
+        surname: user.surname,
+        email: user.email,
+      }));
+  }
+
   findOne(userId: string) {
     return this.userRepository.findOneById(userId);
   }

@@ -35,6 +35,16 @@ export const createUserRoutes = (container: Container) => {
   router.get("/details", container.user.controller.findWithDetails);
 
   /**
+   * GET /users/workspace-candidates
+   * returns users that can be added as workspace members.
+   */
+
+  router.get(
+    "/workspace-candidates",
+    container.user.controller.findWorkspaceCandidates,
+  );
+
+  /**
    * GET /users/:userId
    * returns single user
    */

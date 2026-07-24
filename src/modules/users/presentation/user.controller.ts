@@ -1,4 +1,5 @@
 import { validateObjectIdParam } from "../../../common/dto/param-id.dto";
+import { OK } from "../../../constants/http";
 import catchErrors from "../../../utils/catchErrors";
 import { UserService } from "../application/user.service";
 import { createUserDto } from "../dto/create-user.dto";
@@ -23,6 +24,11 @@ export class UserController {
   findWithDetails = catchErrors(async (req, res) => {
     const users = await this.service.findWithDetails();
     return res.status(200).json(users);
+  });
+
+  findWorkspaceCandidates = catchErrors(async (req, res) => {
+    const serviceResponse = await this.service.findWorkspaceCandidates();
+    return res.status(OK).json(serviceResponse);
   });
 
   findOne = catchErrors(async ({ params }, res) => {
