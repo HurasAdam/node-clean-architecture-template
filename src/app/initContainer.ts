@@ -16,6 +16,7 @@ import { createTagModule } from "../modules/tags/tag.module";
 import { createUsefullLinkCategoryModule } from "../modules/useful-link-categories/usefullLinkCategory.module";
 import { createUsefullLinkModule } from "../modules/useful-links/usefullLink.module";
 import { createUserModule } from "../modules/users/user.module";
+import { createWorkspaceModule } from "../modules/workspace/workspace.module";
 import { initRepositories } from "./initRepositories";
 
 export function initContainer() {
@@ -59,6 +60,10 @@ export function initContainer() {
     usefullLinkCategoryRepository: repositories.usefullLinkCategoryRepository,
   });
 
+  const workspaceModule = createWorkspaceModule({
+    workspaceRepository: repositories.workspaceRepository,
+  });
+
   //
   const authModule = createAuthModule({
     userRepository: repositories.userRepository,
@@ -96,6 +101,7 @@ export function initContainer() {
     productTopic: productTopicModule,
     usefullLink: usefullLinkModule,
     usefullLinkCategory: usefullLinkCategoryModule,
+    workspace: workspaceModule,
   };
 }
 

@@ -8,7 +8,7 @@ import { z } from "zod";
 export const updateWorkspaceDto = z.object({
   name: z.string().min(2).max(25).optional(),
   description: z.string().max(200).optional(),
-  icon: z.string().optional(),
+  iconKey: z.string().optional(),
   labelColor: z.string().optional(),
 });
 

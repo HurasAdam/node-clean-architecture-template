@@ -17,6 +17,7 @@ import { createTagRoutes } from "../modules/tags/presentation/tag.route";
 import { createUsefullLinkCategoryRoutes } from "../modules/useful-link-categories/presentation/usefullLinkCategory.route";
 import { createUsefullLinkRoutes } from "../modules/useful-links/presentation/usefull-link.route";
 import { createUserRoutes } from "../modules/users/presentation/user.route";
+import { createWorkspaceRoutes } from "../modules/workspace/presentation/workspace.route";
 
 /**
  * Creates and configures the main API router.
@@ -152,6 +153,16 @@ export function createApiRouter(container: Container) {
     "/usefull-link-categories",
     container.authGuard.authenticate,
     createUsefullLinkCategoryRoutes(container),
+  );
+
+  /**
+   * Workspaces
+   */
+
+  router.use(
+    "/workspaces",
+    container.authGuard.authenticate,
+    createWorkspaceRoutes(container),
   );
 
   return router;

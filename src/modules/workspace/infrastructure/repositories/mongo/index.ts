@@ -11,7 +11,7 @@ export class WorkspaceRepository implements IWorkspaceRepository {
   }
 
   add(userId: string, payload: AddWorkspaceDto) {
-    return this.model.create({ payload, onwer: userId });
+    return this.model.create({ ...payload, owner: userId });
   }
 
   find() {
