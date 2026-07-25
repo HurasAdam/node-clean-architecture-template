@@ -1,5 +1,6 @@
 import { Model } from "mongoose";
 import { IWorkspaceRepository } from "../../../domain/repository.interface";
+import { WorkspaceEntity } from "../../../domain/workspace.entity";
 import { AddWorkspaceDto } from "../../../dto/add";
 import { UpdateWorkspaceDto } from "../../../dto/update";
 import { WorkspaceDocument } from "../../models/mongo";
@@ -10,16 +11,30 @@ export class WorkspaceRepository implements IWorkspaceRepository {
     this.model = model;
   }
 
+  private toDomain(doc: WorkspaceDocument): WorkspaceEntity {
+    return new WorkspaceEntity(
+      doc._id.toString(),
+      doc.name,
+      doc.labelColor,
+      doc.iconKey,
+      doc.owner.toString(),
+    );
+  }
+
   add(userId: string, payload: AddWorkspaceDto) {
     return this.model.create({ ...payload, owner: userId });
   }
 
-  find() {
-    return this.model.find({});
+  async find(): Promise<WorkspaceEntity[]> {
+    const docs = await this.model.find({});
+    return docs.map((doc) => this.toDomain(doc));
   }
-  findOne(id: string) {
-    return this.model.findById(id);
+  async findOne(id: string): Promise<WorkspaceEntity | null> {
+    const doc = await this.model.findById(id);
+    if (!doc) return null;
+    return this.toDomain(doc);
   }
+
   async update(id: string, payload: UpdateWorkspaceDto) {
     const doc = await this.model.findByIdAndUpdate(
       id,
