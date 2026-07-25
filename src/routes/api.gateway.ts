@@ -17,6 +17,7 @@ import { createTagRoutes } from "../modules/tags/presentation/tag.route";
 import { createUsefullLinkCategoryRoutes } from "../modules/useful-link-categories/presentation/usefullLinkCategory.route";
 import { createUsefullLinkRoutes } from "../modules/useful-links/presentation/usefull-link.route";
 import { createUserRoutes } from "../modules/users/presentation/user.route";
+import { createWorkspaceMemberRoutes } from "../modules/workspace-members/presentation/workspace-member.route";
 import { createWorkspaceRoutes } from "../modules/workspace/presentation/workspace.route";
 
 /**
@@ -163,6 +164,16 @@ export function createApiRouter(container: Container) {
     "/workspaces",
     container.authGuard.authenticate,
     createWorkspaceRoutes(container),
+  );
+
+  /**
+   * Workspace members
+   */
+
+  router.use(
+    "/workspace-members",
+    container.authGuard.authenticate,
+    createWorkspaceMemberRoutes(container),
   );
 
   return router;

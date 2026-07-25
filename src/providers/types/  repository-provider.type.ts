@@ -8,6 +8,7 @@ import { ITagRepository } from "../../modules/tags/domain/tag.repository.interfa
 import { IUsefullLinkCategoryRepository } from "../../modules/useful-link-categories/domain/usefullLinkCategory.repository.interface";
 import { IUsefullLinkRepository } from "../../modules/useful-links/domain/usefullLink.repository.interface";
 import { IUserRepository } from "../../modules/users/domain/user.repository.interface";
+import { IWorkspaceMemberRepository } from "../../modules/workspace-members/domain/repository.interface";
 import { IWorkspaceRepository } from "../../modules/workspace/domain/repository.interface";
 
 export interface IRepositoryProvider {
@@ -22,4 +23,5 @@ export interface IRepositoryProvider {
   usefullLinkRepository: IUsefullLinkRepository;
   usefullLinkCategoryRepository: IUsefullLinkCategoryRepository;
   workspaceRepository: IWorkspaceRepository;
+  workspaceMemberRepository: IWorkspaceMemberRepository;
 }
