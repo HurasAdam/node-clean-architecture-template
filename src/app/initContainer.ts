@@ -63,10 +63,14 @@ export function initContainer() {
 
   const workspaceModule = createWorkspaceModule({
     workspaceRepository: repositories.workspaceRepository,
+    workspaceMemberRepository: repositories.workspaceMemberRepository,
+    userRepository: repositories.userRepository,
   });
 
   const workspaceMemberModule = createWorkspaceMemberModule({
     workspaceMemberRepository: repositories.workspaceMemberRepository,
+    userRepository: repositories.userRepository,
+    workspaceRepository: repositories.workspaceRepository,
   });
 
   //

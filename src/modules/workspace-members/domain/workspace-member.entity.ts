@@ -1,16 +1,19 @@
 import { WorkspacePermissions } from "../infrastructure/models/mongo";
 
 export class WorkspaceMemberEntity {
-  private userId: string;
-  private workspaceId: string;
-  private permissions: WorkspacePermissions;
-  private joinedAt: string;
+  id: string;
+  userId: string;
+  workspaceId: string;
+  permissions: WorkspacePermissions;
+  joinedAt: string;
   constructor(
+    id: string,
     userId: string,
     workspaceId: string,
     permissions: WorkspacePermissions,
     joinedAt: string,
   ) {
+    this.id = id;
     ((this.userId = userId),
       (this.workspaceId = workspaceId),
       (this.permissions = permissions));

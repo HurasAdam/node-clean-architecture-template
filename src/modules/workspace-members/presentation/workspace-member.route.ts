@@ -15,7 +15,10 @@ export const createWorkspaceMemberRoutes = (container: Container) => {
   const router = Router();
 
   router.post("/", container.workspaceMember.controller.add);
-  //   router.get("/", container.workspaceMember.controller.find);
+  router.get(
+    "/:workspaceId/members",
+    container.workspaceMember.controller.findByWorkspaceId,
+  );
 
   return router;
 };
