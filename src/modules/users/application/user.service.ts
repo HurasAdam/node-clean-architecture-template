@@ -55,7 +55,7 @@ export class UserService {
     );
   }
 
-  async findWorkspaceCandidates() {
+  async findWorkspaceCandidates(currentUserId: string) {
     const [users, roles] = await Promise.all([
       this.userRepository.find(),
       this.roleRepository.find({}),
@@ -67,7 +67,7 @@ export class UserService {
       .filter((user) => {
         const role = roleMap.get(user.role);
 
-        return role?.name !== "ADMIN";
+        return user.id !== currentUserId && role?.name !== "ADMIN";
       })
       .map((user) => ({
         id: user.id,

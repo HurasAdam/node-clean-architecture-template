@@ -27,7 +27,8 @@ export class UserController {
   });
 
   findWorkspaceCandidates = catchErrors(async (req, res) => {
-    const serviceResponse = await this.service.findWorkspaceCandidates();
+    const userId = req.userId;
+    const serviceResponse = await this.service.findWorkspaceCandidates(userId);
     return res.status(OK).json(serviceResponse);
   });
 
