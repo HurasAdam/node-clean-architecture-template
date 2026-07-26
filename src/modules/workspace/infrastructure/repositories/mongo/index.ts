@@ -21,8 +21,12 @@ export class WorkspaceRepository implements IWorkspaceRepository {
     );
   }
 
-  add(userId: string, payload: AddWorkspaceDto) {
-    return this.model.create({ ...payload, owner: userId });
+  async add(
+    userId: string,
+    payload: AddWorkspaceDto,
+  ): Promise<WorkspaceEntity> {
+    const doc = await this.model.create({ ...payload, owner: userId });
+    return this.toDomain(doc);
   }
 
   async find(): Promise<WorkspaceEntity[]> {

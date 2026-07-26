@@ -12,7 +12,6 @@ export class WorkspaceController {
   add = catchErrors(async (req, res) => {
     const payload = req.body;
 
-    console.log("PAYLOAD", payload);
     const userId = req.userId;
     await this.workspaceService.add(userId, payload);
 
@@ -21,6 +20,12 @@ export class WorkspaceController {
 
   find = catchErrors(async (req, res) => {
     const serviceResponse = await this.workspaceService.find();
+    return res.status(OK).json(serviceResponse);
+  });
+
+  findOne = catchErrors(async (req, res) => {
+    const { workspaceId } = req.params;
+    const serviceResponse = await this.workspaceService.findOne(workspaceId);
     return res.status(OK).json(serviceResponse);
   });
 }
