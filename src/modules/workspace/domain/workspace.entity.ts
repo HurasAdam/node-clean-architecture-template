@@ -29,4 +29,8 @@ export class WorkspaceEntity {
     this.description = description;
     this.inviteCode = inviteCode;
   }
+
+  public isOwner(userId: string): boolean {
+    return this.owner.toString() === userId;
+  }
 }

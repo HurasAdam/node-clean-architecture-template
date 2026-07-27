@@ -48,14 +48,15 @@ export class WorkspaceService {
   async findOne(workspaceId: string, userId: string) {
     const workspace = await this.workspaceRepository.findOne(workspaceId);
     appAssert(workspace, NOT_FOUND, "Workspace not found");
-    const isOwner = workspace.owner.toString() === userId;
+    const isOwner = workspace.isOwner(userId);
+
     return {
       id: workspace.id,
       name: workspace.name,
       description: workspace.description,
       labelColor: workspace.labelColor,
       iconKey: workspace.iconKey,
-      ...(!isOwner && {
+      ...(isOwner && {
         inviteCode: workspace.inviteCode,
       }),
     };
