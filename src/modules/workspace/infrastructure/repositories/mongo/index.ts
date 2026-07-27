@@ -18,6 +18,8 @@ export class WorkspaceRepository implements IWorkspaceRepository {
       doc.labelColor,
       doc.iconKey,
       doc.owner.toString(),
+      doc.description,
+      doc.inviteCode,
     );
   }
 

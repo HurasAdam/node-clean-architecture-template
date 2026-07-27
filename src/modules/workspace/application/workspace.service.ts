@@ -1,3 +1,5 @@
+import { NOT_FOUND } from "../../../constants/http";
+import appAssert from "../../../utils/appAssert";
 import { IUserRepository } from "../../users/domain/user.repository.interface";
 import {
   DEFAULT_MEMBER_PERMISSIONS,
@@ -43,7 +45,19 @@ export class WorkspaceService {
     return this.workspaceRepository.find();
   }
 
-  findOne(workspaceId: string) {
-    return this.workspaceRepository.findOne(workspaceId);
+  async findOne(workspaceId: string, userId: string) {
+    const workspace = await this.workspaceRepository.findOne(workspaceId);
+    appAssert(workspace, NOT_FOUND, "Workspace not found");
+    const isOwner = workspace.owner.toString() === userId;
+    return {
+      id: workspace.id,
+      name: workspace.name,
+      description: workspace.description,
+      labelColor: workspace.labelColor,
+      iconKey: workspace.iconKey,
+      ...(!isOwner && {
+        inviteCode: workspace.inviteCode,
+      }),
+    };
   }
 }

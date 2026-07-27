@@ -25,7 +25,11 @@ export class WorkspaceController {
 
   findOne = catchErrors(async (req, res) => {
     const { workspaceId } = req.params;
-    const serviceResponse = await this.workspaceService.findOne(workspaceId);
+    const { userId } = req;
+    const serviceResponse = await this.workspaceService.findOne(
+      workspaceId,
+      userId,
+    );
     return res.status(OK).json(serviceResponse);
   });
 }
