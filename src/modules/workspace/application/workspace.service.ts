@@ -42,6 +42,27 @@ export class WorkspaceService {
     return workspace;
   }
 
+  async findUserWorkspaceMembership(
+    currentUserId: string,
+    workspaceId: string,
+  ) {
+    const member = await this.workspaceMemberRepository.findByUserAndWorkspace(
+      currentUserId,
+      workspaceId,
+    );
+
+    appAssert(member, FORBIDDEN, "You do not have access to this workspace");
+
+    const workspace = await this.workspaceRepository.findOne(workspaceId);
+
+    const isOwner = workspace?.isOwner(currentUserId) ?? false;
+
+    return {
+      ...member,
+      isOwner,
+    };
+  }
+
   find() {
     return this.workspaceRepository.find();
   }

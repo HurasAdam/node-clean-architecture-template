@@ -18,6 +18,19 @@ export class WorkspaceController {
     return res.sendStatus(CREATED);
   });
 
+  findUserWorkspaceMembership = catchErrors(async (req, res) => {
+    const { workspaceId } = req.params;
+    const { userId: currentUserId } = req;
+
+    const serviceResponse =
+      await this.workspaceService.findUserWorkspaceMembership(
+        currentUserId,
+        workspaceId,
+      );
+
+    return res.status(OK).json(serviceResponse);
+  });
+
   find = catchErrors(async (req, res) => {
     const serviceResponse = await this.workspaceService.find();
     return res.status(OK).json(serviceResponse);
