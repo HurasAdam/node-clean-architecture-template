@@ -41,7 +41,10 @@ export class WorkspaceRepository implements IWorkspaceRepository {
     return this.toDomain(doc);
   }
 
-  async update(id: string, payload: UpdateWorkspaceDto) {
+  async updateOne(
+    id: string,
+    payload: UpdateWorkspaceDto,
+  ): Promise<WorkspaceEntity | null> {
     const doc = await this.model.findByIdAndUpdate(
       id,
       { $set: payload },
@@ -49,5 +52,7 @@ export class WorkspaceRepository implements IWorkspaceRepository {
     );
 
     if (!doc) return null;
+
+    return this.toDomain(doc);
   }
 }

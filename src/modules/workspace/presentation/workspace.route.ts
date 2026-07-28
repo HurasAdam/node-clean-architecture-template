@@ -17,6 +17,7 @@ export const createWorkspaceRoutes = (container: Container) => {
   router.post("/", container.workspace.controller.add);
   router.get("/", container.workspace.controller.find);
   router.get("/:workspaceId", container.workspace.controller.findOne);
+  router.patch("/:workspaceId", container.workspace.controller.updateOne);
 
   return router;
 };

@@ -1,4 +1,4 @@
-import { NOT_FOUND } from "../../../constants/http";
+import { FORBIDDEN, NOT_FOUND } from "../../../constants/http";
 import appAssert from "../../../utils/appAssert";
 import { IUserRepository } from "../../users/domain/user.repository.interface";
 import {
@@ -8,6 +8,7 @@ import {
 import { IWorkspaceMemberRepository } from "../../workspace-members/domain/repository.interface";
 import { IWorkspaceRepository } from "../domain/repository.interface";
 import { AddWorkspaceDto } from "../dto/add";
+import { UpdateWorkspaceDto } from "../dto/update";
 
 export class WorkspaceService {
   private workspaceRepository: IWorkspaceRepository;
@@ -60,5 +61,22 @@ export class WorkspaceService {
         inviteCode: workspace.inviteCode,
       }),
     };
+  }
+
+  async updateOne(
+    workspaceId: string,
+    userId: string,
+    payload: UpdateWorkspaceDto,
+  ) {
+    const workspace = await this.workspaceRepository.findOne(workspaceId);
+    appAssert(workspace, NOT_FOUND, "Workspace not found");
+
+    const isOwner = workspace.isOwner(userId);
+    appAssert(
+      isOwner,
+      FORBIDDEN,
+      "You do not have permission to perform this action",
+    );
+    await this.workspaceRepository.updateOne(workspaceId, payload);
   }
 }

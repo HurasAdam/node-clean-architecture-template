@@ -6,5 +6,8 @@ export interface IWorkspaceRepository {
   add: (userId: string, payload: AddWorkspaceDto) => Promise<WorkspaceEntity>;
   find: () => Promise<unknown>;
   findOne: (id: string) => Promise<WorkspaceEntity | null>;
-  update: (id: string, payload: UpdateWorkspaceDto) => Promise<unknown>;
+  updateOne: (
+    id: string,
+    payload: UpdateWorkspaceDto,
+  ) => Promise<WorkspaceEntity | null>;
 }

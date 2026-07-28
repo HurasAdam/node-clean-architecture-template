@@ -1,4 +1,4 @@
-import { CREATED, OK } from "../../../constants/http";
+import { CREATED, NO_CONTENT, OK } from "../../../constants/http";
 import catchErrors from "../../../utils/catchErrors";
 import { WorkspaceService } from "../application/workspace.service";
 
@@ -31,5 +31,14 @@ export class WorkspaceController {
       userId,
     );
     return res.status(OK).json(serviceResponse);
+  });
+
+  updateOne = catchErrors(async (req, res) => {
+    const { workspaceId } = req.params;
+    const { userId } = req;
+    const payload = req.body;
+    await this.workspaceService.updateOne(workspaceId, userId, payload);
+
+    return res.sendStatus(NO_CONTENT);
   });
 }
