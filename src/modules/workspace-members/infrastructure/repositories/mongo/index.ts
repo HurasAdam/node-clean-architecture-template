@@ -47,4 +47,18 @@ export class workspaceMemberRepository implements IWorkspaceMemberRepository {
     const docs = await this.model.find({ workspaceId });
     return docs.map((doc) => this.toDomain(doc));
   }
+
+  async findByUserAndWorkspace(
+    userId: string,
+    workspaceId: string,
+  ): Promise<WorkspaceMemberEntity | null> {
+    const workspace = await this.model.findOne({
+      userId,
+      workspaceId,
+    });
+
+    if (!workspace) return null;
+
+    return this.toDomain(workspace);
+  }
 }

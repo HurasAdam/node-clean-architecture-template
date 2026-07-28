@@ -12,5 +12,8 @@ export interface IWorkspaceMemberRepository {
 
   findByWorkspaceId: (workspaceId: string) => Promise<WorkspaceMemberEntity[]>;
 
-  // findOne: (workspaceId: string) => Promise<WorkspaceEntity | null>;
+  findByUserAndWorkspace: (
+    userId: string,
+    workspaceId: string,
+  ) => Promise<WorkspaceMemberEntity | null>;
 }
