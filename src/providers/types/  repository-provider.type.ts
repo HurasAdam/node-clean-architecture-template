@@ -24,4 +24,5 @@ export interface IRepositoryProvider {
   usefullLinkCategoryRepository: IUsefullLinkCategoryRepository;
   workspaceRepository: IWorkspaceRepository;
   workspaceMemberRepository: IWorkspaceMemberRepository;
+  workspaceFolderRepository: IWorkspaceFolderRepository;
 }
