@@ -1,5 +1,6 @@
 import { Model } from "mongoose";
 import { IWorkspaceFolderRepository } from "../../../domain/repository.interface";
+import { AddWorkspaceFolderDto } from "../../../dto/add";
 import { WorkspaceFolderDocument } from "../../models/mongo";
 
 export class workspaceFolderRepository implements IWorkspaceFolderRepository {
@@ -9,10 +10,7 @@ export class workspaceFolderRepository implements IWorkspaceFolderRepository {
     this.model = model;
   }
 
-  add(
-    userId: string,
-    payload: { name: string; workspaceId: string },
-  ): Promise<unknown> {
+  add(userId: string, payload: AddWorkspaceFolderDto): Promise<unknown> {
     return this.model.create({ ...payload, createdBy: userId });
   }
 }

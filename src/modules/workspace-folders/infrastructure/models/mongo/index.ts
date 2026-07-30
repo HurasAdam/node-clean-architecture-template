@@ -3,6 +3,7 @@ import { Document, Schema, Types, model } from "mongoose";
 export interface WorkspaceFolderDocument extends Document {
   workspaceId: Types.ObjectId;
   name: string;
+  description: string;
   createdBy: Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
@@ -16,6 +17,7 @@ const workspaceFolderSchema = new Schema<WorkspaceFolderDocument>(
       required: true,
     },
     name: { type: String, required: true },
+    description: { type: String, default: "" },
 
     createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
   },

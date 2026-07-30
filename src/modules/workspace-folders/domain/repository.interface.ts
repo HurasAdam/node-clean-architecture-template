@@ -1,6 +1,5 @@
+import { AddWorkspaceFolderDto } from "../dto/add";
+
 export interface IWorkspaceFolderRepository {
-  add: (
-    userId: string,
-    payload: { name: string; workspaceId: string },
-  ) => Promise<unknown>;
+  add: (userId: string, payload: AddWorkspaceFolderDto) => Promise<unknown>;
 }
