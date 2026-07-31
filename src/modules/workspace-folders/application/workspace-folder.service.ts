@@ -11,4 +11,12 @@ export class WorkspaceFolderService {
   add(userId: string, payload: AddWorkspaceFolderDto) {
     return this.workspaceFolderRepository.add(userId, payload);
   }
+
+  findAllByWorkspace(workspaceId: string) {
+    return this.workspaceFolderRepository.findAllByWorkspace(workspaceId);
+  }
+
+  deleteOne(folderId: string) {
+    return this.workspaceFolderRepository.deleteOne(folderId);
+  }
 }

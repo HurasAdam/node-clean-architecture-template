@@ -15,6 +15,13 @@ export function createWorkspaceFolderRoutes(container: Container) {
   const router = Router();
 
   router.post("/", container.workspaceFolder.controller.add);
+  // Get folders assigned to workspace
+  router.get(
+    "/workspace/:workspaceId",
+    container.workspaceFolder.controller.findAllByWorkspace,
+  );
+
+  router.delete("/", container.workspaceFolder.controller.deleteOne);
 
   return router;
 }
