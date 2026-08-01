@@ -16,6 +16,7 @@ import { createTagModule } from "../modules/tags/tag.module";
 import { createUsefullLinkCategoryModule } from "../modules/useful-link-categories/usefullLinkCategory.module";
 import { createUsefullLinkModule } from "../modules/useful-links/usefullLink.module";
 import { createUserModule } from "../modules/users/user.module";
+import { createWorkspaceArticleModule } from "../modules/workspace-articles/workspace-article.module";
 import { createWorkspaceFolderModule } from "../modules/workspace-folders/workspace-folder.module";
 import { createWorkspaceMemberModule } from "../modules/workspace-members/workspace-member.module";
 import { createWorkspaceModule } from "../modules/workspace/workspace.module";
@@ -78,6 +79,10 @@ export function initContainer() {
     workspaceFolderRepository: repositories.workspaceFolderRepository,
   });
 
+  const workspaceArticleModule = createWorkspaceArticleModule({
+    workspaceArticleRepository: repositories.workspaceArticleRepository,
+  });
+
   //
   const authModule = createAuthModule({
     userRepository: repositories.userRepository,
@@ -118,6 +123,7 @@ export function initContainer() {
     workspace: workspaceModule,
     workspaceMember: workspaceMemberModule,
     workspaceFolder: workspaceFolderModule,
+    workspaceArticle: workspaceArticleModule,
   };
 }
 
