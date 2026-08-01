@@ -21,7 +21,9 @@ export function createWorkspaceFolderRoutes(container: Container) {
     container.workspaceFolder.controller.findAllByWorkspace,
   );
 
-  router.delete("/", container.workspaceFolder.controller.deleteOne);
+  router.patch("/:folderId", container.workspaceFolder.controller.updateOne);
+
+  router.delete("/:folderId", container.workspaceFolder.controller.deleteOne);
 
   return router;
 }

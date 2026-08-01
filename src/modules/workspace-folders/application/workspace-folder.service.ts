@@ -1,5 +1,6 @@
 import { IWorkspaceFolderRepository } from "../domain/repository.interface";
 import { AddWorkspaceFolderDto } from "../dto/add";
+import { UpdateWorkspaceFolderDto } from "../dto/update";
 
 export class WorkspaceFolderService {
   private workspaceFolderRepository: IWorkspaceFolderRepository;
@@ -14,6 +15,10 @@ export class WorkspaceFolderService {
 
   findAllByWorkspace(workspaceId: string) {
     return this.workspaceFolderRepository.findAllByWorkspace(workspaceId);
+  }
+
+  updateOne(folderId: string, payload: UpdateWorkspaceFolderDto) {
+    return this.workspaceFolderRepository.updateOne(folderId, payload);
   }
 
   deleteOne(folderId: string) {

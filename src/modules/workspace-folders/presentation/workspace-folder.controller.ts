@@ -24,6 +24,14 @@ export class WorkspaceFolderController {
     return res.status(OK).json(serviceResponse);
   });
 
+  updateOne = catchErrors(async (req, res) => {
+    const { folderId } = req.params;
+    const payload = req.body;
+    await this.workspaceFolderService.updateOne(folderId, payload);
+
+    return res.sendStatus(NO_CONTENT);
+  });
+
   deleteOne = catchErrors(async (req, res) => {
     const { folderId } = req.params;
 
