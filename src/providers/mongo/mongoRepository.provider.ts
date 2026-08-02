@@ -23,6 +23,8 @@ import UsefullLinkModel from "../../modules/useful-links/infrastructure/mongoose
 import { UsefullLinkRepository } from "../../modules/useful-links/infrastructure/mongoose/usefullLink.repository";
 import UserModel from "../../modules/users/infrastructure/mongoose/user.model";
 import { UserRepository } from "../../modules/users/infrastructure/mongoose/user.repository";
+import { WorkspaceArticleResponseVariantModel } from "../../modules/workspace-article-response-variants/infrastructure/models/mongo";
+import { WorkspaceArticleResponseVariantRepository } from "../../modules/workspace-article-response-variants/infrastructure/repositories/mongo";
 import { WorkspaceArticleModel } from "../../modules/workspace-articles/infrastructure/models/mongo";
 import { WorkspaceArticleRepository } from "../../modules/workspace-articles/infrastructure/repositories/mongo";
 import { WorkspaceFolderModel } from "../../modules/workspace-folders/infrastructure/models/mongo";
@@ -61,5 +63,10 @@ export function createMongoRepositoryProvider(): IRepositoryProvider {
     workspaceArticleRepository: new WorkspaceArticleRepository(
       WorkspaceArticleModel,
     ),
+
+    workspaceArticleResponseVariantRepository:
+      new WorkspaceArticleResponseVariantRepository(
+        WorkspaceArticleResponseVariantModel,
+      ),
   };
 }

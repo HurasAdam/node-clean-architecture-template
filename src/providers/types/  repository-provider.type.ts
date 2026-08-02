@@ -8,6 +8,7 @@ import { ITagRepository } from "../../modules/tags/domain/tag.repository.interfa
 import { IUsefullLinkCategoryRepository } from "../../modules/useful-link-categories/domain/usefullLinkCategory.repository.interface";
 import { IUsefullLinkRepository } from "../../modules/useful-links/domain/usefullLink.repository.interface";
 import { IUserRepository } from "../../modules/users/domain/user.repository.interface";
+import { IWorkspaceArticleResponseVariantRepository } from "../../modules/workspace-article-response-variants/domain/repository.interface";
 import { IWorkspaceArticleRepository } from "../../modules/workspace-articles/domain/repository.interface";
 import { IWorkspaceFolderRepository } from "../../modules/workspace-folders/domain/repository.interface";
 import { IWorkspaceMemberRepository } from "../../modules/workspace-members/domain/repository.interface";
@@ -28,4 +29,5 @@ export interface IRepositoryProvider {
   workspaceMemberRepository: IWorkspaceMemberRepository;
   workspaceFolderRepository: IWorkspaceFolderRepository;
   workspaceArticleRepository: IWorkspaceArticleRepository;
+  workspaceArticleResponseVariantRepository: IWorkspaceArticleResponseVariantRepository;
 }

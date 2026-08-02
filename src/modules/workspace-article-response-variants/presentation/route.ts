@@ -8,13 +8,13 @@ import { Container } from "../../../app/initContainer";
 
 /**
  * prefix
- * /workspace-articles
+ * /workspace-article-response-variants
  */
 
-export function createWorkspaceArticleRoutes(container: Container) {
+export const createWorkspaceArticleResponseVariantRoutes = (
+  container: Container,
+) => {
   const router = Router();
 
-  router.post("/", container.workspaceArticle.controller.add);
-
   return router;
-}
+};
