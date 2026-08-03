@@ -82,6 +82,8 @@ export function initContainer() {
 
   const workspaceArticleModule = createWorkspaceArticleModule({
     workspaceArticleRepository: repositories.workspaceArticleRepository,
+    workspaceArticleResponseVariantRepository:
+      repositories.workspaceArticleResponseVariantRepository,
   });
 
   const workspaceArticleResponseVariantModule =
