@@ -30,4 +30,29 @@ export class WorkspaceArticleRepository implements IWorkspaceArticleRepository {
 
     return this.toDomain(document);
   }
+
+  async findOne(
+    articleId: string,
+    workspaceId: string,
+  ): Promise<WorkspaceArticleEntity | null> {
+    const doc = await this.model.findById({
+      _id: articleId,
+      workspaceId,
+    });
+    if (!doc) return null;
+    return this.toDomain(doc);
+  }
+
+  async findByFolder(
+    userId: string,
+    workspaceId: string,
+    folderId: string,
+  ): Promise<WorkspaceArticleEntity[]> {
+    const documents = await this.model.find({
+      workspaceId,
+      folderId,
+    });
+
+    return documents.map((doc) => this.toDomain(doc));
+  }
 }

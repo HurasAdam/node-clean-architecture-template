@@ -15,6 +15,14 @@ export function createWorkspaceArticleRoutes(container: Container) {
   const router = Router();
 
   router.post("/", container.workspaceArticle.controller.add);
+  router.get(
+    "/:workspaceId/articles/:articleId",
+    container.workspaceArticle.controller.findOne,
+  );
+  router.get(
+    "/:workspaceId/folders/:folderId/articles",
+    container.workspaceArticle.controller.findByFolder,
+  );
 
   return router;
 }

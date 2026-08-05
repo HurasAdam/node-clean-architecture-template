@@ -35,4 +35,16 @@ export class WorkspaceArticleService {
 
     return article;
   }
+
+  findOne(userId: string, workspaceId: string, articleId: string) {
+    return this.workspaceArticleRepository.findOne(articleId, workspaceId);
+  }
+
+  findByFolder(userId: string, workspaceId: string, folderId: string) {
+    return this.workspaceArticleRepository.findByFolder(
+      userId,
+      workspaceId,
+      folderId,
+    );
+  }
 }
