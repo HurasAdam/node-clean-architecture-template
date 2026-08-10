@@ -10,4 +10,8 @@ export interface IWorkspaceArticleResponseVariantRepository {
       order: number;
     },
   ): Promise<WorkspaceArticleResponseVariantEntity>;
+
+  findAllByArticleId: (
+    workspaceArticleId: string,
+  ) => Promise<WorkspaceArticleResponseVariantEntity[]>;
 }

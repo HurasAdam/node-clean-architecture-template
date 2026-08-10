@@ -84,6 +84,8 @@ export function initContainer() {
     workspaceArticleRepository: repositories.workspaceArticleRepository,
     workspaceArticleResponseVariantRepository:
       repositories.workspaceArticleResponseVariantRepository,
+    workspaceFolderRepository: repositories.workspaceFolderRepository,
+    workspaceRepository: repositories.workspaceRepository,
   });
 
   const workspaceArticleResponseVariantModule =

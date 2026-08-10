@@ -4,6 +4,7 @@ import { WorkspaceFolderEntity } from "./workspace-folder.entity";
 
 export interface IWorkspaceFolderRepository {
   add: (userId: string, payload: AddWorkspaceFolderDto) => Promise<unknown>;
+  findOne: (folderId: string) => Promise<WorkspaceFolderEntity | null>;
   findAllByWorkspace: (workspaceId: string) => Promise<unknown>;
   updateOne: (
     folderId: string,

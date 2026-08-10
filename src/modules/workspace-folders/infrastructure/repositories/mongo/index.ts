@@ -24,6 +24,12 @@ export class workspaceFolderRepository implements IWorkspaceFolderRepository {
     return this.model.create({ ...payload, createdBy: userId });
   }
 
+  async findOne(folderId: string): Promise<WorkspaceFolderEntity | null> {
+    const doc = await this.model.findById(folderId);
+    if (!doc) return null;
+    return this.toDomain(doc);
+  }
+
   async findAllByWorkspace(workspaceId: string) {
     const docs = await this.model.find({ workspaceId });
     return docs.map((doc) => this.toDomain(doc));

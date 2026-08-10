@@ -44,4 +44,9 @@ export class WorkspaceArticleResponseVariantRepository {
 
     return this.toDomain(document);
   }
+
+  async findAllByArticleId(workspaceArticleId: string) {
+    const docs = await this.model.find({ articleId: workspaceArticleId });
+    return docs.map((doc) => this.toDomain(doc));
+  }
 }
