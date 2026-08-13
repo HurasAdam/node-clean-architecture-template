@@ -45,6 +45,10 @@ export class WorkspaceArticleController {
 
     return res
       .status(OK)
-      .json(serviceResponse.map(WorkspaceArticleMapper.toListItemDto));
+      .json(
+        serviceResponse.map((article) =>
+          WorkspaceArticleMapper.toListItemDto(article),
+        ),
+      );
   });
 }

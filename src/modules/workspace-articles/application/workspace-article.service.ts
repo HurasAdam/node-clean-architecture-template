@@ -1,5 +1,6 @@
 import { NOT_FOUND } from "../../../constants/http";
 import appAssert from "../../../utils/appAssert";
+import { IUserRepository } from "../../users/domain/user.repository.interface";
 import { IWorkspaceArticleResponseVariantRepository } from "../../workspace-article-response-variants/domain/repository.interface";
 import { IWorkspaceFolderRepository } from "../../workspace-folders/domain/repository.interface";
 import { IWorkspaceRepository } from "../../workspace/domain/repository.interface";
@@ -10,18 +11,21 @@ export class WorkspaceArticleService {
   private workspaceArticleResponseVariantRepository: IWorkspaceArticleResponseVariantRepository;
   private workspaceFolderRepository: IWorkspaceFolderRepository;
   private workspaceRepository: IWorkspaceRepository;
+  private userRepository: IUserRepository;
 
   constructor(
     workspaceArticleRepository: IWorkspaceArticleRepository,
     workspaceArticleResponseVariantRepository: IWorkspaceArticleResponseVariantRepository,
     workspaceFolderRepository: IWorkspaceFolderRepository,
     workspaceRepository: IWorkspaceRepository,
+    userRepository: IUserRepository,
   ) {
     this.workspaceArticleRepository = workspaceArticleRepository;
     this.workspaceArticleResponseVariantRepository =
       workspaceArticleResponseVariantRepository;
     this.workspaceFolderRepository = workspaceFolderRepository;
     this.workspaceRepository = workspaceRepository;
+    this.userRepository = userRepository;
   }
 
   async add(
@@ -79,11 +83,38 @@ export class WorkspaceArticleService {
     };
   }
 
-  findByFolder(userId: string, workspaceId: string, folderId: string) {
-    return this.workspaceArticleRepository.findByFolder(
+  async findByFolder(userId: string, workspaceId: string, folderId: string) {
+    const articles = await this.workspaceArticleRepository.findByFolder(
       userId,
       workspaceId,
       folderId,
     );
+
+    if (articles.length === 0) {
+      return [];
+    }
+
+    const userIds = [...new Set(articles.map((article) => article.createdBy))];
+
+    console.log("UU", userIds);
+
+    const users = await this.userRepository.findByIds(userIds);
+
+    const usersMap = new Map(users.map((user) => [user.id, user]));
+
+    return articles.map((article) => {
+      const author = usersMap.get(article.createdBy);
+
+      return {
+        ...article,
+        createdBy: author
+          ? {
+              id: author.id,
+              name: author.name,
+              surname: author.surname,
+            }
+          : null,
+      };
+    });
   }
 }

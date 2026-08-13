@@ -11,4 +11,5 @@ export interface IWorkspaceArticleRepository {
     workspaceId: string,
     folderId: string,
   ): Promise<WorkspaceArticleEntity[]>;
+  countByFolder(workspaceId: string, folderId: string): Promise<number>;
 }

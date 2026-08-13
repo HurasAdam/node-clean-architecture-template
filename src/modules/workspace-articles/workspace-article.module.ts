@@ -1,3 +1,4 @@
+import { IUserRepository } from "../users/domain/user.repository.interface";
 import { IWorkspaceArticleResponseVariantRepository } from "../workspace-article-response-variants/domain/repository.interface";
 import { IWorkspaceFolderRepository } from "../workspace-folders/domain/repository.interface";
 import { IWorkspaceRepository } from "../workspace/domain/repository.interface";
@@ -10,6 +11,7 @@ interface Deps {
   workspaceArticleResponseVariantRepository: IWorkspaceArticleResponseVariantRepository;
   workspaceFolderRepository: IWorkspaceFolderRepository;
   workspaceRepository: IWorkspaceRepository;
+  userRepository: IUserRepository;
 }
 
 export function createWorkspaceArticleModule(deps: Deps) {
@@ -18,6 +20,7 @@ export function createWorkspaceArticleModule(deps: Deps) {
     deps.workspaceArticleResponseVariantRepository,
     deps.workspaceFolderRepository,
     deps.workspaceRepository,
+    deps.userRepository,
   );
   const controller = new WorkspaceArticleController(service);
 

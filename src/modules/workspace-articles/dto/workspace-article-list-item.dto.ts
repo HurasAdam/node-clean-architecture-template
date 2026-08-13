@@ -7,6 +7,12 @@ export interface WorkspaceArticleListItemDto {
   id: string;
   title: string;
   marker: string | null;
+  createdAt: Date;
+  createdBy: {
+    id: string;
+    name: string;
+    surname: string;
+  } | null;
 }
 
 export interface WorkspaceArticleDetailsDto {
@@ -36,14 +42,30 @@ export interface WorkspaceArticleDetailsDto {
   createdAt: Date;
 }
 
+type WorkspaceArticleListItemSource = {
+  id: string;
+  title: string;
+  workspaceId: string;
+  folderId: string;
+  marker: string | null;
+  createdAt: Date;
+  createdBy: {
+    id: string;
+    name: string;
+    surname: string;
+  } | null;
+};
+
 export class WorkspaceArticleMapper {
   static toListItemDto(
-    entity: WorkspaceArticleEntity,
+    entity: WorkspaceArticleListItemSource,
   ): WorkspaceArticleListItemDto {
     return {
       id: entity.id,
       title: entity.title,
       marker: entity.marker,
+      createdAt: entity.createdAt,
+      createdBy: entity.createdBy,
     };
   }
 

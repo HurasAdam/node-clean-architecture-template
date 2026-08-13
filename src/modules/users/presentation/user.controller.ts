@@ -12,6 +12,7 @@ export class UserController {
 
   create = catchErrors(async ({ body }, res) => {
     const payload = createUserDto.parse(body);
+
     await this.service.create(payload);
     return res.sendStatus(201);
   });

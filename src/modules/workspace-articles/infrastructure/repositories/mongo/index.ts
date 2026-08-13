@@ -55,4 +55,11 @@ export class WorkspaceArticleRepository implements IWorkspaceArticleRepository {
 
     return documents.map((doc) => this.toDomain(doc));
   }
+
+  async countByFolder(workspaceId: string, folderId: string): Promise<number> {
+    return this.model.countDocuments({
+      workspaceId,
+      folderId,
+    });
+  }
 }

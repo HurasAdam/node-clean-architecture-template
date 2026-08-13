@@ -6,6 +6,7 @@ export const WORKSPACE_FOLDER_COLORS = [
   "emerald",
   "violet",
   "rose",
+  "orange",
   "sky",
 ] as const;
 
@@ -32,7 +33,7 @@ const workspaceFolderSchema = new Schema<WorkspaceFolderDocument>(
     description: { type: String, default: "" },
     color: {
       type: String,
-      enum: ["blue", "amber", "emerald", "violet", "rose", "sky"],
+      enum: ["blue", "amber", "emerald", "violet", "rose", "sky", "orange"],
       required: true,
       default: "blue",
     },

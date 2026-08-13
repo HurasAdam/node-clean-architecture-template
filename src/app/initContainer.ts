@@ -33,6 +33,7 @@ export function initContainer() {
   const sessionModule = createSessionModule({
     sessionRepository: repositories.sessionRepository,
   });
+
   const articleModule = createArticleModule({
     articleRepository: repositories.articleRepository,
   });
@@ -78,6 +79,7 @@ export function initContainer() {
 
   const workspaceFolderModule = createWorkspaceFolderModule({
     workspaceFolderRepository: repositories.workspaceFolderRepository,
+    workspaceArticleRepository: repositories.workspaceArticleRepository,
   });
 
   const workspaceArticleModule = createWorkspaceArticleModule({
@@ -86,6 +88,7 @@ export function initContainer() {
       repositories.workspaceArticleResponseVariantRepository,
     workspaceFolderRepository: repositories.workspaceFolderRepository,
     workspaceRepository: repositories.workspaceRepository,
+    userRepository: repositories.userRepository,
   });
 
   const workspaceArticleResponseVariantModule =
