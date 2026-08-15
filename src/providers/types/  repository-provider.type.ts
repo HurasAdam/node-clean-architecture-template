@@ -1,4 +1,5 @@
 import { IArticleRepository } from "../../modules/articles/domain/article.repository.interface";
+import { IContactRegistryRepository } from "../../modules/contactRegistry/domain/repository.interface";
 import { IProductCategoryRepository } from "../../modules/product-categories/domain/product-category.repository.interface";
 import { IProductTopicRepository } from "../../modules/product-topics/domain/product-topic.repository.interface";
 import { IProductRepository } from "../../modules/products/domain/product.repository.interface";
@@ -22,6 +23,7 @@ export interface IRepositoryProvider {
   productRepository: IProductRepository;
   productCategoryRepository: IProductCategoryRepository;
   productTopicRepository: IProductTopicRepository;
+  contactRegistryRepository: IContactRegistryRepository;
   tagRepository: ITagRepository;
   usefullLinkRepository: IUsefullLinkRepository;
   usefullLinkCategoryRepository: IUsefullLinkCategoryRepository;

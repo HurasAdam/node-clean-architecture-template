@@ -44,6 +44,7 @@ export class UsefullLinkService {
         name: link.name,
         url: link.url,
         isFeatured: link.isFeatured,
+        description: link.description,
         category: category
           ? {
               id: category.id,

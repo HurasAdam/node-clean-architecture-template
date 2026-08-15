@@ -5,6 +5,8 @@
 
 import ArticleModel from "../../modules/articles/infrastructure/article.model";
 import { ArticleRepository } from "../../modules/articles/infrastructure/mongoose/article.repository";
+import { ContactRecordModel } from "../../modules/contactRegistry/infrastructure/models/mongo";
+import { ContactRegistryRepository } from "../../modules/contactRegistry/infrastructure/repositories/mongo";
 import { ProductCategoryRepository } from "../../modules/product-categories/infrastructure/mongoose/product-category.repository";
 import ProductCategoryModel from "../../modules/product-categories/infrastructure/product-category.model";
 import { ProductTopicRepository } from "../../modules/product-topics/infrastructure/mongoose/product-topic.repository";
@@ -46,6 +48,9 @@ export function createMongoRepositoryProvider(): IRepositoryProvider {
       ProductCategoryModel,
     ),
     productTopicRepository: new ProductTopicRepository(ProductTopicModel),
+    contactRegistryRepository: new ContactRegistryRepository(
+      ContactRecordModel,
+    ),
     tagRepository: new TagRepository(TagModel),
     usefullLinkRepository: new UsefullLinkRepository(UsefullLinkModel),
     usefullLinkCategoryRepository: new UsefullLinkCategoryRepository(

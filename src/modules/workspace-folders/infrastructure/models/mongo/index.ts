@@ -3,6 +3,7 @@ import { Document, Schema, Types, model } from "mongoose";
 export const WORKSPACE_FOLDER_COLORS = [
   "blue",
   "amber",
+  "teal",
   "emerald",
   "violet",
   "rose",
@@ -33,7 +34,16 @@ const workspaceFolderSchema = new Schema<WorkspaceFolderDocument>(
     description: { type: String, default: "" },
     color: {
       type: String,
-      enum: ["blue", "amber", "emerald", "violet", "rose", "sky", "orange"],
+      enum: [
+        "blue",
+        "amber",
+        "emerald",
+        "violet",
+        "rose",
+        "sky",
+        "orange",
+        "teal",
+      ],
       required: true,
       default: "blue",
     },

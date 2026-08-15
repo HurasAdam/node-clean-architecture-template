@@ -7,6 +7,7 @@ import { AuthMiddleware } from "../middleware/authGuard";
 import { createAdminModule } from "../modules/admin/admin.module";
 import { createArticleModule } from "../modules/articles/article.module";
 import { createAuthModule } from "../modules/auth/auth.module";
+import { createContactRegistryModule } from "../modules/contactRegistry/module";
 import { createProductCategoryModule } from "../modules/product-categories/product-category.module";
 import { createProductTopicModule } from "../modules/product-topics/product-topic.module";
 import { createProductModule } from "../modules/products/product.module";
@@ -48,6 +49,10 @@ export function initContainer() {
   const productCategoryModule = createProductCategoryModule({
     productRepository: repositories.productRepository,
     productCategoryRepository: repositories.productCategoryRepository,
+  });
+
+  const contactRegistryModule = createContactRegistryModule({
+    contactRegistryRepository: repositories.contactRegistryRepository,
   });
 
   const productTopicModule = createProductTopicModule({
@@ -132,6 +137,7 @@ export function initContainer() {
     product: productModule,
     productCategory: productCategoryModule,
     productTopic: productTopicModule,
+    contactRegistry: contactRegistryModule,
     usefullLink: usefullLinkModule,
     usefullLinkCategory: usefullLinkCategoryModule,
     workspace: workspaceModule,

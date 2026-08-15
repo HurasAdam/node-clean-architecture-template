@@ -8,6 +8,7 @@ import { Container } from "../app/initContainer";
 import { createAdminRoutes } from "../modules/admin/presentation/admin.route";
 import { createArticleRoutes } from "../modules/articles/presentation/article.route";
 import { createAuthRoutes } from "../modules/auth/presentation/auth.route";
+import { createContactRegistryRoutes } from "../modules/contactRegistry/presentation/route";
 import { createProductCategoryRoutes } from "../modules/product-categories/presentation/product-category.route";
 import { createProductTopicRoutes } from "../modules/product-topics/presentation/product-topic.route";
 import { createProductRoutes } from "../modules/products/presentation/product.route";
@@ -136,6 +137,16 @@ export function createApiRouter(container: Container) {
     "/product-topics",
     container.authGuard.authenticate,
     createProductTopicRoutes(container),
+  );
+
+  /**
+   * Contact registry
+   */
+
+  router.use(
+    "/contact-registry",
+    container.authGuard.authenticate,
+    createContactRegistryRoutes(container),
   );
 
   /**
