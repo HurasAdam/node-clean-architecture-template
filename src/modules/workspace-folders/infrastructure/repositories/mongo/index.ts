@@ -18,6 +18,7 @@ export class workspaceFolderRepository implements IWorkspaceFolderRepository {
       document.name,
       document.description,
       document.color,
+      document.createdAt,
     );
   }
 

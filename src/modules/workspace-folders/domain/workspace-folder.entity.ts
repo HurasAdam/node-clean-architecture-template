@@ -8,11 +8,19 @@ export class WorkspaceFolderEntity {
   public name: string;
   public description: string;
   public color: string;
+  public createdAt: Date;
 
-  constructor(id: string, name: string, description: string, color: string) {
+  constructor(
+    id: string,
+    name: string,
+    description: string,
+    color: string,
+    createdAt: Date,
+  ) {
     this.id = id;
     this.name = name;
     this.description = description;
     this.color = color;
+    this.createdAt = createdAt;
   }
 }
