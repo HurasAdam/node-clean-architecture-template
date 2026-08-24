@@ -1,13 +1,13 @@
 import { Schema, Types, model } from "mongoose";
 
-export type Marker = "red" | "yellow" | "green" | "blue";
+export type ArticleLabel = "important" | "popular";
 
 export interface WorkspaceArticleDocument extends Document {
   _id: Types.ObjectId;
   title: string;
   workspaceId: Types.ObjectId;
   folderId: Types.ObjectId;
-  marker: Marker | null;
+  label: ArticleLabel | null;
   createdBy: Types.ObjectId;
   updatedBy?: Types.ObjectId;
   createdAt: Date;
@@ -27,9 +27,9 @@ const WorkspaceArticleSchema = new Schema<WorkspaceArticleDocument>(
       ref: "WorkspaceFolder",
       required: true,
     },
-    marker: {
+    label: {
       type: String,
-      enum: ["red", "yellow", "green", "blue"],
+      enum: ["important", "popular"],
       default: null,
     },
     createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },

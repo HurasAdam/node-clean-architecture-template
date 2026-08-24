@@ -16,7 +16,7 @@ export class WorkspaceArticleRepository implements IWorkspaceArticleRepository {
       document.title,
       document.workspaceId.toString(),
       document.folderId.toString(),
-      document.marker,
+      document.label,
       document.createdBy.toString(),
       document.createdAt,
     );
