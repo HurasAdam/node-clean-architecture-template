@@ -55,6 +55,7 @@ export class WorkspaceArticleService {
       articleId,
       workspaceId,
     );
+
     appAssert(article, NOT_FOUND, "Workspace article not found");
     const folder = await this.workspaceFolderRepository.findOne(
       article.folderId,
@@ -73,36 +74,35 @@ export class WorkspaceArticleService {
         article.id,
       );
 
-    console.log(variants);
+    const author = await this.userRepository.findOneById(article.createdBy);
 
     return {
       article,
       folder,
       workspace,
       variants,
+      author,
     };
   }
 
   async findByFolder(userId: string, workspaceId: string, folderId: string) {
+    const folder = await this.workspaceFolderRepository.findOne(folderId);
+
+    appAssert(folder, NOT_FOUND, "Folder not found");
+
     const articles = await this.workspaceArticleRepository.findByFolder(
       userId,
       workspaceId,
       folderId,
     );
 
-    if (articles.length === 0) {
-      return [];
-    }
-
     const userIds = [...new Set(articles.map((article) => article.createdBy))];
-
-    console.log("UU", userIds);
 
     const users = await this.userRepository.findByIds(userIds);
 
     const usersMap = new Map(users.map((user) => [user.id, user]));
 
-    return articles.map((article) => {
+    const mappedArticles = articles.map((article) => {
       const author = usersMap.get(article.createdBy);
 
       return {
@@ -116,5 +116,10 @@ export class WorkspaceArticleService {
           : null,
       };
     });
+
+    return {
+      folder,
+      articles: mappedArticles,
+    };
   }
 }

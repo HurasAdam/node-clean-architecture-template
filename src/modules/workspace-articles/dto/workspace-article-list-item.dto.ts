@@ -1,3 +1,4 @@
+import { User } from "../../users/domain/user.entity";
 import { WorkspaceArticleResponseVariantEntity } from "../../workspace-article-response-variants/domain/entity";
 import { WorkspaceFolderEntity } from "../../workspace-folders/domain/workspace-folder.entity";
 import { WorkspaceEntity } from "../../workspace/domain/workspace.entity";
@@ -6,7 +7,7 @@ import { WorkspaceArticleEntity } from "../domain/workspace-folder.entity";
 export interface WorkspaceArticleListItemDto {
   id: string;
   title: string;
-  marker: string | null;
+  label: string | null;
   createdAt: Date;
   createdBy: {
     id: string;
@@ -15,14 +16,27 @@ export interface WorkspaceArticleListItemDto {
   } | null;
 }
 
+export interface WorkspaceArticleByFolderDto {
+  folder: {
+    id: string;
+    name: string;
+    description: string;
+    color: string;
+    createdAt: Date;
+  };
+
+  articles: WorkspaceArticleListItemDto[];
+}
+
 export interface WorkspaceArticleDetailsDto {
   id: string;
   title: string;
-  marker: string | null;
+  label: string | null;
 
   folder: {
     id: string;
     name: string;
+    color: string;
   };
 
   workspace: {
@@ -31,6 +45,12 @@ export interface WorkspaceArticleDetailsDto {
     labelColor: string;
     iconKey: string;
   };
+
+  createdBy: {
+    id: string;
+    name: string;
+    surname: string;
+  } | null;
 
   variants: {
     id: string;
@@ -47,7 +67,7 @@ type WorkspaceArticleListItemSource = {
   title: string;
   workspaceId: string;
   folderId: string;
-  marker: string | null;
+  label: string | null;
   createdAt: Date;
   createdBy: {
     id: string;
@@ -63,9 +83,26 @@ export class WorkspaceArticleMapper {
     return {
       id: entity.id,
       title: entity.title,
-      marker: entity.marker,
+      label: entity.label,
       createdAt: entity.createdAt,
       createdBy: entity.createdBy,
+    };
+  }
+
+  static toByFolderDto(data: {
+    folder: WorkspaceFolderEntity;
+    articles: WorkspaceArticleListItemSource[];
+  }): WorkspaceArticleByFolderDto {
+    return {
+      folder: {
+        id: data.folder.id,
+        name: data.folder.name,
+        description: data.folder.description,
+        color: data.folder.color,
+        createdAt: data.folder.createdAt,
+      },
+
+      articles: data.articles.map((article) => this.toListItemDto(article)),
     };
   }
 
@@ -74,15 +111,17 @@ export class WorkspaceArticleMapper {
     folder: WorkspaceFolderEntity;
     workspace: WorkspaceEntity;
     variants: WorkspaceArticleResponseVariantEntity[];
+    author: User | null;
   }): WorkspaceArticleDetailsDto {
     return {
       id: data.article.id,
       title: data.article.title,
-      marker: data.article.marker,
+      label: data.article.label,
 
       folder: {
         id: data.folder.id,
         name: data.folder.name,
+        color: data.folder.color,
       },
 
       workspace: {
@@ -91,6 +130,14 @@ export class WorkspaceArticleMapper {
         labelColor: data.workspace.labelColor,
         iconKey: data.workspace.iconKey,
       },
+
+      createdBy: data.author
+        ? {
+            id: data.author.id,
+            name: data.author.name,
+            surname: data.author.surname,
+          }
+        : null,
 
       variants: data.variants.map((variant) => ({
         id: variant.id,
