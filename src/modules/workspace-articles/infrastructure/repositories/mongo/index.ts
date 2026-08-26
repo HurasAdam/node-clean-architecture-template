@@ -35,10 +35,16 @@ export class WorkspaceArticleRepository implements IWorkspaceArticleRepository {
     articleId: string,
     workspaceId: string,
   ): Promise<WorkspaceArticleEntity | null> {
-    const doc = await this.model.findById({
+    const doc = await this.model.findOne({
       _id: articleId,
       workspaceId,
     });
+    if (!doc) return null;
+    return this.toDomain(doc);
+  }
+
+  async findById(articleId: string) {
+    const doc = await this.model.findById(articleId);
     if (!doc) return null;
     return this.toDomain(doc);
   }

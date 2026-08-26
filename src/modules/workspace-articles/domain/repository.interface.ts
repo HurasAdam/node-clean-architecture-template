@@ -6,6 +6,8 @@ export interface IWorkspaceArticleRepository {
     articleId: string,
     workspaceId: string,
   ): Promise<WorkspaceArticleEntity | null>;
+
+  findById(articleId: string): Promise<WorkspaceArticleEntity | null>;
   findByFolder(
     userId: string,
     workspaceId: string,
