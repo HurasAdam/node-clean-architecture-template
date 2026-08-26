@@ -100,6 +100,7 @@ export function initContainer() {
     createWorkspaceArticleResponseVariantModule({
       workspaceArticleResponseVariantRepository:
         repositories.workspaceArticleResponseVariantRepository,
+      workspaceArticleRepository: repositories.workspaceArticleRepository,
     });
 
   //

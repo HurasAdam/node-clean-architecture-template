@@ -16,5 +16,7 @@ export const createWorkspaceArticleResponseVariantRoutes = (
 ) => {
   const router = Router();
 
+  router.post("/", container.workspaceArticleResponseVariant.controller.add);
+
   return router;
 };
