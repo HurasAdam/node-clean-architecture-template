@@ -21,6 +21,10 @@ export const createWorkspaceArticleResponseVariantRoutes = (
     "/:responseVariantId",
     container.workspaceArticleResponseVariant.controller.updateOne,
   );
+  router.delete(
+    "/:responseVariantId",
+    container.workspaceArticleResponseVariant.controller.deleteOne,
+  );
 
   return router;
 };

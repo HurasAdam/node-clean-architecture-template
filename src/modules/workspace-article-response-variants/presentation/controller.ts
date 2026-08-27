@@ -34,4 +34,14 @@ export class WorkspaceArticleResponseVariantController {
 
     return res.sendStatus(NO_CONTENT);
   });
+
+  deleteOne = catchErrors(async (req, res) => {
+    const { responseVariantId } = req.params;
+
+    await this.workspceArticleResponseVariantService.deleteOne(
+      responseVariantId,
+    );
+
+    return res.sendStatus(NO_CONTENT);
+  });
 }

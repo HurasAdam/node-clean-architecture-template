@@ -65,4 +65,28 @@ export class WorkspaceArticleResponseVariantService {
       userId,
     );
   }
+
+  async deleteOne(responseVariantId: string) {
+    const responseVariant =
+      await this.workspaceArticleResponseVariantRepository.findById(
+        responseVariantId,
+      );
+
+    appAssert(responseVariant, NOT_FOUND, "Response variant not found");
+
+    const variantsCount =
+      await this.workspaceArticleResponseVariantRepository.findAllByArticleId(
+        responseVariant.articleId,
+      );
+
+    appAssert(
+      variantsCount.length > 1,
+      CONFLICT,
+      "Article must have at least one response variant",
+    );
+
+    return this.workspaceArticleResponseVariantRepository.deleteOne(
+      responseVariantId,
+    );
+  }
 }

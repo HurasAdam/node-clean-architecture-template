@@ -30,4 +30,8 @@ export interface IWorkspaceArticleResponseVariantRepository {
     responseVariantName: string,
     excludeResponseVariantId?: string,
   ): Promise<WorkspaceArticleResponseVariantEntity | null>;
+
+  deleteOne: (
+    responseVariantId: string,
+  ) => Promise<WorkspaceArticleResponseVariantEntity | null>;
 }

@@ -83,4 +83,10 @@ export class WorkspaceArticleResponseVariantRepository implements IWorkspaceArti
 
     return this.toDomain(doc);
   }
+
+  async deleteOne(responseVariantId: string) {
+    const doc = await this.model.findByIdAndDelete(responseVariantId);
+    if (!doc) return null;
+    return this.toDomain(doc);
+  }
 }
