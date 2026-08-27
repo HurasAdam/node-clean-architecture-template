@@ -14,4 +14,20 @@ export interface IWorkspaceArticleResponseVariantRepository {
   findAllByArticleId: (
     workspaceArticleId: string,
   ) => Promise<WorkspaceArticleResponseVariantEntity[]>;
+
+  findById: (
+    responseVariantId: string,
+  ) => Promise<WorkspaceArticleResponseVariantEntity | null>;
+
+  updateOne: (
+    responseVariantId: string,
+    payload: {},
+    userId: string,
+  ) => Promise<WorkspaceArticleResponseVariantEntity | null>;
+
+  findByArticleIdAndVariantName(
+    workspaceArticleId: string,
+    responseVariantName: string,
+    excludeResponseVariantId?: string,
+  ): Promise<WorkspaceArticleResponseVariantEntity | null>;
 }

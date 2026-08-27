@@ -79,7 +79,7 @@ export class AuthService {
 
   async logout(token: string) {
     const { payload } = verifyToken(token || "");
-    console.log(payload);
+
     if (payload) {
       return await this.sessionRepository.deleteOne(
         payload.sessionId.toString(),

@@ -23,9 +23,6 @@ export class WorkspaceFolderService {
     const folders =
       await this.workspaceFolderRepository.findAllByWorkspace(workspaceId);
 
-    console.log("workspaceId:", workspaceId);
-    console.log("folders:", folders);
-
     const result = await Promise.all(
       folders.map(async (folder) => {
         const articleCount =
@@ -42,8 +39,6 @@ export class WorkspaceFolderService {
         };
       }),
     );
-
-    console.log("result:", result);
 
     return result;
   }

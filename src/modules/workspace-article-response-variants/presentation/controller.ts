@@ -1,4 +1,4 @@
-import { CREATED } from "../../../constants/http";
+import { CREATED, NO_CONTENT } from "../../../constants/http";
 import catchErrors from "../../../utils/catchErrors";
 import { WorkspaceArticleResponseVariantService } from "../application/service";
 
@@ -19,5 +19,19 @@ export class WorkspaceArticleResponseVariantController {
     await this.workspceArticleResponseVariantService.add(userId, payload);
 
     return res.sendStatus(CREATED);
+  });
+
+  updateOne = catchErrors(async (req, res) => {
+    const payload = req.body;
+    const { userId } = req;
+    const { responseVariantId } = req.params;
+
+    await this.workspceArticleResponseVariantService.updateOne(
+      userId,
+      responseVariantId,
+      payload,
+    );
+
+    return res.sendStatus(NO_CONTENT);
   });
 }

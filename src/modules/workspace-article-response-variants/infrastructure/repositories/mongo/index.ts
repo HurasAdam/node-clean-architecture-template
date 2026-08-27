@@ -1,8 +1,9 @@
 import { Model } from "mongoose";
 import { WorkspaceArticleResponseVariantEntity } from "../../../domain/entity";
+import { IWorkspaceArticleResponseVariantRepository } from "../../../domain/repository.interface";
 import { WorkspaceArticleResponseVariantDocument } from "../../models/mongo";
 
-export class WorkspaceArticleResponseVariantRepository {
+export class WorkspaceArticleResponseVariantRepository implements IWorkspaceArticleResponseVariantRepository {
   private model: Model<WorkspaceArticleResponseVariantDocument>;
 
   constructor(model: Model<WorkspaceArticleResponseVariantDocument>) {
@@ -48,5 +49,38 @@ export class WorkspaceArticleResponseVariantRepository {
   async findAllByArticleId(workspaceArticleId: string) {
     const docs = await this.model.find({ articleId: workspaceArticleId });
     return docs.map((doc) => this.toDomain(doc));
+  }
+
+  async findById(responseVariantId: string) {
+    const doc = await this.model.findById(responseVariantId);
+    if (!doc) return null;
+    return this.toDomain(doc);
+  }
+
+  async updateOne(responseVariantId: string, payload: {}, userId: string) {
+    const doc = await this.model.findByIdAndUpdate(responseVariantId, payload, {
+      new: true,
+    });
+    if (!doc) return null;
+
+    return this.toDomain(doc);
+  }
+
+  async findByArticleIdAndVariantName(
+    workspaceArticleId: string,
+    variantName: string,
+    excludeResponseVariantId?: string,
+  ) {
+    const doc = await this.model.findOne({
+      articleId: workspaceArticleId,
+      variantName,
+      ...(excludeResponseVariantId && {
+        _id: { $ne: excludeResponseVariantId },
+      }),
+    });
+
+    if (!doc) return null;
+
+    return this.toDomain(doc);
   }
 }
