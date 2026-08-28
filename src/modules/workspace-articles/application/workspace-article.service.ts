@@ -1,10 +1,11 @@
-import { NOT_FOUND } from "../../../constants/http";
+import { BAD_REQUEST, NOT_FOUND } from "../../../constants/http";
 import appAssert from "../../../utils/appAssert";
 import { IUserRepository } from "../../users/domain/user.repository.interface";
 import { IWorkspaceArticleResponseVariantRepository } from "../../workspace-article-response-variants/domain/repository.interface";
 import { IWorkspaceFolderRepository } from "../../workspace-folders/domain/repository.interface";
 import { IWorkspaceRepository } from "../../workspace/domain/repository.interface";
 import { IWorkspaceArticleRepository } from "../domain/repository.interface";
+import { UpdateWorkspaceArticleDto } from "../dto/update";
 
 export class WorkspaceArticleService {
   private workspaceArticleRepository: IWorkspaceArticleRepository;
@@ -121,5 +122,34 @@ export class WorkspaceArticleService {
       folder,
       articles: mappedArticles,
     };
+  }
+
+  async updateOne(
+    workspaceId: string,
+    articleId: string,
+    payload: UpdateWorkspaceArticleDto,
+  ) {
+    const article = await this.workspaceArticleRepository.findOne(
+      articleId,
+      workspaceId,
+    );
+
+    appAssert(article, NOT_FOUND, "Workspace article not found");
+
+    if (payload.folderId) {
+      const folder = await this.workspaceFolderRepository.findOne(
+        payload.folderId,
+      );
+
+      appAssert(folder, NOT_FOUND, "Workspace folder not found");
+
+      appAssert(
+        folder.workspaceId === workspaceId,
+        BAD_REQUEST,
+        "Folder does not belong to this workspace",
+      );
+    }
+
+    return this.workspaceArticleRepository.updateOne(articleId, payload);
   }
 }

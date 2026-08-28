@@ -1,6 +1,7 @@
 import { Model } from "mongoose";
 import { IWorkspaceArticleRepository } from "../../../domain/repository.interface";
 import { WorkspaceArticleEntity } from "../../../domain/workspace-folder.entity";
+import { UpdateWorkspaceArticleDto } from "../../../dto/update";
 import { WorkspaceArticleDocument } from "../../models/mongo";
 
 export class WorkspaceArticleRepository implements IWorkspaceArticleRepository {
@@ -67,5 +68,18 @@ export class WorkspaceArticleRepository implements IWorkspaceArticleRepository {
       workspaceId,
       folderId,
     });
+  }
+
+  async updateOne(
+    articleId: string,
+    payload: UpdateWorkspaceArticleDto,
+  ): Promise<WorkspaceArticleEntity | null> {
+    const doc = await this.model.findByIdAndUpdate(articleId, payload, {
+      new: true,
+    });
+
+    if (!doc) return null;
+
+    return this.toDomain(doc);
   }
 }

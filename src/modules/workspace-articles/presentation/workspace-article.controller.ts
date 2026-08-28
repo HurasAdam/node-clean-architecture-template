@@ -1,7 +1,8 @@
-import { CREATED, NOT_FOUND, OK } from "../../../constants/http";
+import { CREATED, NO_CONTENT, NOT_FOUND, OK } from "../../../constants/http";
 import appAssert from "../../../utils/appAssert";
 import catchErrors from "../../../utils/catchErrors";
 import { WorkspaceArticleService } from "../application/workspace-article.service";
+import { updateWorkspaceArticleDto } from "../dto/update";
 import { WorkspaceArticleMapper } from "../dto/workspace-article-list-item.dto";
 
 export class WorkspaceArticleController {
@@ -46,5 +47,17 @@ export class WorkspaceArticleController {
     return res
       .status(OK)
       .json(WorkspaceArticleMapper.toByFolderDto(serviceResponse));
+  });
+
+  updateOne = catchErrors(async (req, res) => {
+    const payload = updateWorkspaceArticleDto.parse(req.body);
+    const { workspaceId, articleId } = req.params;
+
+    await this.workspaceArticleService.updateOne(
+      workspaceId,
+      articleId,
+      payload,
+    );
+    return res.sendStatus(NO_CONTENT);
   });
 }

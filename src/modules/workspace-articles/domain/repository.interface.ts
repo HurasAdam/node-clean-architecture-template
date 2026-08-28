@@ -1,3 +1,4 @@
+import { UpdateWorkspaceArticleDto } from "../dto/update";
 import { WorkspaceArticleEntity } from "./workspace-folder.entity";
 
 export interface IWorkspaceArticleRepository {
@@ -14,4 +15,9 @@ export interface IWorkspaceArticleRepository {
     folderId: string,
   ): Promise<WorkspaceArticleEntity[]>;
   countByFolder(workspaceId: string, folderId: string): Promise<number>;
+
+  updateOne(
+    articleId: string,
+    payload: UpdateWorkspaceArticleDto,
+  ): Promise<WorkspaceArticleEntity | null>;
 }

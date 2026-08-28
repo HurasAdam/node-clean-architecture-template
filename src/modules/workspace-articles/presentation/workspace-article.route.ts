@@ -24,5 +24,10 @@ export function createWorkspaceArticleRoutes(container: Container) {
     container.workspaceArticle.controller.findByFolder,
   );
 
+  router.patch(
+    "/:workspaceId/articles/:articleId",
+    container.workspaceArticle.controller.updateOne,
+  );
+
   return router;
 }
