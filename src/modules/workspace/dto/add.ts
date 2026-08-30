@@ -10,6 +10,7 @@ export const addWorkspaceDto = z.object({
   description: z.string().max(200).optional(),
   iconKey: z.string(),
   labelColor: z.string(),
+  members: z.array(z.string()).default([]),
 });
 
 export type AddWorkspaceDto = z.infer<typeof addWorkspaceDto>;

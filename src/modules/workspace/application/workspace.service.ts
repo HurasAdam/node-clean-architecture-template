@@ -28,16 +28,20 @@ export class WorkspaceService {
   async add(userId: string, payload: AddWorkspaceDto) {
     const workspace = await this.workspaceRepository.add(userId, payload);
 
-    const users = await this.userRepository.find();
-
-    const members = users.map((user) => ({
+    const members = payload.members.map((memberId) => ({
       workspaceId: workspace.id,
-      userId: user.id,
-      permissions:
-        user.id === userId ? OWNER_PERMISSIONS : DEFAULT_MEMBER_PERMISSIONS,
+      userId: memberId,
+      permissions: DEFAULT_MEMBER_PERMISSIONS,
     }));
 
-    await this.workspaceMemberRepository.addMany(members);
+    await this.workspaceMemberRepository.addMany([
+      {
+        workspaceId: workspace.id,
+        userId,
+        permissions: OWNER_PERMISSIONS,
+      },
+      ...members,
+    ]);
 
     return workspace;
   }
