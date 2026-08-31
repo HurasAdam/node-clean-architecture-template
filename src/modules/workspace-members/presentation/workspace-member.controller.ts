@@ -1,4 +1,4 @@
-import { CREATED, OK } from "../../../constants/http";
+import { CREATED, NO_CONTENT, OK } from "../../../constants/http";
 import catchErrors from "../../../utils/catchErrors";
 import { WorkspaceMemberService } from "../application/workspace-member.service";
 
@@ -22,5 +22,18 @@ export class WorkspaceMemberController {
     const serviceResponse =
       await this.workspaceMemberServicer.findByWorkspaceId(workspaceId);
     return res.status(OK).json(serviceResponse);
+  });
+
+  deleteOne = catchErrors(async (req, res) => {
+    const { workspaceId, memberId } = req.params;
+    const { userId: currentUserId } = req;
+
+    await this.workspaceMemberServicer.deleteOne(
+      workspaceId,
+      currentUserId,
+      memberId,
+    );
+
+    return res.sendStatus(NO_CONTENT);
   });
 }

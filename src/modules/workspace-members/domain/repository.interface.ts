@@ -16,4 +16,11 @@ export interface IWorkspaceMemberRepository {
     userId: string,
     workspaceId: string,
   ) => Promise<WorkspaceMemberEntity | null>;
+
+  findByMemberIdAndWorkspace(
+    memberId: string,
+    workspaceId: string,
+  ): Promise<WorkspaceMemberEntity | null>;
+
+  deleteOne: (memberId: string) => Promise<WorkspaceMemberEntity | null>;
 }

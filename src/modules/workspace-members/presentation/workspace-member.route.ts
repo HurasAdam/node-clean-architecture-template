@@ -20,5 +20,10 @@ export const createWorkspaceMemberRoutes = (container: Container) => {
     container.workspaceMember.controller.findByWorkspaceId,
   );
 
+  router.delete(
+    "/:workspaceId/members/:memberId",
+    container.workspaceMember.controller.deleteOne,
+  );
+
   return router;
 };

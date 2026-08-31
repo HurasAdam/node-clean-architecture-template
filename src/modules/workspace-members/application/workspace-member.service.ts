@@ -1,4 +1,4 @@
-import { NOT_FOUND } from "../../../constants/http";
+import { FORBIDDEN, NOT_FOUND } from "../../../constants/http";
 import appAssert from "../../../utils/appAssert";
 import { IUserRepository } from "../../users/domain/user.repository.interface";
 import { IWorkspaceRepository } from "../../workspace/domain/repository.interface";
@@ -56,5 +56,52 @@ export class WorkspaceMemberService {
         permissions: member.permissions,
       };
     });
+  }
+
+  async deleteOne(
+    workspaceId: string,
+    currentUserId: string,
+    memberId: string,
+  ) {
+    const workspace = await this.workspaceRepository.findOne(workspaceId);
+    appAssert(workspace, NOT_FOUND, "Workspace not found");
+
+    const currentMember =
+      await this.workspaceMemberRepository.findByUserAndWorkspace(
+        currentUserId,
+        workspaceId,
+      );
+
+    appAssert(
+      currentMember,
+      FORBIDDEN,
+      "You do not have access to this workspace",
+    );
+
+    appAssert(
+      currentMember.permissions.removeMember,
+      FORBIDDEN,
+      "You do not have permission to remove workspace members",
+    );
+
+    console.log("MEMBER_ID:", memberId);
+    console.log("WORKSPACE_ID:", workspaceId);
+    const member =
+      await this.workspaceMemberRepository.findByMemberIdAndWorkspace(
+        memberId,
+        workspaceId,
+      );
+
+    console.log("M<", member);
+
+    appAssert(member, NOT_FOUND, "Workspace member not found");
+
+    appAssert(
+      !workspace.isOwner(member.userId),
+      FORBIDDEN,
+      "The workspace owner cannot be removed",
+    );
+
+    await this.workspaceMemberRepository.deleteOne(memberId);
   }
 }

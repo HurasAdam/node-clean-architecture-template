@@ -61,4 +61,26 @@ export class workspaceMemberRepository implements IWorkspaceMemberRepository {
 
     return this.toDomain(workspace);
   }
+
+  async findByMemberIdAndWorkspace(
+    memberId: string,
+    workspaceId: string,
+  ): Promise<WorkspaceMemberEntity | null> {
+    const document = await this.model.findOne({
+      _id: memberId,
+      workspaceId,
+    });
+
+    if (!document) {
+      return null;
+    }
+
+    return this.toDomain(document);
+  }
+
+  async deleteOne(memberId: string) {
+    const doc = await this.model.findByIdAndDelete(memberId);
+    if (!doc) return null;
+    return this.toDomain(doc);
+  }
 }
