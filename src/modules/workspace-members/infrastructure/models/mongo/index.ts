@@ -31,6 +31,18 @@ export const defaultPermissions: WorkspacePermissions = {
   editWorkspace: false,
 };
 
+export const ownerPermissions: WorkspacePermissions = {
+  addFolder: true,
+  editFolder: true,
+  deleteFolder: true,
+  addArticle: true,
+  editArticle: true,
+  deleteArticle: true,
+  addMember: true,
+  removeMember: true,
+  editWorkspace: true,
+};
+
 const memberSchema = new Schema<WorkspaceMemberDocument>(
   {
     userId: {

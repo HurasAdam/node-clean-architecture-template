@@ -55,4 +55,19 @@ export class WorkspaceRepository implements IWorkspaceRepository {
 
     return this.toDomain(doc);
   }
+
+  async updateOwner(
+    workspaceId: string,
+    newOwnerId: string,
+  ): Promise<WorkspaceEntity | null> {
+    const doc = await this.model.findByIdAndUpdate(
+      workspaceId,
+      { $set: { owner: newOwnerId } },
+      { new: true, runValidators: true },
+    );
+
+    if (!doc) return null;
+
+    return this.toDomain(doc);
+  }
 }

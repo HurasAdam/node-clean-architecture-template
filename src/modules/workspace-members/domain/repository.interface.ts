@@ -22,5 +22,10 @@ export interface IWorkspaceMemberRepository {
     workspaceId: string,
   ): Promise<WorkspaceMemberEntity | null>;
 
+  updatePermissions(
+    memberId: string,
+    permissions: WorkspacePermissions,
+  ): Promise<WorkspaceMemberEntity | null>;
+
   deleteOne: (memberId: string) => Promise<WorkspaceMemberEntity | null>;
 }

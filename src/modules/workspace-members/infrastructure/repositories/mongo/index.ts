@@ -83,4 +83,27 @@ export class workspaceMemberRepository implements IWorkspaceMemberRepository {
     if (!doc) return null;
     return this.toDomain(doc);
   }
+
+  async updatePermissions(
+    memberId: string,
+    permissions: WorkspacePermissions,
+  ): Promise<WorkspaceMemberEntity | null> {
+    const document = await this.model.findByIdAndUpdate(
+      memberId,
+      {
+        $set: {
+          permissions,
+        },
+      },
+      {
+        new: true,
+      },
+    );
+
+    if (!document) {
+      return null;
+    }
+
+    return this.toDomain(document);
+  }
 }

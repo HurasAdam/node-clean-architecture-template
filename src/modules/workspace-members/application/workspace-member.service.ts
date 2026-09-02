@@ -1,9 +1,13 @@
-import { FORBIDDEN, NOT_FOUND } from "../../../constants/http";
+import { BAD_REQUEST, FORBIDDEN, NOT_FOUND } from "../../../constants/http";
 import appAssert from "../../../utils/appAssert";
 import { IUserRepository } from "../../users/domain/user.repository.interface";
 import { IWorkspaceRepository } from "../../workspace/domain/repository.interface";
 import { IWorkspaceMemberRepository } from "../domain/repository.interface";
-import { WorkspacePermissions } from "../infrastructure/models/mongo";
+import {
+  defaultPermissions,
+  ownerPermissions,
+  WorkspacePermissions,
+} from "../infrastructure/models/mongo";
 
 export class WorkspaceMemberService {
   private workspaceMemberRepository: IWorkspaceMemberRepository;
@@ -58,6 +62,51 @@ export class WorkspaceMemberService {
     });
   }
 
+  async transferOwnership(
+    workspaceId: string,
+    currentUserId: string,
+    newOwnerId: string,
+  ) {
+    const workspace = await this.workspaceRepository.findOne(workspaceId);
+    appAssert(workspace, NOT_FOUND, "Workspace not found");
+
+    appAssert(
+      workspace.isOwner(currentUserId),
+      FORBIDDEN,
+      "You don't have permissions to perform this action",
+    );
+
+    appAssert(
+      currentUserId !== newOwnerId,
+      BAD_REQUEST,
+      "The new owner must be different from the current owner",
+    );
+
+    const newOwner =
+      await this.workspaceMemberRepository.findByUserAndWorkspace(
+        newOwnerId,
+        workspaceId,
+      );
+
+    appAssert(
+      newOwner,
+      NOT_FOUND,
+      "New owner is not a member of this workspace",
+    );
+
+    await this.workspaceMemberRepository.updatePermissions(
+      newOwnerId,
+      ownerPermissions,
+    );
+
+    await this.workspaceMemberRepository.updatePermissions(
+      currentUserId,
+      defaultPermissions,
+    );
+
+    await this.workspaceRepository.updateOwner(workspaceId, newOwnerId);
+  }
+
   async deleteOne(
     workspaceId: string,
     currentUserId: string,
@@ -84,15 +133,11 @@ export class WorkspaceMemberService {
       "You do not have permission to remove workspace members",
     );
 
-    console.log("MEMBER_ID:", memberId);
-    console.log("WORKSPACE_ID:", workspaceId);
     const member =
       await this.workspaceMemberRepository.findByMemberIdAndWorkspace(
         memberId,
         workspaceId,
       );
-
-    console.log("M<", member);
 
     appAssert(member, NOT_FOUND, "Workspace member not found");
 

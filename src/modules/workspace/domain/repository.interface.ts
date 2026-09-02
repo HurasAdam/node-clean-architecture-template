@@ -10,4 +10,9 @@ export interface IWorkspaceRepository {
     id: string,
     payload: UpdateWorkspaceDto,
   ) => Promise<WorkspaceEntity | null>;
+
+  updateOwner: (
+    workspaceId: string,
+    newOwnerId: string,
+  ) => Promise<WorkspaceEntity | null>;
 }

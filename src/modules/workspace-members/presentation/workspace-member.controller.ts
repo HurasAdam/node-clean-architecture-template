@@ -36,4 +36,17 @@ export class WorkspaceMemberController {
 
     return res.sendStatus(NO_CONTENT);
   });
+
+  transferOwnership = catchErrors(async (req, res) => {
+    const { workspaceId, newOwnerId } = req.params;
+    const { userId: currentUserId } = req;
+
+    await this.workspaceMemberServicer.transferOwnership(
+      workspaceId,
+      currentUserId,
+      newOwnerId,
+    );
+
+    return res.sendStatus(NO_CONTENT);
+  });
 }

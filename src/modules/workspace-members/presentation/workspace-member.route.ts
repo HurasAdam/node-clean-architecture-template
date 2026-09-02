@@ -20,6 +20,11 @@ export const createWorkspaceMemberRoutes = (container: Container) => {
     container.workspaceMember.controller.findByWorkspaceId,
   );
 
+  router.patch(
+    "/:workspaceId/owner/:newOwnerId",
+    container.workspaceMember.controller.transferOwnership,
+  );
+
   router.delete(
     "/:workspaceId/members/:memberId",
     container.workspaceMember.controller.deleteOne,
