@@ -65,9 +65,10 @@ export class WorkspaceMemberService {
   async transferOwnership(
     workspaceId: string,
     currentUserId: string,
-    newOwnerId: string,
+    newOwnerMemberId: string,
   ) {
     const workspace = await this.workspaceRepository.findOne(workspaceId);
+
     appAssert(workspace, NOT_FOUND, "Workspace not found");
 
     appAssert(
@@ -76,15 +77,21 @@ export class WorkspaceMemberService {
       "You don't have permissions to perform this action",
     );
 
+    const currentOwner =
+      await this.workspaceMemberRepository.findByUserAndWorkspace(
+        currentUserId,
+        workspaceId,
+      );
+
     appAssert(
-      currentUserId !== newOwnerId,
-      BAD_REQUEST,
-      "The new owner must be different from the current owner",
+      currentOwner,
+      NOT_FOUND,
+      "Current owner is not a member of this workspace",
     );
 
     const newOwner =
-      await this.workspaceMemberRepository.findByUserAndWorkspace(
-        newOwnerId,
+      await this.workspaceMemberRepository.findByMemberIdAndWorkspace(
+        newOwnerMemberId,
         workspaceId,
       );
 
@@ -94,19 +101,24 @@ export class WorkspaceMemberService {
       "New owner is not a member of this workspace",
     );
 
+    appAssert(
+      currentOwner.id !== newOwner.id,
+      BAD_REQUEST,
+      "The new owner must be different from the current owner",
+    );
+
     await this.workspaceMemberRepository.updatePermissions(
-      newOwnerId,
+      newOwner.id,
       ownerPermissions,
     );
 
     await this.workspaceMemberRepository.updatePermissions(
-      currentUserId,
+      currentOwner.id,
       defaultPermissions,
     );
 
-    await this.workspaceRepository.updateOwner(workspaceId, newOwnerId);
+    await this.workspaceRepository.updateOwner(workspaceId, newOwner.userId);
   }
-
   async deleteOne(
     workspaceId: string,
     currentUserId: string,
