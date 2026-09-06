@@ -161,4 +161,52 @@ export class WorkspaceMemberService {
 
     await this.workspaceMemberRepository.deleteOne(memberId);
   }
+
+  async updatePermissions(
+    workspaceId: string,
+    currentUserId: string,
+    memberId: string,
+    permissions: WorkspacePermissions,
+  ) {
+    const workspace = await this.workspaceRepository.findOne(workspaceId);
+
+    appAssert(workspace, NOT_FOUND, "Workspace not found");
+
+    appAssert(
+      workspace.isOwner(currentUserId),
+      FORBIDDEN,
+      "You don't have permissions to perform this action",
+    );
+
+    const currentMember =
+      await this.workspaceMemberRepository.findByUserAndWorkspace(
+        currentUserId,
+        workspaceId,
+      );
+
+    appAssert(
+      currentMember,
+      FORBIDDEN,
+      "You do not have access to this workspace",
+    );
+
+    const member =
+      await this.workspaceMemberRepository.findByMemberIdAndWorkspace(
+        memberId,
+        workspaceId,
+      );
+
+    appAssert(member, NOT_FOUND, "Workspace member not found");
+
+    appAssert(
+      !workspace.isOwner(member.userId),
+      FORBIDDEN,
+      "The workspace owner permissions cannot be changed",
+    );
+
+    await this.workspaceMemberRepository.updatePermissions(
+      memberId,
+      permissions,
+    );
+  }
 }

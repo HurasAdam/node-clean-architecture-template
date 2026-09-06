@@ -25,6 +25,11 @@ export const createWorkspaceMemberRoutes = (container: Container) => {
     container.workspaceMember.controller.transferOwnership,
   );
 
+  router.patch(
+    "/:workspaceId/members/:memberId/permissions",
+    container.workspaceMember.controller.updatePermissions,
+  );
+
   router.delete(
     "/:workspaceId/members/:memberId",
     container.workspaceMember.controller.deleteOne,

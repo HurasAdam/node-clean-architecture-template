@@ -1,6 +1,7 @@
 import { CREATED, NO_CONTENT, OK } from "../../../constants/http";
 import catchErrors from "../../../utils/catchErrors";
 import { WorkspaceMemberService } from "../application/workspace-member.service";
+import { updateWorkspaceMemberPermissionsDto } from "../dto/updatePermissions";
 
 export class WorkspaceMemberController {
   private workspaceMemberServicer: WorkspaceMemberService;
@@ -24,19 +25,6 @@ export class WorkspaceMemberController {
     return res.status(OK).json(serviceResponse);
   });
 
-  deleteOne = catchErrors(async (req, res) => {
-    const { workspaceId, memberId } = req.params;
-    const { userId: currentUserId } = req;
-
-    await this.workspaceMemberServicer.deleteOne(
-      workspaceId,
-      currentUserId,
-      memberId,
-    );
-
-    return res.sendStatus(NO_CONTENT);
-  });
-
   transferOwnership = catchErrors(async (req, res) => {
     const { workspaceId, newOwnerId } = req.params;
     const { userId: currentUserId } = req;
@@ -45,6 +33,33 @@ export class WorkspaceMemberController {
       workspaceId,
       currentUserId,
       newOwnerId,
+    );
+
+    return res.sendStatus(NO_CONTENT);
+  });
+
+  updatePermissions = catchErrors(async (req, res) => {
+    const { workspaceId, memberId } = req.params;
+    const { userId: currentUserId } = req;
+    const { permissions } = updateWorkspaceMemberPermissionsDto.parse(req.body);
+
+    await this.workspaceMemberServicer.updatePermissions(
+      workspaceId,
+      currentUserId,
+      memberId,
+      permissions,
+    );
+    return res.sendStatus(NO_CONTENT);
+  });
+
+  deleteOne = catchErrors(async (req, res) => {
+    const { workspaceId, memberId } = req.params;
+    const { userId: currentUserId } = req;
+
+    await this.workspaceMemberServicer.deleteOne(
+      workspaceId,
+      currentUserId,
+      memberId,
     );
 
     return res.sendStatus(NO_CONTENT);
