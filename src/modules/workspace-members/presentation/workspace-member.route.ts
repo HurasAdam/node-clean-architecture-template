@@ -20,6 +20,11 @@ export const createWorkspaceMemberRoutes = (container: Container) => {
     container.workspaceMember.controller.findByWorkspaceId,
   );
 
+  router.get(
+    "/:workspaceId/members/available",
+    container.workspaceMember.controller.findAvailableByWorkspaceId,
+  );
+
   router.patch(
     "/:workspaceId/owner/:newOwnerId",
     container.workspaceMember.controller.transferOwnership,

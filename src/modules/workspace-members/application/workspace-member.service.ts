@@ -1,5 +1,6 @@
 import { BAD_REQUEST, FORBIDDEN, NOT_FOUND } from "../../../constants/http";
 import appAssert from "../../../utils/appAssert";
+import { IRoleRepository } from "../../roles/domain/role.repository.interface";
 import { IUserRepository } from "../../users/domain/user.repository.interface";
 import { IWorkspaceRepository } from "../../workspace/domain/repository.interface";
 import { IWorkspaceMemberRepository } from "../domain/repository.interface";
@@ -12,24 +13,33 @@ import {
 export class WorkspaceMemberService {
   private workspaceMemberRepository: IWorkspaceMemberRepository;
   private userRepository: IUserRepository;
+  private roleRepository: IRoleRepository;
   private workspaceRepository: IWorkspaceRepository;
   constructor(
     workspaceMemberRepository: IWorkspaceMemberRepository,
     userRepository: IUserRepository,
+    roleRepository: IRoleRepository,
     workspaceRepository: IWorkspaceRepository,
   ) {
     this.workspaceMemberRepository = workspaceMemberRepository;
     this.userRepository = userRepository;
+    this.roleRepository = roleRepository;
     this.workspaceRepository = workspaceRepository;
   }
 
-  addMany(
-    payload: {
-      workspaceId: string;
-      userId: string;
-      permissions: WorkspacePermissions;
-    }[],
-  ) {
+  async addMany({
+    workspaceId,
+    userIds,
+  }: {
+    workspaceId: string;
+    userIds: string[];
+  }) {
+    const payload = userIds.map((userId) => ({
+      workspaceId,
+      userId,
+      permissions: defaultPermissions,
+    }));
+
     return this.workspaceMemberRepository.addMany(payload);
   }
 
@@ -60,6 +70,24 @@ export class WorkspaceMemberService {
         permissions: member.permissions,
       };
     });
+  }
+
+  async findAvailableByWorkspaceId(workspaceId: string) {
+    const [workspace, members] = await Promise.all([
+      this.workspaceRepository.findOne(workspaceId),
+      this.workspaceMemberRepository.findByWorkspaceId(workspaceId),
+    ]);
+    const memberUserIds = members.map((member) => member.userId);
+
+    const users = await this.userRepository.find();
+
+    const adminRole = await this.roleRepository.findOneByName("ADMIN");
+
+    const availableWorkspaceCandidates = users.filter(
+      (user) => !memberUserIds.includes(user.id) && user.role !== adminRole?.id,
+    );
+
+    return availableWorkspaceCandidates;
   }
 
   async transferOwnership(

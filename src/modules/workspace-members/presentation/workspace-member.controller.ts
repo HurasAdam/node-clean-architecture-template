@@ -2,6 +2,7 @@ import { CREATED, NO_CONTENT, OK } from "../../../constants/http";
 import catchErrors from "../../../utils/catchErrors";
 import { WorkspaceMemberService } from "../application/workspace-member.service";
 import { updateWorkspaceMemberPermissionsDto } from "../dto/updatePermissions";
+import { WorkspaceMemberMapper } from "../dto/workspaceMemberMapper";
 
 export class WorkspaceMemberController {
   private workspaceMemberServicer: WorkspaceMemberService;
@@ -23,6 +24,19 @@ export class WorkspaceMemberController {
     const serviceResponse =
       await this.workspaceMemberServicer.findByWorkspaceId(workspaceId);
     return res.status(OK).json(serviceResponse);
+  });
+
+  findAvailableByWorkspaceId = catchErrors(async (req, res) => {
+    const { workspaceId } = req.params;
+
+    const serviceResponse =
+      await this.workspaceMemberServicer.findAvailableByWorkspaceId(
+        workspaceId,
+      );
+
+    return res
+      .status(OK)
+      .json(WorkspaceMemberMapper.toAvailableListDto(serviceResponse));
   });
 
   transferOwnership = catchErrors(async (req, res) => {

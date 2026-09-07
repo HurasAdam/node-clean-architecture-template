@@ -79,6 +79,7 @@ export function initContainer() {
   const workspaceMemberModule = createWorkspaceMemberModule({
     workspaceMemberRepository: repositories.workspaceMemberRepository,
     userRepository: repositories.userRepository,
+    roleRepository: repositories.roleRepository,
     workspaceRepository: repositories.workspaceRepository,
   });
 
