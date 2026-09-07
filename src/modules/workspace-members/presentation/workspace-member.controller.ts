@@ -12,10 +12,10 @@ export class WorkspaceMemberController {
   }
 
   add = catchErrors(async (req, res) => {
-    const userId = req.userId;
+    const { userId: currentUserId } = req;
     const payload = req.body;
 
-    await this.workspaceMemberServicer.addMany(payload);
+    await this.workspaceMemberServicer.addMany(currentUserId, payload);
     return res.sendStatus(CREATED);
   });
 

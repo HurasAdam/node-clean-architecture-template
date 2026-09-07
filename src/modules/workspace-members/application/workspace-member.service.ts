@@ -27,13 +27,32 @@ export class WorkspaceMemberService {
     this.workspaceRepository = workspaceRepository;
   }
 
-  async addMany({
-    workspaceId,
-    userIds,
-  }: {
-    workspaceId: string;
-    userIds: string[];
-  }) {
+  async addMany(
+    currentUserId: string,
+    {
+      workspaceId,
+      userIds,
+    }: {
+      workspaceId: string;
+      userIds: string[];
+    },
+  ) {
+    const workspace = await this.workspaceRepository.findOne(workspaceId);
+
+    appAssert(workspace, NOT_FOUND, "Workspace not found");
+    const isOwner = workspace.isOwner(currentUserId);
+    const workspaceMember =
+      await this.workspaceMemberRepository.findByUserAndWorkspace(
+        currentUserId,
+        workspaceId,
+      );
+
+    appAssert(
+      isOwner || workspaceMember?.permissions.addMember,
+      FORBIDDEN,
+      "You don't have permissions to perform this action",
+    );
+
     const payload = userIds.map((userId) => ({
       workspaceId,
       userId,
