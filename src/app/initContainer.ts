@@ -84,8 +84,10 @@ export function initContainer() {
   });
 
   const workspaceFolderModule = createWorkspaceFolderModule({
+    workspaceRepository: repositories.workspaceRepository,
     workspaceFolderRepository: repositories.workspaceFolderRepository,
     workspaceArticleRepository: repositories.workspaceArticleRepository,
+    workspaceMemberRepository: repositories.workspaceMemberRepository,
   });
 
   const workspaceArticleModule = createWorkspaceArticleModule({
