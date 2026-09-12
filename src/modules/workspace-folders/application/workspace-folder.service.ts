@@ -84,7 +84,45 @@ export class WorkspaceFolderService {
     return result;
   }
 
-  updateOne(folderId: string, payload: UpdateWorkspaceFolderDto) {
+  async updateOne(
+    currentUserId: string,
+    folderId: string,
+    payload: UpdateWorkspaceFolderDto,
+  ) {
+    const folder = await this.workspaceFolderRepository.findOne(folderId);
+    appAssert(folder, NOT_FOUND, "Folder not found");
+    const workspace = await this.workspaceRepository.findOne(
+      folder.workspaceId,
+    );
+    appAssert(workspace, NOT_FOUND, "Workspace not found");
+
+    const isOwner = workspace.isOwner(currentUserId);
+    const member = await this.workspaceMemberRepository.findByUserAndWorkspace(
+      currentUserId,
+      folder.workspaceId,
+    );
+
+    appAssert(
+      isOwner || member?.permissions.editFolder,
+      FORBIDDEN,
+      "You don't have permissions to perform this action",
+    );
+
+    if (payload.name !== undefined) {
+      const existingFolder =
+        await this.workspaceFolderRepository.findOneByNameAndWorkspaceExcept(
+          folder.workspaceId,
+          payload.name,
+          folderId,
+        );
+
+      appAssert(
+        !existingFolder,
+        CONFLICT,
+        "Folder with this name already exists in this workspace",
+      );
+    }
+
     return this.workspaceFolderRepository.updateOne(folderId, payload);
   }
 

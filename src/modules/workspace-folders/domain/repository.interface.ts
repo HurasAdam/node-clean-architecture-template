@@ -9,6 +9,13 @@ export interface IWorkspaceFolderRepository {
     workspaceId: string,
     name: string,
   ): Promise<WorkspaceFolderEntity | null>;
+
+  findOneByNameAndWorkspaceExcept(
+    workspaceId: string,
+    name: string,
+    folderId: string,
+  ): Promise<WorkspaceFolderEntity | null>;
+
   findAllByWorkspace: (workspaceId: string) => Promise<WorkspaceFolderEntity[]>;
   updateOne: (
     folderId: string,

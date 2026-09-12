@@ -47,6 +47,22 @@ export class workspaceFolderRepository implements IWorkspaceFolderRepository {
     return this.toDomain(doc);
   }
 
+  async findOneByNameAndWorkspaceExcept(
+    workspaceId: string,
+    name: string,
+    folderId: string,
+  ): Promise<WorkspaceFolderEntity | null> {
+    const folder = await this.model.findOne({
+      workspaceId,
+      name,
+      _id: { $ne: folderId },
+    });
+
+    if (!folder) return null;
+
+    return this.toDomain(folder);
+  }
+
   async findAllByWorkspace(workspaceId: string) {
     const docs = await this.model.find({ workspaceId });
     return docs.map((doc) => this.toDomain(doc));
