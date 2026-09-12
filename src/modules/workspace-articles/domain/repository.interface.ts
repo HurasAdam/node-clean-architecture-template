@@ -20,6 +20,12 @@ export interface IWorkspaceArticleRepository {
     title: string,
   ): Promise<WorkspaceArticleEntity | null>;
 
+  findOneByTitleAndFolderExcept(
+    folderId: string,
+    title: string,
+    articleId: string,
+  ): Promise<WorkspaceArticleEntity | null>;
+
   countByFolder(workspaceId: string, folderId: string): Promise<number>;
 
   updateOne(

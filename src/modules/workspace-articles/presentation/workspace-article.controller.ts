@@ -51,9 +51,11 @@ export class WorkspaceArticleController {
 
   updateOne = catchErrors(async (req, res) => {
     const payload = updateWorkspaceArticleDto.parse(req.body);
+    const { userId: currentUserId } = req;
     const { workspaceId, articleId } = req.params;
 
     await this.workspaceArticleService.updateOne(
+      currentUserId,
       workspaceId,
       articleId,
       payload,

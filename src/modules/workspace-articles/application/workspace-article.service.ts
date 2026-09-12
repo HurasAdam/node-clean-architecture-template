@@ -1,9 +1,4 @@
-import {
-  BAD_REQUEST,
-  CONFLICT,
-  FORBIDDEN,
-  NOT_FOUND,
-} from "../../../constants/http";
+import { CONFLICT, FORBIDDEN, NOT_FOUND } from "../../../constants/http";
 import appAssert from "../../../utils/appAssert";
 import { IUserRepository } from "../../users/domain/user.repository.interface";
 import { IWorkspaceArticleResponseVariantRepository } from "../../workspace-article-response-variants/domain/repository.interface";
@@ -182,16 +177,36 @@ export class WorkspaceArticleService {
   }
 
   async updateOne(
+    currentUserId: string,
     workspaceId: string,
     articleId: string,
     payload: UpdateWorkspaceArticleDto,
   ) {
+    const workspace = await this.workspaceRepository.findOne(workspaceId);
+
+    appAssert(workspace, NOT_FOUND, "Workspace not found");
+
     const article = await this.workspaceArticleRepository.findOne(
       articleId,
       workspaceId,
     );
 
     appAssert(article, NOT_FOUND, "Workspace article not found");
+
+    const member = await this.workspaceMemberRepository.findByUserAndWorkspace(
+      currentUserId,
+      workspaceId,
+    );
+
+    appAssert(member, FORBIDDEN, "You don't have access to this workspace");
+
+    const isOwner = workspace.isOwner(currentUserId);
+
+    appAssert(
+      isOwner || member.permissions.editArticle,
+      FORBIDDEN,
+      "You don't have permission to edit articles",
+    );
 
     if (payload.folderId) {
       const folder = await this.workspaceFolderRepository.findOne(
@@ -202,8 +217,25 @@ export class WorkspaceArticleService {
 
       appAssert(
         folder.workspaceId === workspaceId,
-        BAD_REQUEST,
-        "Folder does not belong to this workspace",
+        NOT_FOUND,
+        "Workspace folder not found",
+      );
+    }
+
+    if (payload.title) {
+      const folderId = payload.folderId ?? article.folderId;
+
+      const existingArticle =
+        await this.workspaceArticleRepository.findOneByTitleAndFolderExcept(
+          folderId,
+          payload.title,
+          articleId,
+        );
+
+      appAssert(
+        !existingArticle,
+        CONFLICT,
+        "Article with this title already exists in this folder",
       );
     }
 
