@@ -96,6 +96,7 @@ export function initContainer() {
       repositories.workspaceArticleResponseVariantRepository,
     workspaceFolderRepository: repositories.workspaceFolderRepository,
     workspaceRepository: repositories.workspaceRepository,
+    workspaceMemberRepository: repositories.workspaceMemberRepository,
     userRepository: repositories.userRepository,
   });
 

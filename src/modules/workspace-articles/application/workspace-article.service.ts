@@ -1,8 +1,14 @@
-import { BAD_REQUEST, NOT_FOUND } from "../../../constants/http";
+import {
+  BAD_REQUEST,
+  CONFLICT,
+  FORBIDDEN,
+  NOT_FOUND,
+} from "../../../constants/http";
 import appAssert from "../../../utils/appAssert";
 import { IUserRepository } from "../../users/domain/user.repository.interface";
 import { IWorkspaceArticleResponseVariantRepository } from "../../workspace-article-response-variants/domain/repository.interface";
 import { IWorkspaceFolderRepository } from "../../workspace-folders/domain/repository.interface";
+import { IWorkspaceMemberRepository } from "../../workspace-members/domain/repository.interface";
 import { IWorkspaceRepository } from "../../workspace/domain/repository.interface";
 import { IWorkspaceArticleRepository } from "../domain/repository.interface";
 import { UpdateWorkspaceArticleDto } from "../dto/update";
@@ -12,6 +18,7 @@ export class WorkspaceArticleService {
   private workspaceArticleResponseVariantRepository: IWorkspaceArticleResponseVariantRepository;
   private workspaceFolderRepository: IWorkspaceFolderRepository;
   private workspaceRepository: IWorkspaceRepository;
+  private workspaceMemberRepository: IWorkspaceMemberRepository;
   private userRepository: IUserRepository;
 
   constructor(
@@ -19,6 +26,7 @@ export class WorkspaceArticleService {
     workspaceArticleResponseVariantRepository: IWorkspaceArticleResponseVariantRepository,
     workspaceFolderRepository: IWorkspaceFolderRepository,
     workspaceRepository: IWorkspaceRepository,
+    workspaceMemberRepository: IWorkspaceMemberRepository,
     userRepository: IUserRepository,
   ) {
     this.workspaceArticleRepository = workspaceArticleRepository;
@@ -26,11 +34,12 @@ export class WorkspaceArticleService {
       workspaceArticleResponseVariantRepository;
     this.workspaceFolderRepository = workspaceFolderRepository;
     this.workspaceRepository = workspaceRepository;
+    this.workspaceMemberRepository = workspaceMemberRepository;
     this.userRepository = userRepository;
   }
 
   async add(
-    userId: string,
+    currentUserId: string,
     payload: {
       title: string;
       folderId: string;
@@ -39,9 +48,57 @@ export class WorkspaceArticleService {
       workspaceId: string;
     },
   ) {
-    const article = await this.workspaceArticleRepository.add(userId, payload);
+    const workspace = await this.workspaceRepository.findOne(
+      payload.workspaceId,
+    );
 
-    await this.workspaceArticleResponseVariantRepository.add(userId, {
+    appAssert(workspace, NOT_FOUND, "Workspace not found");
+
+    const member = await this.workspaceMemberRepository.findByUserAndWorkspace(
+      currentUserId,
+      payload.workspaceId,
+    );
+
+    appAssert(member, FORBIDDEN, "You don't have access to this workspace");
+
+    const isOwner = workspace.isOwner(currentUserId);
+
+    appAssert(
+      isOwner || member.permissions.addArticle,
+      FORBIDDEN,
+      "You don't have permission to add articles",
+    );
+
+    const folder = await this.workspaceFolderRepository.findOne(
+      payload.folderId,
+    );
+
+    appAssert(folder, NOT_FOUND, "Folder not found");
+
+    appAssert(
+      folder.workspaceId === payload.workspaceId,
+      NOT_FOUND,
+      "Folder not found",
+    );
+
+    const existingArticle =
+      await this.workspaceArticleRepository.findOneByTitleAndFolder(
+        payload.folderId,
+        payload.title,
+      );
+
+    appAssert(
+      !existingArticle,
+      CONFLICT,
+      "Article with this title already exists in this folder",
+    );
+
+    const article = await this.workspaceArticleRepository.add(
+      currentUserId,
+      payload,
+    );
+
+    await this.workspaceArticleResponseVariantRepository.add(currentUserId, {
       workspaceArticleId: article.id,
       variantName: payload.responseVariant.variantName,
       variantContent: payload.responseVariant.variantContent,

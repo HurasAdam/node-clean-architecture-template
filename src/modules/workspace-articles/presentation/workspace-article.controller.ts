@@ -14,8 +14,8 @@ export class WorkspaceArticleController {
 
   add = catchErrors(async (req, res) => {
     const payload = req.body;
-    const { userId } = req;
-    await this.workspaceArticleService.add(userId, payload);
+    const { userId: currentUserId } = req;
+    await this.workspaceArticleService.add(currentUserId, payload);
 
     return res.sendStatus(CREATED);
   });

@@ -63,6 +63,20 @@ export class WorkspaceArticleRepository implements IWorkspaceArticleRepository {
     return documents.map((doc) => this.toDomain(doc));
   }
 
+  async findOneByTitleAndFolder(
+    folderId: string,
+    title: string,
+  ): Promise<WorkspaceArticleEntity | null> {
+    const doc = await this.model.findOne({
+      folderId,
+      title,
+    });
+
+    if (!doc) return null;
+
+    return this.toDomain(doc);
+  }
+
   async countByFolder(workspaceId: string, folderId: string): Promise<number> {
     return this.model.countDocuments({
       workspaceId,
