@@ -88,7 +88,38 @@ export class WorkspaceFolderService {
     return this.workspaceFolderRepository.updateOne(folderId, payload);
   }
 
-  deleteOne(folderId: string) {
+  async deleteOne(currentUserId: string, folderId: string) {
+    const folder = await this.workspaceFolderRepository.findOne(folderId);
+    appAssert(folder, NOT_FOUND, "Folder not found");
+    const workspace = await this.workspaceRepository.findOne(
+      folder.workspaceId,
+    );
+
+    appAssert(workspace, NOT_FOUND, "Workspace not found");
+
+    const isOwner = workspace.isOwner(currentUserId);
+    const member = await this.workspaceMemberRepository.findByUserAndWorkspace(
+      currentUserId,
+      folder.workspaceId,
+    );
+
+    appAssert(
+      isOwner || member?.permissions.deleteFolder,
+      FORBIDDEN,
+      "You don't have permissions to perform this action",
+    );
+
+    const articlesCount = await this.workspaceArticleRepository.countByFolder(
+      folder.workspaceId,
+      folderId,
+    );
+
+    appAssert(
+      articlesCount === 0,
+      CONFLICT,
+      "Cannot delete a folder containing articles",
+    );
+
     return this.workspaceFolderRepository.deleteOne(folderId);
   }
 }

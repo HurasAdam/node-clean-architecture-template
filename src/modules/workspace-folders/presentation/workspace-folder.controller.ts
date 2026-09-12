@@ -34,8 +34,9 @@ export class WorkspaceFolderController {
 
   deleteOne = catchErrors(async (req, res) => {
     const { folderId } = req.params;
+    const { userId: currentUserId } = req;
 
-    await this.workspaceFolderService.deleteOne(folderId);
+    await this.workspaceFolderService.deleteOne(currentUserId, folderId);
     return res.sendStatus(NO_CONTENT);
   });
 }
