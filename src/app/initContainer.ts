@@ -105,6 +105,8 @@ export function initContainer() {
       workspaceArticleResponseVariantRepository:
         repositories.workspaceArticleResponseVariantRepository,
       workspaceArticleRepository: repositories.workspaceArticleRepository,
+      workspaceRepository: repositories.workspaceRepository,
+      workspaceMemberRepository: repositories.workspaceMemberRepository,
     });
 
   //

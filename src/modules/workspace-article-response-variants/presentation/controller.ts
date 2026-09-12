@@ -14,9 +14,12 @@ export class WorkspaceArticleResponseVariantController {
 
   add = catchErrors(async (req, res) => {
     const payload = req.body;
-    const { userId } = req;
+    const { userId: currentUserId } = req;
 
-    await this.workspceArticleResponseVariantService.add(userId, payload);
+    await this.workspceArticleResponseVariantService.add(
+      currentUserId,
+      payload,
+    );
 
     return res.sendStatus(CREATED);
   });

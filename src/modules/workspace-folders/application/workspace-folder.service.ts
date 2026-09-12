@@ -26,7 +26,6 @@ export class WorkspaceFolderService {
   }
 
   async add(userId: string, payload: AddWorkspaceFolderDto) {
-    console.log("W:", payload.workspaceId);
     const workspace = await this.workspaceRepository.findOne(
       payload.workspaceId,
     );

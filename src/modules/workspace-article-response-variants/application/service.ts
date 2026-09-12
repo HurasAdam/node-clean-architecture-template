@@ -1,23 +1,31 @@
-import { CONFLICT, NOT_FOUND } from "../../../constants/http";
+import { CONFLICT, FORBIDDEN, NOT_FOUND } from "../../../constants/http";
 import appAssert from "../../../utils/appAssert";
 import { IWorkspaceArticleRepository } from "../../workspace-articles/domain/repository.interface";
+import { IWorkspaceMemberRepository } from "../../workspace-members/domain/repository.interface";
+import { IWorkspaceRepository } from "../../workspace/domain/repository.interface";
 import { IWorkspaceArticleResponseVariantRepository } from "../domain/repository.interface";
 
 export class WorkspaceArticleResponseVariantService {
   private workspaceArticleResponseVariantRepository: IWorkspaceArticleResponseVariantRepository;
   private workspaceArticleRepository: IWorkspaceArticleRepository;
+  private workspaceRepository: IWorkspaceRepository;
+  private workspaceMemberRepository: IWorkspaceMemberRepository;
 
   constructor(
     workspaceArticleResponseVariantRepository: IWorkspaceArticleResponseVariantRepository,
     workspaceArticleRepository: IWorkspaceArticleRepository,
+    workspaceRepository: IWorkspaceRepository,
+    workspaceMemberRepository: IWorkspaceMemberRepository,
   ) {
     this.workspaceArticleResponseVariantRepository =
       workspaceArticleResponseVariantRepository;
     this.workspaceArticleRepository = workspaceArticleRepository;
+    this.workspaceRepository = workspaceRepository;
+    this.workspaceMemberRepository = workspaceMemberRepository;
   }
 
   async add(
-    userId: string,
+    currentUserId: string,
     payload: {
       workspaceArticleId: string;
       variantName: string;
@@ -31,7 +39,27 @@ export class WorkspaceArticleResponseVariantService {
 
     appAssert(workspaceArticle, NOT_FOUND, "Article not found");
 
-    return this.workspaceArticleResponseVariantRepository.add(userId, payload);
+    const workspace = await this.workspaceRepository.findOne(
+      workspaceArticle.workspaceId,
+    );
+    appAssert(workspace, NOT_FOUND, "Workspace not found");
+
+    const member = await this.workspaceMemberRepository.findByUserAndWorkspace(
+      currentUserId,
+      workspace.id,
+    );
+    const isOwner = workspace.isOwner(currentUserId);
+    appAssert(member, FORBIDDEN, "You don't have access to this workspace");
+    appAssert(
+      isOwner || member.permissions.editArticle,
+      FORBIDDEN,
+      "You dont have permissions to perform this action",
+    );
+
+    return this.workspaceArticleResponseVariantRepository.add(
+      currentUserId,
+      payload,
+    );
   }
 
   async updateOne(
