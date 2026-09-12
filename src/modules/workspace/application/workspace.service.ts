@@ -96,9 +96,21 @@ export class WorkspaceService {
     const workspace = await this.workspaceRepository.findOne(workspaceId);
     appAssert(workspace, NOT_FOUND, "Workspace not found");
 
+    const currentMember =
+      await this.workspaceMemberRepository.findByUserAndWorkspace(
+        userId,
+        workspaceId,
+      );
+
+    appAssert(
+      currentMember,
+      FORBIDDEN,
+      "You do not have access to this workspace",
+    );
+
     const isOwner = workspace.isOwner(userId);
     appAssert(
-      isOwner,
+      isOwner || currentMember?.permissions.editWorkspace,
       FORBIDDEN,
       "You do not have permission to perform this action",
     );
