@@ -5,11 +5,12 @@
 
 import { CreateArticleDto } from "../dto/create-article.dto";
 import { UpdateArticleDto } from "../dto/update-article.dto";
+import { ArticleEntity } from "./entity";
 
 export interface IArticleRepository {
-  create(userId: string, data: CreateArticleDto): Promise<any>;
-  find(): Promise<any>;
-  findOne(id: string): Promise<any>;
-  updateOne(id: string, data: UpdateArticleDto): Promise<any>;
+  create(currentUser: string, data: CreateArticleDto): Promise<any>;
+  find(): Promise<ArticleEntity[]>;
+  findOne(id: string): Promise<ArticleEntity>;
+  updateOne(id: string, data: UpdateArticleDto): Promise<ArticleEntity>;
   deleteOne(id: string): any;
 }

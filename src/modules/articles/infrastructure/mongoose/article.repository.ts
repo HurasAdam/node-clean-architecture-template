@@ -5,6 +5,7 @@
 
 import { Model } from "mongoose";
 import { IArticleRepository } from "../../domain/article.repository.interface";
+import { ArticleEntity } from "../../domain/entity";
 import { CreateArticleDto } from "../../dto/create-article.dto";
 import { UpdateArticleDto } from "../../dto/update-article.dto";
 import { ArticleDocument } from "../article.model";
@@ -15,12 +16,26 @@ export class ArticleRepository implements IArticleRepository {
     this.model = model;
   }
 
-  create(userId: string, data: CreateArticleDto) {
-    return this.model.create(data);
+  toDomain(doc: ArticleDocument) {
+    return new ArticleEntity(
+      doc._id.toString(),
+      doc.title,
+      doc.status,
+      doc.importantMarker,
+      doc.product.toString(),
+      doc.category.toString(),
+    );
   }
 
-  find() {
-    return this.model.find();
+  create(currentUser: string, data: CreateArticleDto) {
+    return this.model.create({
+      ...data,
+      createdBy: currentUser,
+    });
+  }
+  async find(): Promise<ArticleEntity[]> {
+    const docs = await this.model.find();
+    return docs.map((doc) => this.toDomain(doc));
   }
 
   findOne(id: string) {

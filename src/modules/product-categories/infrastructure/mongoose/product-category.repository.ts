@@ -38,6 +38,12 @@ export class ProductCategoryRepository implements IProductCategoryRepository {
     return res;
   }
 
+  async findByIds(ids: string[]): Promise<ProductCategory[]> {
+    return this.model.find({
+      _id: { $in: ids },
+    });
+  }
+
   async findOne(id: string): Promise<ProductCategory | null> {
     const doc = await this.model.findById(id);
     if (!doc) return null;

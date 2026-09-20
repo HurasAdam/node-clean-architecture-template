@@ -45,6 +45,12 @@ export class ProductRepository implements IProductRepository {
     return docs.map((doc) => this.toDomain(doc));
   }
 
+  async findByIds(ids: string[]): Promise<Product[]> {
+    return this.model.find({
+      _id: { $in: ids },
+    });
+  }
+
   async findOne(id: string): Promise<Product | null> {
     const doc = await this.model.findById(id);
     if (!doc) return null;

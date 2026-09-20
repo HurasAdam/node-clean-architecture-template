@@ -3,13 +3,13 @@
  * @license Apache-2.0
  */
 
-import { model, Schema, Types } from "mongoose";
+import { Document, model, Schema, Types } from "mongoose";
 
 export interface ArticleDocument extends Document {
   title: string;
   internalNote: string;
   status: "DRAFT" | "APPROVED" | "REJECTED" | "PENDING_REVIEW" | "ARCHIVED";
-  importantMarker?: "star" | "pin" | "warning" | "none";
+  importantMarker: "star" | "pin" | "warning" | null;
   product: Types.ObjectId;
   category: Types.ObjectId;
   tags: Types.ObjectId[];

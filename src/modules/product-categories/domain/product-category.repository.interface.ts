@@ -13,6 +13,7 @@ export interface IProductCategoryRepository {
     data: CreateProductCategoryDto,
   ): Promise<ProductCategory>;
   find(): Promise<ProductCategory[]>;
+  findByIds(ids: string[]): Promise<ProductCategory[]>;
   findOne(id: string): Promise<ProductCategory | null>;
   findByName(name: string): Promise<ProductCategory | null>;
   findByProductId(id: string): Promise<unknown | null>;

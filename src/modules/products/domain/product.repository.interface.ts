@@ -11,6 +11,7 @@ import { Product } from "./product.entity";
 export interface IProductRepository {
   create(userId: string, data: CreateProductDto): Promise<any>;
   find(query: FindProductsQueryDto): Promise<Product[]>;
+  findByIds(ids: string[]): Promise<Product[]>;
   findOne(id: string): Promise<Product | null>;
   findByName(name: string): Promise<Product | null>;
   updateOne(id: string, payload: UpdateProductDto): Promise<Product | null>;
