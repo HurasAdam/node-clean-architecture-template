@@ -39,6 +39,7 @@ export function initContainer() {
     articleRepository: repositories.articleRepository,
     productRepository: repositories.productRepository,
     productCategoryRepository: repositories.productCategoryRepository,
+    tagRepository: repositories.tagRepository,
   });
   const productModule = createProductModule({
     productRepository: repositories.productRepository,

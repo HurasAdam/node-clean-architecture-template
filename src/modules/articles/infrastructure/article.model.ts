@@ -44,7 +44,7 @@ const articleSchema = new Schema<ArticleDocument>(
 
     product: { type: Schema.Types.ObjectId, ref: "Product", required: true },
     category: { type: Schema.Types.ObjectId, ref: "Category", required: true },
-    // tags: [{ type: Schema.Types.ObjectId, ref: "Tag", required: true }],
+    tags: [{ type: Schema.Types.ObjectId, ref: "Tag", required: true }],
 
     createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
 

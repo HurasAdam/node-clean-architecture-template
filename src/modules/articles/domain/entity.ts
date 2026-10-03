@@ -7,6 +7,7 @@ export class ArticleEntity {
   public importantMarker: ImportantMarker | null;
   public product: string;
   public category: string;
+  public tags: string[];
 
   constructor(
     id: string,
@@ -15,6 +16,7 @@ export class ArticleEntity {
     importantMarker: ImportantMarker | null,
     product: string,
     category: string,
+    tags: string[],
   ) {
     this.id = id;
     this.title = title;
@@ -22,5 +24,6 @@ export class ArticleEntity {
     this.importantMarker = importantMarker;
     this.product = product;
     this.category = category;
+    this.tags = tags;
   }
 }

@@ -13,6 +13,7 @@ export interface ITagRepository {
   find(query: FindTagsQueryDto): Promise<Tag[]>;
   findOne(id: string): Promise<Tag | null>;
   findByName(name: string): Promise<Tag | null>;
+  findByIds(ids: string[]): Promise<Tag[]>;
   updateOne(id: string, data: UpdateTagDto): Promise<Tag | null>;
   deleteOne(id: string): Promise<Tag | null>;
 }

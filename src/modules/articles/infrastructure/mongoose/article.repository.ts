@@ -24,6 +24,7 @@ export class ArticleRepository implements IArticleRepository {
       doc.importantMarker,
       doc.product.toString(),
       doc.category.toString(),
+      doc.tags.map((tag) => tag.toString()),
     );
   }
 

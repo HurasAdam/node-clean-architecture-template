@@ -62,6 +62,14 @@ export class TagRepository implements ITagRepository {
     return this.toDomain(doc);
   }
 
+  async findByIds(ids: string[]): Promise<Tag[]> {
+    const docs = await this.model.find({
+      _id: { $in: ids },
+    });
+
+    return docs.map((doc) => this.toDomain(doc));
+  }
+
   async updateOne(id: string, data: UpdateTagDto) {
     const doc = await this.model.findByIdAndUpdate(
       id,
