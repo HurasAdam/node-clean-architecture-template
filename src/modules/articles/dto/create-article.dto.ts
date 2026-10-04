@@ -13,14 +13,9 @@ export const createArticleDto = z.object({
   product: z.string(),
   category: z.string(),
 
-  responseTemplates: z
-    .array(
-      z.object({
-        version: z.number(),
-        variantName: z.string().optional(),
-        variantContent: z.string().min(1),
-      }),
-    )
-    .nonempty(),
+  responseVariant: z.object({
+    variantName: z.string().min(2),
+    variantContent: z.string().min(2),
+  }),
 });
 export type CreateArticleDto = z.infer<typeof createArticleDto>;

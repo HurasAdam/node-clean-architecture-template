@@ -16,7 +16,7 @@ export const createArticleRoutes = (container: Container) => {
 
   router.post("/create", container.article.controller.create);
   router.get("/", container.article.controller.find);
-  router.get("/:id", container.article.controller.findOne);
+  router.get("/:articleId", container.article.controller.findOne);
 
   return router;
 };

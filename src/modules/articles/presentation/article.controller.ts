@@ -26,7 +26,11 @@ export class ArticleController {
     return res.status(OK).json(serviceResponse);
   });
 
-  findOne = catchErrors(async (req, res) => {});
+  findOne = catchErrors(async (req, res) => {
+    const { articleId } = req.params;
+    const serviceResponse = await this.service.findOne(articleId);
+    return res.status(OK).json(serviceResponse);
+  });
 
   updateOne = catchErrors(async (req, res) => {});
 

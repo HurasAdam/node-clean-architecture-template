@@ -3,6 +3,7 @@
  * @license Apache-2.0
  */
 
+import { IArticleResponseVariantRepository } from "../../articleResponseVariants/domain/repository.interface";
 import { IProductCategoryRepository } from "../../product-categories/domain/product-category.repository.interface";
 import { IProductRepository } from "../../products/domain/product.repository.interface";
 import { ITagRepository } from "../../tags/domain/tag.repository.interface";
@@ -11,23 +12,33 @@ import { CreateArticleDto } from "../dto/create-article.dto";
 
 export class ArticleService {
   private articleRepository: IArticleRepository;
+  private articleResponseVariantRepository: IArticleResponseVariantRepository;
   private productRepository: IProductRepository;
   private productCategoryRepository: IProductCategoryRepository;
   private tagRepository: ITagRepository;
   constructor(
     articleRepository: IArticleRepository,
+    articleResponseVariantRepository: IArticleResponseVariantRepository,
     productRepository: IProductRepository,
     productCategoryRepository: IProductCategoryRepository,
     tagRepository: ITagRepository,
   ) {
     this.articleRepository = articleRepository;
+    this.articleResponseVariantRepository = articleResponseVariantRepository;
     this.productRepository = productRepository;
     this.productCategoryRepository = productCategoryRepository;
     this.tagRepository = tagRepository;
   }
 
-  create(currentUser: string, payload: CreateArticleDto) {
-    this.articleRepository.create(currentUser, payload);
+  async create(currentUser: string, payload: CreateArticleDto) {
+    const article = await this.articleRepository.create(currentUser, payload);
+    if (payload.responseVariant) {
+      await this.articleResponseVariantRepository.add(currentUser, {
+        articleId: article.id,
+        variantName: payload.responseVariant.variantName,
+        variantContent: payload.responseVariant.variantContent,
+      });
+    }
   }
 
   async find() {
@@ -86,7 +97,41 @@ export class ArticleService {
     }));
   }
 
-  findOne() {}
+  async findOne(articleId: string) {
+    const article = await this.articleRepository.findOne(articleId);
+
+    if (!article) {
+      return null;
+    }
+
+    const [product, category, tags, responseVariants] = await Promise.all([
+      this.productRepository.findOne(article.product),
+      this.productCategoryRepository.findOne(article.category),
+      this.tagRepository.findByIds(article.tags),
+      this.articleResponseVariantRepository.findByArticleId(article.id),
+    ]);
+
+    return {
+      ...article,
+      product: product
+        ? {
+            id: product.id,
+            name: product.name,
+          }
+        : null,
+      category: category
+        ? {
+            id: category.id,
+            name: category.name,
+          }
+        : null,
+      tags: tags.map((tag) => ({
+        id: tag.id,
+        name: tag.name,
+      })),
+      responseVariants: responseVariants,
+    };
+  }
 
   updateOne() {}
 

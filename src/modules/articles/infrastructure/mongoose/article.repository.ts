@@ -39,8 +39,10 @@ export class ArticleRepository implements IArticleRepository {
     return docs.map((doc) => this.toDomain(doc));
   }
 
-  findOne(id: string) {
-    return this.model.findById(id);
+  async findOne(id: string) {
+    const doc = await this.model.findById(id);
+    if (!doc) return null;
+    return this.toDomain(doc);
   }
 
   async updateOne(id: string, data: UpdateArticleDto) {
@@ -52,7 +54,7 @@ export class ArticleRepository implements IArticleRepository {
 
     if (!doc) return null;
 
-    return doc;
+    return this.toDomain(doc);
   }
 
   deleteOne(id: string) {
