@@ -3,6 +3,8 @@
  * @license Apache-2.0
  */
 
+import { ArticleResponseVariantModel } from "../../modules/articleResponseVariants/infrastructure/models/mongo";
+import { ArticleResponseVariantRepository } from "../../modules/articleResponseVariants/infrastructure/repositories/mongo";
 import ArticleModel from "../../modules/articles/infrastructure/article.model";
 import { ArticleRepository } from "../../modules/articles/infrastructure/mongoose/article.repository";
 import { ContactRecordModel } from "../../modules/contactRegistry/infrastructure/models/mongo";
@@ -43,6 +45,9 @@ export function createMongoRepositoryProvider(): IRepositoryProvider {
     sessionRepository: new SessionRepository(SessionModel),
     roleRepository: new RoleRepository(RoleModel),
     articleRepository: new ArticleRepository(ArticleModel),
+    articleResponseVariantRepository: new ArticleResponseVariantRepository(
+      ArticleResponseVariantModel,
+    ),
     productRepository: new ProductRepository(ProductModel),
     productCategoryRepository: new ProductCategoryRepository(
       ProductCategoryModel,

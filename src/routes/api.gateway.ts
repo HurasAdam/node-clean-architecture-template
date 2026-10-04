@@ -6,6 +6,7 @@
 import { Router } from "express";
 import { Container } from "../app/initContainer";
 import { createAdminRoutes } from "../modules/admin/presentation/admin.route";
+import { createArticleResponseVariantRoutes } from "../modules/articleResponseVariants/presentation/route";
 import { createArticleRoutes } from "../modules/articles/presentation/article.route";
 import { createAuthRoutes } from "../modules/auth/presentation/auth.route";
 import { createContactRegistryRoutes } from "../modules/contactRegistry/presentation/route";
@@ -98,6 +99,16 @@ export function createApiRouter(container: Container) {
     "/articles",
     container.authGuard.authenticate,
     createArticleRoutes(container),
+  );
+
+  /**
+   * Article response variants
+   */
+
+  router.use(
+    "/article-response-variants",
+    container.authGuard.authenticate,
+    createArticleResponseVariantRoutes(container),
   );
 
   /**

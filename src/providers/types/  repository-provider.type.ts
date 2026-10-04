@@ -1,3 +1,4 @@
+import { IArticleResponseVariantRepository } from "../../modules/articleResponseVariants/domain/repository.interface";
 import { IArticleRepository } from "../../modules/articles/domain/article.repository.interface";
 import { IContactRegistryRepository } from "../../modules/contactRegistry/domain/repository.interface";
 import { IProductCategoryRepository } from "../../modules/product-categories/domain/product-category.repository.interface";
@@ -20,6 +21,7 @@ export interface IRepositoryProvider {
   sessionRepository: ISessionRepository;
   roleRepository: IRoleRepository;
   articleRepository: IArticleRepository;
+  articleResponseVariantRepository: IArticleResponseVariantRepository;
   productRepository: IProductRepository;
   productCategoryRepository: IProductCategoryRepository;
   productTopicRepository: IProductTopicRepository;

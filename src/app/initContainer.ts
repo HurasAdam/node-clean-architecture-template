@@ -5,6 +5,7 @@
 
 import { AuthMiddleware } from "../middleware/authGuard";
 import { createAdminModule } from "../modules/admin/admin.module";
+import { createArticleResponseVariantModule } from "../modules/articleResponseVariants/module";
 import { createArticleModule } from "../modules/articles/article.module";
 import { createAuthModule } from "../modules/auth/auth.module";
 import { createContactRegistryModule } from "../modules/contactRegistry/module";
@@ -37,10 +38,18 @@ export function initContainer() {
 
   const articleModule = createArticleModule({
     articleRepository: repositories.articleRepository,
+    articleResponseVariantRepository:
+      repositories.articleResponseVariantRepository,
     productRepository: repositories.productRepository,
     productCategoryRepository: repositories.productCategoryRepository,
     tagRepository: repositories.tagRepository,
   });
+
+  const articleResponseVariantModule = createArticleResponseVariantModule({
+    articleResponseVariantRepository:
+      repositories.articleResponseVariantRepository,
+  });
+
   const productModule = createProductModule({
     productRepository: repositories.productRepository,
     productCategoryRepository: repositories.productCategoryRepository,
@@ -144,6 +153,7 @@ export function initContainer() {
     role: roleModule,
     tag: tagModule,
     article: articleModule,
+    articleResponseVariant: articleResponseVariantModule,
     product: productModule,
     productCategory: productCategoryModule,
     productTopic: productTopicModule,
