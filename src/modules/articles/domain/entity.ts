@@ -5,6 +5,7 @@ export class ArticleEntity {
   public title: string;
   public status: string;
   public importantMarker: ImportantMarker | null;
+  public internalNote: string;
   public product: string;
   public category: string;
   public tags: string[];
@@ -13,6 +14,7 @@ export class ArticleEntity {
     id: string,
     title: string,
     status: string,
+    internalNote: string,
     importantMarker: ImportantMarker | null,
     product: string,
     category: string,
@@ -21,6 +23,7 @@ export class ArticleEntity {
     this.id = id;
     this.title = title;
     this.status = status;
+    this.internalNote = internalNote;
     this.importantMarker = importantMarker;
     this.product = product;
     this.category = category;

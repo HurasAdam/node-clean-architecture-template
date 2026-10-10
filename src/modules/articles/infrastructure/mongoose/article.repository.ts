@@ -21,6 +21,7 @@ export class ArticleRepository implements IArticleRepository {
       doc._id.toString(),
       doc.title,
       doc.status,
+      doc.internalNote,
       doc.importantMarker,
       doc.product.toString(),
       doc.category.toString(),
