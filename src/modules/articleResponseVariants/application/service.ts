@@ -25,5 +25,10 @@ export class ArticleResponseVariantService {
 
   findOne(variantId: string) {}
   updateOne(variantId: string) {}
-  deleteOne(variantId: string) {}
+  async deleteOne(variantId: string) {
+    const variant =
+      await this.articleResponseVariantRepository.findOne(variantId);
+
+    await this.articleResponseVariantRepository.deleteOne(variantId);
+  }
 }
