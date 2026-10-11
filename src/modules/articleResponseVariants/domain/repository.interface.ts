@@ -15,6 +15,19 @@ export interface IArticleResponseVariantRepository {
   findByArticleId: (
     articleId: string,
   ) => Promise<ArticleResponseVariantEntity[]>;
-  //   updateOne: (variantId: string) => Promise<void>;
+
+  findByArticleIdAndVariantName: (
+    articleId: string,
+    variantName: string,
+    excludeVariantId?: string,
+  ) => Promise<ArticleResponseVariantEntity | null>;
+
+  updateOne: (
+    variantId: string,
+    payload: {
+      variantName?: string;
+      variantContent?: string;
+    },
+  ) => Promise<ArticleResponseVariantEntity | null>;
   deleteOne: (variantId: string) => Promise<void>;
 }

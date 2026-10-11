@@ -61,6 +61,41 @@ export class ArticleResponseVariantRepository implements IArticleResponseVariant
     return docs.map((doc) => this.toDomain(doc));
   }
 
+  async findByArticleIdAndVariantName(
+    workspaceArticleId: string,
+    variantName: string,
+    excludeResponseVariantId?: string,
+  ) {
+    const doc = await this.model.findOne({
+      articleId: workspaceArticleId,
+      variantName,
+      ...(excludeResponseVariantId && {
+        _id: { $ne: excludeResponseVariantId },
+      }),
+    });
+
+    if (!doc) return null;
+
+    return this.toDomain(doc);
+  }
+
+  async updateOne(
+    variantId: string,
+    payload: {
+      variantName?: string;
+      variantContent?: string;
+    },
+  ): Promise<ArticleResponseVariantEntity | null> {
+    const doc = await this.model.findByIdAndUpdate(variantId, payload, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!doc) return null;
+
+    return this.toDomain(doc);
+  }
+
   async deleteOne(variantId: string): Promise<void> {
     await this.model.findByIdAndDelete(variantId);
   }

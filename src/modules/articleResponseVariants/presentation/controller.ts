@@ -17,6 +17,13 @@ export class ArticleResponseVariantController {
     return res.sendStatus(CREATED);
   });
 
+  updateOne = catchErrors(async (req, res) => {
+    const { variantId } = req.params;
+    const payload = req.body;
+    await this.articleResponseVariantService.updateOne(variantId, payload);
+    return res.sendStatus(NO_CONTENT);
+  });
+
   deleteOne = catchErrors(async (req, res) => {
     const { variantId } = req.params;
     await this.articleResponseVariantService.deleteOne(variantId);

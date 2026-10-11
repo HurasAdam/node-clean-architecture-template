@@ -10,6 +10,10 @@ export const createArticleResponseVariantRoutes = (container: Container) => {
   const router = Router();
 
   router.post("/create", container.articleResponseVariant.controller.add);
+  router.patch(
+    "/:variantId",
+    container.articleResponseVariant.controller.updateOne,
+  );
   router.delete(
     "/:variantId",
     container.articleResponseVariant.controller.deleteOne,
