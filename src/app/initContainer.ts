@@ -43,6 +43,7 @@ export function initContainer() {
     productRepository: repositories.productRepository,
     productCategoryRepository: repositories.productCategoryRepository,
     tagRepository: repositories.tagRepository,
+    userRepository: repositories.userRepository,
   });
 
   const articleResponseVariantModule = createArticleResponseVariantModule({

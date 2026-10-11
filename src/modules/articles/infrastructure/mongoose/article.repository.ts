@@ -20,12 +20,15 @@ export class ArticleRepository implements IArticleRepository {
     return new ArticleEntity(
       doc._id.toString(),
       doc.title,
-      doc.status,
+      doc.reviewStatus,
+      doc.publicationStatus,
       doc.internalNote,
       doc.importantMarker,
       doc.product.toString(),
       doc.category.toString(),
       doc.tags.map((tag) => tag.toString()),
+      doc.createdBy.toString(),
+      doc.createdAt,
     );
   }
 

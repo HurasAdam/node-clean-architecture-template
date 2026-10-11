@@ -7,6 +7,7 @@ import { IArticleResponseVariantRepository } from "../../articleResponseVariants
 import { IProductCategoryRepository } from "../../product-categories/domain/product-category.repository.interface";
 import { IProductRepository } from "../../products/domain/product.repository.interface";
 import { ITagRepository } from "../../tags/domain/tag.repository.interface";
+import { IUserRepository } from "../../users/domain/user.repository.interface";
 import { IArticleRepository } from "../domain/article.repository.interface";
 import { CreateArticleDto } from "../dto/create-article.dto";
 
@@ -16,22 +17,30 @@ export class ArticleService {
   private productRepository: IProductRepository;
   private productCategoryRepository: IProductCategoryRepository;
   private tagRepository: ITagRepository;
+  private userRepository: IUserRepository;
   constructor(
     articleRepository: IArticleRepository,
     articleResponseVariantRepository: IArticleResponseVariantRepository,
     productRepository: IProductRepository,
     productCategoryRepository: IProductCategoryRepository,
     tagRepository: ITagRepository,
+    userRepository: IUserRepository,
   ) {
     this.articleRepository = articleRepository;
     this.articleResponseVariantRepository = articleResponseVariantRepository;
     this.productRepository = productRepository;
     this.productCategoryRepository = productCategoryRepository;
     this.tagRepository = tagRepository;
+    this.userRepository = userRepository;
   }
 
   async create(currentUser: string, payload: CreateArticleDto) {
-    const article = await this.articleRepository.create(currentUser, payload);
+    const article = await this.articleRepository.create(
+      currentUser,
+      payload,
+      "DRAFT",
+      "UNPUBLISHED",
+    );
     if (payload.responseVariant) {
       await this.articleResponseVariantRepository.add(currentUser, {
         articleId: article.id,
@@ -104,12 +113,14 @@ export class ArticleService {
       return null;
     }
 
-    const [product, category, tags, responseVariants] = await Promise.all([
-      this.productRepository.findOne(article.product),
-      this.productCategoryRepository.findOne(article.category),
-      this.tagRepository.findByIds(article.tags),
-      this.articleResponseVariantRepository.findByArticleId(article.id),
-    ]);
+    const [product, category, tags, responseVariants, author] =
+      await Promise.all([
+        this.productRepository.findOne(article.product),
+        this.productCategoryRepository.findOne(article.category),
+        this.tagRepository.findByIds(article.tags),
+        this.articleResponseVariantRepository.findByArticleId(article.id),
+        this.userRepository.findOneById(article.createdBy),
+      ]);
 
     return {
       ...article,
@@ -129,6 +140,13 @@ export class ArticleService {
         id: tag.id,
         name: tag.name,
       })),
+      author: author
+        ? {
+            id: author.id,
+            firstName: author.name,
+            lastName: author.surname,
+          }
+        : null,
       responseVariants: responseVariants,
     };
   }

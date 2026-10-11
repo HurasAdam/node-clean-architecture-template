@@ -1,32 +1,49 @@
 export type ImportantMarker = "star" | "pin" | "warning";
 
+export type ArticleReviewStatus =
+  | "DRAFT"
+  | "PENDING_REVIEW"
+  | "APPROVED"
+  | "REJECTED";
+
+export type ArticlePublicationStatus = "UNPUBLISHED" | "PUBLISHED" | "ARCHIVED";
+
 export class ArticleEntity {
   public id: string;
   public title: string;
-  public status: string;
+  public reviewStatus: ArticleReviewStatus;
+  public publicationStatus: ArticlePublicationStatus;
   public importantMarker: ImportantMarker | null;
   public internalNote: string;
   public product: string;
   public category: string;
   public tags: string[];
+  public createdBy: string;
+  public createdAt: Date;
 
   constructor(
     id: string,
     title: string,
-    status: string,
+    reviewStatus: ArticleReviewStatus,
+    publicationStatus: ArticlePublicationStatus,
     internalNote: string,
     importantMarker: ImportantMarker | null,
     product: string,
     category: string,
     tags: string[],
+    createdBy: string,
+    createdAt: Date,
   ) {
     this.id = id;
     this.title = title;
-    this.status = status;
+    this.reviewStatus = reviewStatus;
+    this.publicationStatus = publicationStatus;
     this.internalNote = internalNote;
     this.importantMarker = importantMarker;
     this.product = product;
     this.category = category;
     this.tags = tags;
+    this.createdBy = createdBy;
+    this.createdAt = createdAt;
   }
 }

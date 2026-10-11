@@ -5,10 +5,19 @@
 
 import { CreateArticleDto } from "../dto/create-article.dto";
 import { UpdateArticleDto } from "../dto/update-article.dto";
-import { ArticleEntity } from "./entity";
+import {
+  ArticleEntity,
+  ArticlePublicationStatus,
+  ArticleReviewStatus,
+} from "./entity";
 
 export interface IArticleRepository {
-  create(currentUser: string, data: CreateArticleDto): Promise<any>;
+  create(
+    currentUser: string,
+    data: CreateArticleDto,
+    reviewStatus: ArticleReviewStatus,
+    publicationStatus: ArticlePublicationStatus,
+  ): Promise<any>;
   find(): Promise<ArticleEntity[]>;
   findOne(id: string): Promise<ArticleEntity | null>;
   updateOne(id: string, data: UpdateArticleDto): Promise<ArticleEntity | null>;

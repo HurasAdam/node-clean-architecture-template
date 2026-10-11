@@ -7,6 +7,7 @@ import { IArticleResponseVariantRepository } from "../articleResponseVariants/do
 import { IProductCategoryRepository } from "../product-categories/domain/product-category.repository.interface";
 import { IProductRepository } from "../products/domain/product.repository.interface";
 import { ITagRepository } from "../tags/domain/tag.repository.interface";
+import { IUserRepository } from "../users/domain/user.repository.interface";
 import { ArticleService } from "./application/article.service";
 import { IArticleRepository } from "./domain/article.repository.interface";
 import { ArticleController } from "./presentation/article.controller";
@@ -17,6 +18,7 @@ interface deps {
   productRepository: IProductRepository;
   productCategoryRepository: IProductCategoryRepository;
   tagRepository: ITagRepository;
+  userRepository: IUserRepository;
 }
 
 export function createArticleModule(deps: deps) {
@@ -26,6 +28,7 @@ export function createArticleModule(deps: deps) {
     deps.productRepository,
     deps.productCategoryRepository,
     deps.tagRepository,
+    deps.userRepository,
   );
   const controller = new ArticleController(articleService);
 
