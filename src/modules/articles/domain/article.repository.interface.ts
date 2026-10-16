@@ -18,6 +18,13 @@ export interface IArticleRepository {
     reviewStatus: ArticleReviewStatus,
     publicationStatus: ArticlePublicationStatus,
   ): Promise<any>;
+
+  approveOne(
+    id: string,
+    currentUserId: string,
+    now: Date,
+    firstApprovedAt: Date,
+  ): Promise<ArticleEntity | null>;
   find(): Promise<ArticleEntity[]>;
   findOne(id: string): Promise<ArticleEntity | null>;
   updateOne(id: string, data: UpdateArticleDto): Promise<ArticleEntity | null>;

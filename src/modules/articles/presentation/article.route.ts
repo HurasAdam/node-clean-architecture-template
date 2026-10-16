@@ -15,6 +15,7 @@ export const createArticleRoutes = (container: Container) => {
   const router = Router();
 
   router.post("/create", container.article.controller.create);
+  router.patch("/:articleId/approve", container.article.controller.approveOne);
   router.get("/", container.article.controller.find);
   router.get("/:articleId", container.article.controller.findOne);
 

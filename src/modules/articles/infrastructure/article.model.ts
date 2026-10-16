@@ -8,6 +8,7 @@ import { Document, model, Schema, Types } from "mongoose";
 export type ArticleReviewStatus =
   | "DRAFT"
   | "PENDING_REVIEW"
+  | "REQUIRES_REVERIFICATION"
   | "APPROVED"
   | "REJECTED";
 
@@ -48,7 +49,13 @@ const articleSchema = new Schema<ArticleDocument>(
 
     reviewStatus: {
       type: String,
-      enum: ["DRAFT", "PENDING_REVIEW", "APPROVED", "REJECTED"],
+      enum: [
+        "DRAFT",
+        "PENDING_REVIEW",
+        "REQUIRES_REVERIFICATION",
+        "APPROVED",
+        "REJECTED",
+      ],
       default: "DRAFT",
       required: true,
     },

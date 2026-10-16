@@ -3,6 +3,7 @@ export type ImportantMarker = "star" | "pin" | "warning";
 export type ArticleReviewStatus =
   | "DRAFT"
   | "PENDING_REVIEW"
+  | "REQUIRES_REVERIFICATION"
   | "APPROVED"
   | "REJECTED";
 
@@ -20,6 +21,7 @@ export class ArticleEntity {
   public tags: string[];
   public createdBy: string;
   public createdAt: Date;
+  public firstApprovedAt: Date | null;
 
   constructor(
     id: string,
@@ -33,6 +35,7 @@ export class ArticleEntity {
     tags: string[],
     createdBy: string,
     createdAt: Date,
+    firstApprovedAt: Date | null,
   ) {
     this.id = id;
     this.title = title;
@@ -45,5 +48,6 @@ export class ArticleEntity {
     this.tags = tags;
     this.createdBy = createdBy;
     this.createdAt = createdAt;
+    this.firstApprovedAt = firstApprovedAt;
   }
 }

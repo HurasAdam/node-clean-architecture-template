@@ -3,6 +3,8 @@
  * @license Apache-2.0
  */
 
+import { BAD_REQUEST, NOT_FOUND } from "../../../constants/http";
+import appAssert from "../../../utils/appAssert";
 import { IArticleResponseVariantRepository } from "../../articleResponseVariants/domain/repository.interface";
 import { IProductCategoryRepository } from "../../product-categories/domain/product-category.repository.interface";
 import { IProductRepository } from "../../products/domain/product.repository.interface";
@@ -48,6 +50,38 @@ export class ArticleService {
         variantContent: payload.responseVariant.variantContent,
       });
     }
+  }
+
+  async approveOne(articleId: string, currentUserId: string) {
+    const article = await this.articleRepository.findOne(articleId);
+
+    appAssert(article, NOT_FOUND, "Article not found");
+
+    appAssert(
+      article.publicationStatus !== "ARCHIVED",
+      BAD_REQUEST,
+      "Archived articles cannot be approved",
+    );
+
+    const canApprove =
+      article.reviewStatus === "DRAFT" ||
+      article.reviewStatus === "PENDING_REVIEW" ||
+      article.reviewStatus === "REQUIRES_REVERIFICATION";
+
+    appAssert(
+      canApprove,
+      BAD_REQUEST,
+      "Article cannot be approved in its current state",
+    );
+
+    const now = new Date();
+    const firstApprovedAt = article.firstApprovedAt ?? now;
+    await this.articleRepository.approveOne(
+      articleId,
+      currentUserId,
+      now,
+      firstApprovedAt,
+    );
   }
 
   async find() {

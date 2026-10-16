@@ -21,6 +21,15 @@ export class ArticleController {
     return res.sendStatus(CREATED);
   });
 
+  approveOne = catchErrors(async (req, res) => {
+    const { articleId } = req.params;
+    const { userId: currentUser } = req;
+
+    await this.service.approveOne(articleId, currentUser);
+
+    return res.sendStatus(OK);
+  });
+
   find = catchErrors(async (req, res) => {
     const serviceResponse = await this.service.find();
     return res.status(OK).json(serviceResponse);

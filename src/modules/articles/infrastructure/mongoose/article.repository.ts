@@ -29,6 +29,7 @@ export class ArticleRepository implements IArticleRepository {
       doc.tags.map((tag) => tag.toString()),
       doc.createdBy.toString(),
       doc.createdAt,
+      doc.firstApprovedAt,
     );
   }
 
@@ -38,6 +39,33 @@ export class ArticleRepository implements IArticleRepository {
       createdBy: currentUser,
     });
   }
+
+  async approveOne(
+    id: string,
+    currentUserId: string,
+    now: Date,
+    firstApprovedAt: Date,
+  ) {
+    const doc = await this.model.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          reviewStatus: "APPROVED",
+          publicationStatus: "PUBLISHED",
+          verifiedBy: currentUserId,
+          lastVerifiedAt: now,
+          firstApprovedAt,
+          reviewNote: null,
+        },
+      },
+      { new: true, runValidators: true },
+    );
+
+    if (!doc) return null;
+
+    return this.toDomain(doc);
+  }
+
   async find(): Promise<ArticleEntity[]> {
     const docs = await this.model.find();
     return docs.map((doc) => this.toDomain(doc));
