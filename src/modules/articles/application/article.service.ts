@@ -147,13 +147,16 @@ export class ArticleService {
       return null;
     }
 
-    const [product, category, tags, responseVariants, author] =
+    const [product, category, tags, responseVariants, author, verifier] =
       await Promise.all([
         this.productRepository.findOne(article.product),
         this.productCategoryRepository.findOne(article.category),
         this.tagRepository.findByIds(article.tags),
         this.articleResponseVariantRepository.findByArticleId(article.id),
         this.userRepository.findOneById(article.createdBy),
+        article.verifiedBy
+          ? this.userRepository.findOneById(article.verifiedBy)
+          : null,
       ]);
 
     return {
@@ -179,6 +182,13 @@ export class ArticleService {
             id: author.id,
             firstName: author.name,
             lastName: author.surname,
+          }
+        : null,
+      verifiedBy: verifier
+        ? {
+            id: verifier.id,
+            firstName: verifier.name,
+            lastName: verifier.surname,
           }
         : null,
       responseVariants: responseVariants,

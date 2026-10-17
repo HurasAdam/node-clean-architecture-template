@@ -28,6 +28,7 @@ export class ArticleRepository implements IArticleRepository {
       doc.category.toString(),
       doc.tags.map((tag) => tag.toString()),
       doc.createdBy.toString(),
+      doc.verifiedBy?.toString() ?? null,
       doc.createdAt,
       doc.firstApprovedAt,
     );

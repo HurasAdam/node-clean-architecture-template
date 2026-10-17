@@ -20,6 +20,7 @@ export class ArticleEntity {
   public category: string;
   public tags: string[];
   public createdBy: string;
+  public verifiedBy: string | null;
   public createdAt: Date;
   public firstApprovedAt: Date | null;
 
@@ -34,6 +35,7 @@ export class ArticleEntity {
     category: string,
     tags: string[],
     createdBy: string,
+    verifiedBy: string | null,
     createdAt: Date,
     firstApprovedAt: Date | null,
   ) {
@@ -47,6 +49,7 @@ export class ArticleEntity {
     this.category = category;
     this.tags = tags;
     this.createdBy = createdBy;
+    this.verifiedBy = verifiedBy;
     this.createdAt = createdAt;
     this.firstApprovedAt = firstApprovedAt;
   }
