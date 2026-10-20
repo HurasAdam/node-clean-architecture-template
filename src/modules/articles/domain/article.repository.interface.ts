@@ -23,7 +23,12 @@ export interface IArticleRepository {
     id: string,
     currentUserId: string,
     now: Date,
-    firstApprovedAt: Date,
+  ): Promise<ArticleEntity | null>;
+  requestChanges(
+    id: string,
+    currentUserId: string,
+    recipientId: string,
+    note: string,
   ): Promise<ArticleEntity | null>;
   find(): Promise<ArticleEntity[]>;
   findOne(id: string): Promise<ArticleEntity | null>;

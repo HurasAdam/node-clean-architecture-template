@@ -3,7 +3,7 @@
  * @license Apache-2.0
  */
 
-import { BAD_REQUEST, NOT_FOUND } from "../../../constants/http";
+import { BAD_REQUEST, CONFLICT, NOT_FOUND } from "../../../constants/http";
 import appAssert from "../../../utils/appAssert";
 import { IArticleResponseVariantRepository } from "../../articleResponseVariants/domain/repository.interface";
 import { IProductCategoryRepository } from "../../product-categories/domain/product-category.repository.interface";
@@ -12,6 +12,7 @@ import { ITagRepository } from "../../tags/domain/tag.repository.interface";
 import { IUserRepository } from "../../users/domain/user.repository.interface";
 import { IArticleRepository } from "../domain/article.repository.interface";
 import { CreateArticleDto } from "../dto/create-article.dto";
+import { RequestChangesDto } from "../dto/request-changes.dto";
 
 export class ArticleService {
   private articleRepository: IArticleRepository;
@@ -58,29 +59,44 @@ export class ArticleService {
     appAssert(article, NOT_FOUND, "Article not found");
 
     appAssert(
-      article.publicationStatus !== "ARCHIVED",
-      BAD_REQUEST,
-      "Archived articles cannot be approved",
-    );
-
-    const canApprove =
-      article.reviewStatus === "DRAFT" ||
-      article.reviewStatus === "PENDING_REVIEW" ||
-      article.reviewStatus === "REQUIRES_REVERIFICATION";
-
-    appAssert(
-      canApprove,
-      BAD_REQUEST,
-      "Article cannot be approved in its current state",
+      article.reviewStatus === "DRAFT" &&
+        article.publicationStatus === "UNPUBLISHED",
+      CONFLICT,
+      "Only unpublished draft articles can be approved",
     );
 
     const now = new Date();
-    const firstApprovedAt = article.firstApprovedAt ?? now;
-    await this.articleRepository.approveOne(
+
+    await this.articleRepository.approveOne(articleId, currentUserId, now);
+  }
+
+  async requestChanges(
+    articleId: string,
+    payload: RequestChangesDto,
+    currentUserId: string,
+  ) {
+    const article = await this.articleRepository.findOne(articleId);
+
+    appAssert(article, NOT_FOUND, "Article not found");
+
+    appAssert(
+      article.reviewStatus === "DRAFT" &&
+        article.publicationStatus === "UNPUBLISHED",
+      CONFLICT,
+      "Changes can only be requested for unpublished draft articles",
+    );
+
+    const reviewNote = payload.reviewNote;
+
+    console.log(reviewNote);
+
+    appAssert(reviewNote.length > 0, BAD_REQUEST, "Review note is required");
+
+    return this.articleRepository.requestChanges(
       articleId,
       currentUserId,
-      now,
-      firstApprovedAt,
+      article.createdBy,
+      reviewNote,
     );
   }
 
@@ -187,8 +203,8 @@ export class ArticleService {
       verifiedBy: verifier
         ? {
             id: verifier.id,
-            firstName: verifier.name,
-            lastName: verifier.surname,
+            name: verifier.name,
+            surname: verifier.surname,
           }
         : null,
       responseVariants: responseVariants,

@@ -20,17 +20,23 @@ export class ArticleRepository implements IArticleRepository {
     return new ArticleEntity(
       doc._id.toString(),
       doc.title,
-      doc.reviewStatus,
-      doc.publicationStatus,
       doc.internalNote,
-      doc.importantMarker,
+      doc.publicationStatus,
+      doc.reviewStatus,
       doc.product.toString(),
       doc.category.toString(),
       doc.tags.map((tag) => tag.toString()),
+      doc.importantMarker,
+      doc.createdAt,
       doc.createdBy.toString(),
       doc.verifiedBy?.toString() ?? null,
-      doc.createdAt,
-      doc.firstApprovedAt,
+      doc.lastVerifiedAt ?? null,
+      doc.changesRequestedBy?.toString() ?? null,
+      doc.changeRequestRecipient?.toString() ?? null,
+      doc.changeRequestNote ?? null,
+      doc?.lastUpdatedBy?.toString() ?? null,
+      doc.followers.map((follower) => follower.toString()),
+      doc.updatedAt,
     );
   }
 
@@ -41,12 +47,7 @@ export class ArticleRepository implements IArticleRepository {
     });
   }
 
-  async approveOne(
-    id: string,
-    currentUserId: string,
-    now: Date,
-    firstApprovedAt: Date,
-  ) {
+  async approveOne(id: string, currentUserId: string, now: Date) {
     const doc = await this.model.findByIdAndUpdate(
       id,
       {
@@ -55,8 +56,32 @@ export class ArticleRepository implements IArticleRepository {
           publicationStatus: "PUBLISHED",
           verifiedBy: currentUserId,
           lastVerifiedAt: now,
-          firstApprovedAt,
-          reviewNote: null,
+          changesRequestedBy: null,
+          changeRequestNote: null,
+        },
+      },
+      { new: true, runValidators: true },
+    );
+
+    if (!doc) return null;
+
+    return this.toDomain(doc);
+  }
+
+  async requestChanges(
+    id: string,
+    currentUserId: string,
+    recipientId: string,
+    note: string,
+  ) {
+    const doc = await this.model.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          reviewStatus: "CHANGES_REQUESTED",
+          changesRequestedBy: currentUserId,
+          changeRequestRecipient: recipientId,
+          changeRequestNote: note,
         },
       },
       { new: true, runValidators: true },

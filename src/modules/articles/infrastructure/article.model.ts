@@ -10,34 +10,28 @@ export type ArticleReviewStatus =
   | "PENDING_REVIEW"
   | "REQUIRES_REVERIFICATION"
   | "APPROVED"
-  | "REJECTED";
+  | "CHANGES_REQUESTED";
 
 export type ArticlePublicationStatus = "UNPUBLISHED" | "PUBLISHED" | "ARCHIVED";
 
 export interface ArticleDocument extends Document {
   title: string;
   internalNote: string;
-
-  reviewStatus: ArticleReviewStatus;
   publicationStatus: ArticlePublicationStatus;
-  reviewNote: string | null;
-
-  importantMarker: "star" | "pin" | "warning" | null;
-
+  reviewStatus: ArticleReviewStatus;
   product: Types.ObjectId;
   category: Types.ObjectId;
   tags: Types.ObjectId[];
-
+  importantMarker: "star" | "pin" | "warning" | null;
+  createdAt: Date;
   createdBy: Types.ObjectId;
   verifiedBy: Types.ObjectId | null;
   lastVerifiedAt: Date | null;
-  firstApprovedAt: Date | null;
-
-  lastUpdatedBy?: Types.ObjectId;
-
+  changesRequestedBy: Types.ObjectId | null;
+  changeRequestRecipient: Types.ObjectId | null;
+  changeRequestNote: string | null;
+  lastUpdatedBy: Types.ObjectId | null;
   followers: Types.ObjectId[];
-
-  createdAt: Date;
   updatedAt: Date;
 }
 
@@ -54,7 +48,7 @@ const articleSchema = new Schema<ArticleDocument>(
         "PENDING_REVIEW",
         "REQUIRES_REVERIFICATION",
         "APPROVED",
-        "REJECTED",
+        "CHANGES_REQUESTED",
       ],
       default: "DRAFT",
       required: true,
@@ -65,6 +59,17 @@ const articleSchema = new Schema<ArticleDocument>(
       enum: ["UNPUBLISHED", "PUBLISHED", "ARCHIVED"],
       default: "UNPUBLISHED",
       required: true,
+    },
+
+    changeRequestRecipient: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
+
+    changeRequestNote: {
+      type: String,
+      default: null,
     },
 
     importantMarker: {
@@ -105,12 +110,13 @@ const articleSchema = new Schema<ArticleDocument>(
       default: null,
     },
 
-    lastVerifiedAt: {
-      type: Date,
+    changesRequestedBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
       default: null,
     },
 
-    firstApprovedAt: {
+    lastVerifiedAt: {
       type: Date,
       default: null,
     },

@@ -30,6 +30,15 @@ export class ArticleController {
     return res.sendStatus(OK);
   });
 
+  requestChanges = catchErrors(async (req, res) => {
+    const { articleId } = req.params;
+    const { userId: currentUser } = req;
+    const payload = req.body;
+    console.log(payload);
+    await this.service.requestChanges(articleId, payload, currentUser);
+    return res.sendStatus(CREATED);
+  });
+
   find = catchErrors(async (req, res) => {
     const serviceResponse = await this.service.find();
     return res.status(OK).json(serviceResponse);
