@@ -24,12 +24,19 @@ export interface IArticleRepository {
     currentUserId: string,
     now: Date,
   ): Promise<ArticleEntity | null>;
+  verifyOne(
+    id: string,
+    currentUserId: string,
+    now: Date,
+  ): Promise<ArticleEntity | null>;
   requestChanges(
     id: string,
     currentUserId: string,
     recipientId: string,
     note: string,
   ): Promise<ArticleEntity | null>;
+
+  submitForReview(id: string): Promise<ArticleEntity | null>;
   find(): Promise<ArticleEntity[]>;
   findOne(id: string): Promise<ArticleEntity | null>;
   updateOne(id: string, data: UpdateArticleDto): Promise<ArticleEntity | null>;

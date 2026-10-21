@@ -3,7 +3,12 @@
  * @license Apache-2.0
  */
 
-import { BAD_REQUEST, CONFLICT, NOT_FOUND } from "../../../constants/http";
+import {
+  BAD_REQUEST,
+  CONFLICT,
+  FORBIDDEN,
+  NOT_FOUND,
+} from "../../../constants/http";
 import appAssert from "../../../utils/appAssert";
 import { IArticleResponseVariantRepository } from "../../articleResponseVariants/domain/repository.interface";
 import { IProductCategoryRepository } from "../../product-categories/domain/product-category.repository.interface";
@@ -70,6 +75,24 @@ export class ArticleService {
     await this.articleRepository.approveOne(articleId, currentUserId, now);
   }
 
+  async verifyOne(articleId: string, currentUserId: string) {
+    const article = await this.articleRepository.findOne(articleId);
+
+    appAssert(article, NOT_FOUND, "Article not found");
+
+    appAssert(
+      (article.reviewStatus === "PENDING_REVIEW" ||
+        article.reviewStatus === "REQUIRES_REVERIFICATION") &&
+        article.publicationStatus === "PUBLISHED",
+      CONFLICT,
+      "Only published articles requiring verification can be verified",
+    );
+
+    const now = new Date();
+
+    return this.articleRepository.verifyOne(articleId, currentUserId, now);
+  }
+
   async requestChanges(
     articleId: string,
     payload: RequestChangesDto,
@@ -98,6 +121,25 @@ export class ArticleService {
       article.createdBy,
       reviewNote,
     );
+  }
+
+  async submitForReview(articleId: string, currentUserId: string) {
+    const article = await this.articleRepository.findOne(articleId);
+    appAssert(article, NOT_FOUND, "Article not found");
+
+    const isAuthor = article.createdBy === currentUserId;
+    appAssert(
+      isAuthor,
+      FORBIDDEN,
+      "Only the author can submit the article for review",
+    );
+
+    appAssert(
+      article.reviewStatus === "CHANGES_REQUESTED",
+      CONFLICT,
+      "Only articles requiring changes can be submitted for review",
+    );
+    return await this.articleRepository.submitForReview(articleId);
   }
 
   async find() {

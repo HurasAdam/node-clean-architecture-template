@@ -16,9 +16,15 @@ export const createArticleRoutes = (container: Container) => {
 
   router.post("/create", container.article.controller.create);
   router.patch("/:articleId/approve", container.article.controller.approveOne);
+  router.patch("/:articleId/verify", container.article.controller.verifyOne);
   router.patch(
     "/:articleId/request-changes",
     container.article.controller.requestChanges,
+  );
+
+  router.patch(
+    "/:articleId/submit-for-review",
+    container.article.controller.submitForReview,
   );
   router.get("/", container.article.controller.find);
   router.get("/:articleId", container.article.controller.findOne);

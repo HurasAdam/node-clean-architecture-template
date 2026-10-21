@@ -68,6 +68,27 @@ export class ArticleRepository implements IArticleRepository {
     return this.toDomain(doc);
   }
 
+  async verifyOne(id: string, currentUserId: string, now: Date) {
+    const doc = await this.model.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          reviewStatus: "APPROVED",
+          verifiedBy: currentUserId,
+          lastVerifiedAt: now,
+          changesRequestedBy: null,
+          changeRequestRecipient: null,
+          changeRequestNote: null,
+        },
+      },
+      { new: true, runValidators: true },
+    );
+
+    if (!doc) return null;
+
+    return this.toDomain(doc);
+  }
+
   async requestChanges(
     id: string,
     currentUserId: string,
@@ -82,6 +103,25 @@ export class ArticleRepository implements IArticleRepository {
           changesRequestedBy: currentUserId,
           changeRequestRecipient: recipientId,
           changeRequestNote: note,
+        },
+      },
+      { new: true, runValidators: true },
+    );
+
+    if (!doc) return null;
+
+    return this.toDomain(doc);
+  }
+
+  async submitForReview(id: string) {
+    const doc = await this.model.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          reviewStatus: "DRAFT",
+          changesRequestedBy: null,
+          changeRequestRecipient: null,
+          changeRequestNote: null,
         },
       },
       { new: true, runValidators: true },

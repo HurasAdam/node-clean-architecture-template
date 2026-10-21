@@ -30,13 +30,30 @@ export class ArticleController {
     return res.sendStatus(OK);
   });
 
+  verifyOne = catchErrors(async (req, res) => {
+    const { articleId } = req.params;
+    const { userId: currentUser } = req;
+
+    await this.service.verifyOne(articleId, currentUser);
+
+    return res.sendStatus(OK);
+  });
+
   requestChanges = catchErrors(async (req, res) => {
     const { articleId } = req.params;
     const { userId: currentUser } = req;
     const payload = req.body;
-    console.log(payload);
+
     await this.service.requestChanges(articleId, payload, currentUser);
     return res.sendStatus(CREATED);
+  });
+
+  submitForReview = catchErrors(async (req, res) => {
+    const { articleId } = req.params;
+    const { userId: currentUser } = req;
+
+    await this.service.submitForReview(articleId, currentUser);
+    return res.sendStatus(OK);
   });
 
   find = catchErrors(async (req, res) => {
