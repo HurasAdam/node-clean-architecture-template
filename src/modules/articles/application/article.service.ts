@@ -81,11 +81,18 @@ export class ArticleService {
     appAssert(article, NOT_FOUND, "Article not found");
 
     appAssert(
-      (article.reviewStatus === "PENDING_REVIEW" ||
-        article.reviewStatus === "REQUIRES_REVERIFICATION") &&
-        article.publicationStatus === "PUBLISHED",
+      article.publicationStatus === "PUBLISHED",
       CONFLICT,
-      "Only published articles requiring verification can be verified",
+      "Only published articles can be verified",
+    );
+
+    const isEditedArticle = article.reviewStatus === "PENDING_REVIEW";
+    const isPeriodicReverification = article.requiresReverification();
+
+    appAssert(
+      isEditedArticle || isPeriodicReverification,
+      CONFLICT,
+      "The article does not require verification",
     );
 
     const now = new Date();
@@ -190,6 +197,7 @@ export class ArticleService {
 
     return articles.map((article) => ({
       ...article,
+      requiresReverification: article.requiresReverification(),
       product: productsMap.get(article.product) ?? null,
       category: categoriesMap.get(article.category) ?? null,
       tags: article.tags
@@ -219,6 +227,7 @@ export class ArticleService {
 
     return {
       ...article,
+      requiresReverification: article.requiresReverification(),
       product: product
         ? {
             id: product.id,

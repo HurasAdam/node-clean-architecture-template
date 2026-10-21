@@ -71,4 +71,19 @@ export class ArticleEntity {
     this.followers = followers;
     this.updatedAt = updatedAt;
   }
+
+  requiresReverification(): boolean {
+    if (
+      this.reviewStatus !== "APPROVED" ||
+      this.publicationStatus !== "PUBLISHED" ||
+      !this.lastVerifiedAt
+    ) {
+      return false;
+    }
+
+    const deadline = new Date(this.lastVerifiedAt);
+    deadline.setFullYear(deadline.getFullYear() + 1);
+
+    return Date.now() >= deadline.getTime();
+  }
 }
