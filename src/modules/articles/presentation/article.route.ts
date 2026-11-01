@@ -38,6 +38,8 @@ export const createArticleRoutes = (container: Container) => {
     container.article.controller.updateProductAndCategory,
   );
 
+  router.patch("/:articleId/tags", container.article.controller.updateTags);
+
   router.get("/", container.article.controller.find);
   router.get("/:articleId", container.article.controller.findOne);
 

@@ -59,5 +59,12 @@ export interface IArticleRepository {
     product: string,
     category: string,
   ): Promise<ArticleEntity | null>;
+
+  updateTags(
+    articleId: string,
+    currentUserId: string,
+    tags: string[],
+  ): Promise<ArticleEntity | null>;
+
   deleteOne(id: string): any;
 }

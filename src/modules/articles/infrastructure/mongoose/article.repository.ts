@@ -229,6 +229,29 @@ export class ArticleRepository implements IArticleRepository {
     return doc ? this.toDomain(doc) : null;
   }
 
+  async updateTags(
+    articleId: string,
+    currentUserId: string,
+    tags: string[],
+  ): Promise<ArticleEntity | null> {
+    const doc = await this.model.findByIdAndUpdate(
+      articleId,
+      {
+        $set: {
+          tags,
+          lastUpdatedBy: currentUserId,
+          updatedAt: new Date(),
+        },
+      },
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
+
+    return doc ? this.toDomain(doc) : null;
+  }
+
   deleteOne(id: string) {
     return this.model.findByIdAndDelete(id);
   }

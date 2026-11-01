@@ -20,6 +20,7 @@ import { CreateArticleDto } from "../dto/create-article.dto";
 import { RequestChangesDto } from "../dto/request-changes.dto";
 import { UpdateInternalNoteDto } from "../dto/update-internalNote.dto";
 import { UpdateProductAndCategoryDto } from "../dto/update-productAndCategory.dto";
+import { UpdateArticleTagsDto } from "../dto/update-tags.dto";
 import { UpdateArticleTitleDto } from "../dto/update-title.dto";
 
 export class ArticleService {
@@ -249,6 +250,37 @@ export class ArticleService {
       product,
       category,
     );
+  }
+
+  async updateTags(
+    articleId: string,
+    currentUserId: string,
+    payload: UpdateArticleTagsDto,
+  ) {
+    const article = await this.articleRepository.findOne(articleId);
+
+    appAssert(article, NOT_FOUND, "Article not found");
+
+    const tags = [...new Set(payload.tags)];
+
+    appAssert(tags.length > 0, BAD_REQUEST, "At least one tag is required");
+
+    const existingTags = await this.tagRepository.findByIds(tags);
+
+    appAssert(
+      existingTags.length === tags.length,
+      NOT_FOUND,
+      "One or more tags were not found",
+    );
+
+    appAssert(
+      tags.length !== article.tags.length ||
+        !tags.every((tag) => article.tags.includes(tag)),
+      CONFLICT,
+      "The article already has these tags",
+    );
+
+    return this.articleRepository.updateTags(articleId, currentUserId, tags);
   }
 
   async find() {
