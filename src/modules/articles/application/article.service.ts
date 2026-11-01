@@ -18,6 +18,7 @@ import { IUserRepository } from "../../users/domain/user.repository.interface";
 import { IArticleRepository } from "../domain/article.repository.interface";
 import { CreateArticleDto } from "../dto/create-article.dto";
 import { RequestChangesDto } from "../dto/request-changes.dto";
+import { UpdateInternalNoteDto } from "../dto/update-internalNote.dto";
 import { UpdateArticleTitleDto } from "../dto/update-title.dto";
 
 export class ArticleService {
@@ -178,6 +179,36 @@ export class ArticleService {
     );
 
     return this.articleRepository.updateTitle(articleId, currentUserId, title);
+  }
+
+  async updateInternalNote(
+    articleId: string,
+    currentUserId: string,
+    payload: UpdateInternalNoteDto,
+  ) {
+    const article = await this.articleRepository.findOne(articleId);
+
+    appAssert(article, NOT_FOUND, "Article not found");
+
+    const internalNote = payload.internalNote.trim();
+
+    appAssert(
+      internalNote.length > 0,
+      BAD_REQUEST,
+      "Internal note is required",
+    );
+
+    appAssert(
+      article.internalNote !== internalNote,
+      CONFLICT,
+      "The article already has this internal note",
+    );
+
+    return this.articleRepository.updateInternalNote(
+      articleId,
+      currentUserId,
+      internalNote,
+    );
   }
 
   async find() {

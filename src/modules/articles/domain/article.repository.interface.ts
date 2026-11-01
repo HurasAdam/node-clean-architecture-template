@@ -46,5 +46,11 @@ export interface IArticleRepository {
     currentUserId: string,
     title: string,
   ): Promise<ArticleEntity | null>;
+
+  updateInternalNote(
+    articleId: string,
+    currentUserId: string,
+    internalNote: string,
+  ): Promise<ArticleEntity | null>;
   deleteOne(id: string): any;
 }

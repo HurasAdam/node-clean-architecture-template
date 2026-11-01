@@ -28,6 +28,11 @@ export const createArticleRoutes = (container: Container) => {
   );
 
   router.patch("/:articleId/title", container.article.controller.updateTitle);
+  router.patch(
+    "/:articleId/internal-note",
+    container.article.controller.updateInternalNote,
+  );
+
   router.get("/", container.article.controller.find);
   router.get("/:articleId", container.article.controller.findOne);
 

@@ -184,6 +184,26 @@ export class ArticleRepository implements IArticleRepository {
     return doc ? this.toDomain(doc) : null;
   }
 
+  async updateInternalNote(
+    articleId: string,
+    currentUserId: string,
+    internalNote: string,
+  ): Promise<ArticleEntity | null> {
+    const doc = await this.model.findByIdAndUpdate(
+      articleId,
+      {
+        $set: {
+          internalNote,
+          lastUpdatedBy: currentUserId,
+          updatedAt: new Date(),
+        },
+      },
+      { new: true, runValidators: true },
+    );
+
+    return doc ? this.toDomain(doc) : null;
+  }
+
   deleteOne(id: string) {
     return this.model.findByIdAndDelete(id);
   }

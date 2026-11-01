@@ -7,6 +7,7 @@ import { CREATED, NO_CONTENT, OK } from "../../../constants/http";
 import catchErrors from "../../../utils/catchErrors";
 import { ArticleService } from "../application/article.service";
 import { createArticleDto } from "../dto/create-article.dto";
+import { updateInternalNoteDto } from "../dto/update-internalNote.dto";
 import { updateArticleTitleDto } from "../dto/update-title.dto";
 
 export class ArticleController {
@@ -63,6 +64,15 @@ export class ArticleController {
     const payload = updateArticleTitleDto.parse(req.body);
 
     await this.service.updateTitle(articleId, currentUser, payload);
+    return res.sendStatus(NO_CONTENT);
+  });
+
+  updateInternalNote = catchErrors(async (req, res) => {
+    const { articleId } = req.params;
+    const { userId: currentUser } = req;
+    const payload = updateInternalNoteDto.parse(req.body);
+
+    await this.service.updateInternalNote(articleId, currentUser, payload);
     return res.sendStatus(NO_CONTENT);
   });
 
