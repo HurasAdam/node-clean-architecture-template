@@ -33,6 +33,11 @@ export const createArticleRoutes = (container: Container) => {
     container.article.controller.updateInternalNote,
   );
 
+  router.patch(
+    "/:articleId/product-category",
+    container.article.controller.updateProductAndCategory,
+  );
+
   router.get("/", container.article.controller.find);
   router.get("/:articleId", container.article.controller.findOne);
 

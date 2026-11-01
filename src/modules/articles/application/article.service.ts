@@ -19,6 +19,7 @@ import { IArticleRepository } from "../domain/article.repository.interface";
 import { CreateArticleDto } from "../dto/create-article.dto";
 import { RequestChangesDto } from "../dto/request-changes.dto";
 import { UpdateInternalNoteDto } from "../dto/update-internalNote.dto";
+import { UpdateProductAndCategoryDto } from "../dto/update-productAndCategory.dto";
 import { UpdateArticleTitleDto } from "../dto/update-title.dto";
 
 export class ArticleService {
@@ -208,6 +209,45 @@ export class ArticleService {
       articleId,
       currentUserId,
       internalNote,
+    );
+  }
+
+  async updateProductCategory(
+    articleId: string,
+    currentUserId: string,
+    payload: UpdateProductAndCategoryDto,
+  ) {
+    const article = await this.articleRepository.findOne(articleId);
+
+    appAssert(article, NOT_FOUND, "Article not found");
+
+    const { product, category } = payload;
+
+    const [existingProduct, existingCategory] = await Promise.all([
+      this.productRepository.findOne(product),
+      this.productCategoryRepository.findOne(category),
+    ]);
+
+    appAssert(existingProduct, NOT_FOUND, "Product not found");
+    appAssert(existingCategory, NOT_FOUND, "Category not found");
+
+    appAssert(
+      existingCategory.product === product,
+      BAD_REQUEST,
+      "The selected category does not belong to the selected product",
+    );
+
+    appAssert(
+      article.product !== product || article.category !== category,
+      CONFLICT,
+      "The article already has this product and category",
+    );
+
+    return this.articleRepository.updateProductCategory(
+      articleId,
+      currentUserId,
+      product,
+      category,
     );
   }
 

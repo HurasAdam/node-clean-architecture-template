@@ -7,5 +7,6 @@ export class ProductCategory {
   constructor(
     public readonly id: string,
     public name: string,
+    public product: string,
   ) {}
 }

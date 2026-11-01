@@ -52,5 +52,12 @@ export interface IArticleRepository {
     currentUserId: string,
     internalNote: string,
   ): Promise<ArticleEntity | null>;
+
+  updateProductCategory(
+    articleId: string,
+    currentUserId: string,
+    product: string,
+    category: string,
+  ): Promise<ArticleEntity | null>;
   deleteOne(id: string): any;
 }

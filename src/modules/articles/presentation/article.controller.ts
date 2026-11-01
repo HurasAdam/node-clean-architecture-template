@@ -8,6 +8,7 @@ import catchErrors from "../../../utils/catchErrors";
 import { ArticleService } from "../application/article.service";
 import { createArticleDto } from "../dto/create-article.dto";
 import { updateInternalNoteDto } from "../dto/update-internalNote.dto";
+import { updateProductAndCategoryDto } from "../dto/update-productAndCategory.dto";
 import { updateArticleTitleDto } from "../dto/update-title.dto";
 
 export class ArticleController {
@@ -73,6 +74,16 @@ export class ArticleController {
     const payload = updateInternalNoteDto.parse(req.body);
 
     await this.service.updateInternalNote(articleId, currentUser, payload);
+    return res.sendStatus(NO_CONTENT);
+  });
+
+  updateProductAndCategory = catchErrors(async (req, res) => {
+    const { articleId } = req.params;
+    const { userId: currentUser } = req;
+    const payload = updateProductAndCategoryDto.parse(req.body);
+
+    await this.service.updateProductCategory(articleId, currentUser, payload);
+
     return res.sendStatus(NO_CONTENT);
   });
 

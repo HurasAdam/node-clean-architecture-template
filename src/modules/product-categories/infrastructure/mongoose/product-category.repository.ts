@@ -17,7 +17,11 @@ export class ProductCategoryRepository implements IProductCategoryRepository {
   }
 
   private toDomain(doc: ProductCategoryDocument): ProductCategory {
-    return new ProductCategory(doc._id.toString(), doc.name);
+    return new ProductCategory(
+      doc._id.toString(),
+      doc.name,
+      doc.productId.toString(),
+    );
   }
 
   async create(
