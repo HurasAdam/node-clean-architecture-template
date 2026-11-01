@@ -143,6 +143,15 @@ export class ArticleRepository implements IArticleRepository {
     return this.toDomain(doc);
   }
 
+  async findByTitle(title: string): Promise<ArticleEntity | null> {
+    const escapedTitle = title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+    const doc = await this.model.findOne({
+      title: { $regex: `^${escapedTitle}$`, $options: "i" },
+    });
+
+    return doc ? this.toDomain(doc) : null;
+  }
   async updateOne(id: string, data: UpdateArticleDto) {
     const doc = await this.model.findByIdAndUpdate(
       id,
@@ -153,6 +162,26 @@ export class ArticleRepository implements IArticleRepository {
     if (!doc) return null;
 
     return this.toDomain(doc);
+  }
+
+  async updateTitle(
+    articleId: string,
+    currentUserId: string,
+    title: string,
+  ): Promise<ArticleEntity | null> {
+    const doc = await this.model.findByIdAndUpdate(
+      articleId,
+      {
+        $set: {
+          title,
+          lastUpdatedBy: currentUserId,
+          updatedAt: new Date(),
+        },
+      },
+      { new: true, runValidators: true },
+    );
+
+    return doc ? this.toDomain(doc) : null;
   }
 
   deleteOne(id: string) {

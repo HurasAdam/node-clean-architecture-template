@@ -18,6 +18,7 @@ import { IUserRepository } from "../../users/domain/user.repository.interface";
 import { IArticleRepository } from "../domain/article.repository.interface";
 import { CreateArticleDto } from "../dto/create-article.dto";
 import { RequestChangesDto } from "../dto/request-changes.dto";
+import { UpdateArticleTitleDto } from "../dto/update-title.dto";
 
 export class ArticleService {
   private articleRepository: IArticleRepository;
@@ -147,6 +148,36 @@ export class ArticleService {
       "Only articles requiring changes can be submitted for review",
     );
     return await this.articleRepository.submitForReview(articleId);
+  }
+
+  async updateTitle(
+    articleId: string,
+    currentUserId: string,
+    payload: UpdateArticleTitleDto,
+  ) {
+    const article = await this.articleRepository.findOne(articleId);
+
+    appAssert(article, NOT_FOUND, "Article not found");
+
+    const title = payload.title.trim();
+
+    appAssert(title.length > 0, BAD_REQUEST, "Article title is required");
+
+    appAssert(
+      article.title !== title,
+      CONFLICT,
+      "The article already has this title",
+    );
+
+    const existingArticle = await this.articleRepository.findByTitle(title);
+
+    appAssert(
+      !existingArticle || existingArticle.id === articleId,
+      CONFLICT,
+      "An article with this title already exists",
+    );
+
+    return this.articleRepository.updateTitle(articleId, currentUserId, title);
   }
 
   async find() {

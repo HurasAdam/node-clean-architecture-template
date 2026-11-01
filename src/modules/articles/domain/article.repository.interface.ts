@@ -39,6 +39,12 @@ export interface IArticleRepository {
   submitForReview(id: string): Promise<ArticleEntity | null>;
   find(): Promise<ArticleEntity[]>;
   findOne(id: string): Promise<ArticleEntity | null>;
+  findByTitle(title: string): Promise<ArticleEntity | null>;
   updateOne(id: string, data: UpdateArticleDto): Promise<ArticleEntity | null>;
+  updateTitle(
+    articleId: string,
+    currentUserId: string,
+    title: string,
+  ): Promise<ArticleEntity | null>;
   deleteOne(id: string): any;
 }

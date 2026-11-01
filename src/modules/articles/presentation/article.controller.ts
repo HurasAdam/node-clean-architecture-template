@@ -3,10 +3,11 @@
  * @license Apache-2.0
  */
 
-import { CREATED, OK } from "../../../constants/http";
+import { CREATED, NO_CONTENT, OK } from "../../../constants/http";
 import catchErrors from "../../../utils/catchErrors";
 import { ArticleService } from "../application/article.service";
 import { createArticleDto } from "../dto/create-article.dto";
+import { updateArticleTitleDto } from "../dto/update-title.dto";
 
 export class ArticleController {
   private service;
@@ -54,6 +55,15 @@ export class ArticleController {
 
     await this.service.submitForReview(articleId, currentUser);
     return res.sendStatus(OK);
+  });
+
+  updateTitle = catchErrors(async (req, res) => {
+    const { articleId } = req.params;
+    const { userId: currentUser } = req;
+    const payload = updateArticleTitleDto.parse(req.body);
+
+    await this.service.updateTitle(articleId, currentUser, payload);
+    return res.sendStatus(NO_CONTENT);
   });
 
   find = catchErrors(async (req, res) => {

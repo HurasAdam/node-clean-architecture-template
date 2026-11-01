@@ -26,6 +26,8 @@ export const createArticleRoutes = (container: Container) => {
     "/:articleId/submit-for-review",
     container.article.controller.submitForReview,
   );
+
+  router.patch("/:articleId/title", container.article.controller.updateTitle);
   router.get("/", container.article.controller.find);
   router.get("/:articleId", container.article.controller.findOne);
 
