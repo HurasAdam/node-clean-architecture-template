@@ -3,6 +3,8 @@
  * @license Apache-2.0
  */
 
+import { ArticleAuditLogModel } from "../../modules/article-audit-log/infrastructure/models/mongo";
+import { ArticleAuditLogRepository } from "../../modules/article-audit-log/infrastructure/repositories/mongo";
 import { ArticleResponseVariantModel } from "../../modules/articleResponseVariants/infrastructure/models/mongo";
 import { ArticleResponseVariantRepository } from "../../modules/articleResponseVariants/infrastructure/repositories/mongo";
 import ArticleModel from "../../modules/articles/infrastructure/article.model";
@@ -48,6 +50,11 @@ export function createMongoRepositoryProvider(): IRepositoryProvider {
     articleResponseVariantRepository: new ArticleResponseVariantRepository(
       ArticleResponseVariantModel,
     ),
+
+    articleAuditLogRepository: new ArticleAuditLogRepository(
+      ArticleAuditLogModel,
+    ),
+
     productRepository: new ProductRepository(ProductModel),
     productCategoryRepository: new ProductCategoryRepository(
       ProductCategoryModel,

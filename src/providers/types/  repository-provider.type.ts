@@ -1,3 +1,4 @@
+import { IArticleAuditLogRepository } from "../../modules/article-audit-log/domain/repository.interface";
 import { IArticleResponseVariantRepository } from "../../modules/articleResponseVariants/domain/repository.interface";
 import { IArticleRepository } from "../../modules/articles/domain/article.repository.interface";
 import { IContactRegistryRepository } from "../../modules/contactRegistry/domain/repository.interface";
@@ -22,6 +23,7 @@ export interface IRepositoryProvider {
   roleRepository: IRoleRepository;
   articleRepository: IArticleRepository;
   articleResponseVariantRepository: IArticleResponseVariantRepository;
+  articleAuditLogRepository: IArticleAuditLogRepository;
   productRepository: IProductRepository;
   productCategoryRepository: IProductCategoryRepository;
   productTopicRepository: IProductTopicRepository;

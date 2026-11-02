@@ -5,6 +5,7 @@
 
 import { AuthMiddleware } from "../middleware/authGuard";
 import { createAdminModule } from "../modules/admin/admin.module";
+import { createArticleAuditLogModule } from "../modules/article-audit-log/module";
 import { createArticleResponseVariantModule } from "../modules/articleResponseVariants/module";
 import { createArticleModule } from "../modules/articles/article.module";
 import { createAuthModule } from "../modules/auth/auth.module";
@@ -44,6 +45,10 @@ export function initContainer() {
     productCategoryRepository: repositories.productCategoryRepository,
     tagRepository: repositories.tagRepository,
     userRepository: repositories.userRepository,
+  });
+
+  const articleAuditLogModule = createArticleAuditLogModule({
+    articleAuditLogRepository: repositories.articleAuditLogRepository,
   });
 
   const articleResponseVariantModule = createArticleResponseVariantModule({
@@ -155,6 +160,7 @@ export function initContainer() {
     tag: tagModule,
     article: articleModule,
     articleResponseVariant: articleResponseVariantModule,
+    articleAuditLog: articleAuditLogModule,
     product: productModule,
     productCategory: productCategoryModule,
     productTopic: productTopicModule,
