@@ -10,6 +10,7 @@ import {
   NOT_FOUND,
 } from "../../../constants/http";
 import appAssert from "../../../utils/appAssert";
+import { IArticleAuditLogRepository } from "../../article-audit-log/domain/repository.interface";
 import { IArticleResponseVariantRepository } from "../../articleResponseVariants/domain/repository.interface";
 import { IProductCategoryRepository } from "../../product-categories/domain/product-category.repository.interface";
 import { IProductRepository } from "../../products/domain/product.repository.interface";
@@ -26,6 +27,7 @@ import { UpdateArticleTitleDto } from "../dto/update-title.dto";
 export class ArticleService {
   private articleRepository: IArticleRepository;
   private articleResponseVariantRepository: IArticleResponseVariantRepository;
+  private articleAuditLogRepository: IArticleAuditLogRepository;
   private productRepository: IProductRepository;
   private productCategoryRepository: IProductCategoryRepository;
   private tagRepository: ITagRepository;
@@ -33,6 +35,7 @@ export class ArticleService {
   constructor(
     articleRepository: IArticleRepository,
     articleResponseVariantRepository: IArticleResponseVariantRepository,
+    articleAuditLogRepository: IArticleAuditLogRepository,
     productRepository: IProductRepository,
     productCategoryRepository: IProductCategoryRepository,
     tagRepository: ITagRepository,
@@ -40,6 +43,7 @@ export class ArticleService {
   ) {
     this.articleRepository = articleRepository;
     this.articleResponseVariantRepository = articleResponseVariantRepository;
+    this.articleAuditLogRepository = articleAuditLogRepository;
     this.productRepository = productRepository;
     this.productCategoryRepository = productCategoryRepository;
     this.tagRepository = tagRepository;
@@ -47,19 +51,94 @@ export class ArticleService {
   }
 
   async create(currentUser: string, payload: CreateArticleDto) {
+    const [author, product, category, tags] = await Promise.all([
+      this.userRepository.findOneById(currentUser),
+      this.productRepository.findOne(payload.product),
+      this.productCategoryRepository.findOne(payload.category),
+      this.tagRepository.findByIds(payload.tags),
+    ]);
+
+    appAssert(author, NOT_FOUND, "User not found");
+    appAssert(product, NOT_FOUND, "Product not found");
+    appAssert(category, NOT_FOUND, "Category not found");
+
+    appAssert(
+      category.product === payload.product,
+      BAD_REQUEST,
+      "The selected category does not belong to the selected product",
+    );
+
+    appAssert(
+      tags.length === payload.tags.length,
+      NOT_FOUND,
+      "One or more tags were not found",
+    );
+
     const article = await this.articleRepository.create(
       currentUser,
       payload,
       "DRAFT",
       "UNPUBLISHED",
     );
-    if (payload.responseVariant) {
-      await this.articleResponseVariantRepository.add(currentUser, {
-        articleId: article.id,
-        variantName: payload.responseVariant.variantName,
-        variantContent: payload.responseVariant.variantContent,
-      });
-    }
+
+    const responseVariant = payload.responseVariant
+      ? await this.articleResponseVariantRepository.add(currentUser, {
+          articleId: article.id,
+          variantName: payload.responseVariant.variantName,
+          variantContent: payload.responseVariant.variantContent,
+        })
+      : null;
+
+    await this.articleAuditLogRepository.add({
+      articleId: article.id,
+      eventType: "ARTICLE_CREATED",
+      actorId: author.id,
+      actorName: author.name,
+      actorSurname: author.surname,
+      actorEmail: author.email,
+      changes: [
+        {
+          field: "title",
+          before: null,
+          after: payload.title,
+        },
+        {
+          field: "internalNote",
+          before: null,
+          after: payload.internalNote,
+        },
+        {
+          field: "product",
+          before: null,
+          after: product.name,
+        },
+        {
+          field: "category",
+          before: null,
+          after: category.name,
+        },
+        {
+          field: "tags",
+          before: null,
+          after: tags.map((tag) => tag.name),
+        },
+        ...(responseVariant
+          ? [
+              {
+                field: "responseVariant",
+                before: null,
+                after: {
+                  id: responseVariant.id,
+                  variantName: responseVariant.variantName,
+                  variantContent: responseVariant.variantContent,
+                },
+              },
+            ]
+          : []),
+      ],
+    });
+
+    return article;
   }
 
   async approveOne(articleId: string, currentUserId: string) {
@@ -74,9 +153,69 @@ export class ArticleService {
       "Only unpublished draft articles can be approved",
     );
 
+    const approver = await this.userRepository.findOneById(currentUserId);
+
+    appAssert(approver, NOT_FOUND, "User not found");
+
     const now = new Date();
 
-    await this.articleRepository.approveOne(articleId, currentUserId, now);
+    const updatedArticle = await this.articleRepository.approveOne(
+      articleId,
+      currentUserId,
+      now,
+    );
+
+    appAssert(updatedArticle, NOT_FOUND, "Article not found");
+
+    const actor = {
+      actorId: approver.id,
+      actorName: approver.name,
+      actorSurname: approver.surname,
+      actorEmail: approver.email,
+    };
+
+    await this.articleAuditLogRepository.add({
+      articleId: article.id,
+      eventType: "ARTICLE_PUBLISHED",
+      ...actor,
+      changes: [
+        {
+          field: "publicationStatus",
+          before: article.publicationStatus,
+          after: updatedArticle.publicationStatus,
+        },
+      ],
+    });
+
+    await this.articleAuditLogRepository.add({
+      articleId: article.id,
+      eventType: "ARTICLE_VERIFIED",
+      ...actor,
+      changes: [
+        {
+          field: "reviewStatus",
+          before: article.reviewStatus,
+          after: updatedArticle.reviewStatus,
+        },
+        {
+          field: "verifiedBy",
+          before: null,
+          after: {
+            id: approver.id,
+            name: approver.name,
+            surname: approver.surname,
+            email: approver.email,
+          },
+        },
+        {
+          field: "lastVerifiedAt",
+          before: article.lastVerifiedAt,
+          after: updatedArticle.lastVerifiedAt,
+        },
+      ],
+    });
+
+    return updatedArticle;
   }
 
   async verifyOne(articleId: string, currentUserId: string) {

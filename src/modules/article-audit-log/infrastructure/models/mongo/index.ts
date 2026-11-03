@@ -3,6 +3,8 @@ import { Document, Schema, Types, model } from "mongoose";
 export type ArticleAuditLogEventType =
   | "ARTICLE_CREATED"
   | "ARTICLE_APPROVED"
+  | "ARTICLE_PUBLISHED"
+  | "ARTICLE_VERIFIED"
   | "ARTICLE_TITLE_UPDATED"
   | "ARTICLE_INTERNAL_NOTE_UPDATED"
   | "ARTICLE_PRODUCT_UPDATED"
@@ -23,7 +25,6 @@ export interface ArticleAuditLogChange {
 export interface ArticleAuditLogDocument extends Document {
   articleId: Types.ObjectId;
   variantId?: Types.ObjectId;
-
   eventType: ArticleAuditLogEventType;
 
   actor: {
@@ -34,9 +35,29 @@ export interface ArticleAuditLogDocument extends Document {
   };
 
   changes: ArticleAuditLogChange[];
-
   createdAt: Date;
 }
+
+// Schema pojedynczej zmiany – bez automatycznego _id
+const ArticleAuditLogChangeSchema = new Schema<ArticleAuditLogChange>(
+  {
+    field: {
+      type: String,
+      required: true,
+    },
+    before: {
+      type: Schema.Types.Mixed,
+      default: null,
+    },
+    after: {
+      type: Schema.Types.Mixed,
+      default: null,
+    },
+  },
+  {
+    _id: false,
+  },
+);
 
 const ArticleAuditLogSchema = new Schema<ArticleAuditLogDocument>(
   {
@@ -57,6 +78,8 @@ const ArticleAuditLogSchema = new Schema<ArticleAuditLogDocument>(
       enum: [
         "ARTICLE_CREATED",
         "ARTICLE_APPROVED",
+        "ARTICLE_PUBLISHED",
+        "ARTICLE_VERIFIED",
         "ARTICLE_TITLE_UPDATED",
         "ARTICLE_INTERNAL_NOTE_UPDATED",
         "ARTICLE_PRODUCT_UPDATED",
@@ -90,22 +113,10 @@ const ArticleAuditLogSchema = new Schema<ArticleAuditLogDocument>(
       },
     },
 
-    changes: [
-      {
-        field: {
-          type: String,
-          required: true,
-        },
-        before: {
-          type: Schema.Types.Mixed,
-          default: null,
-        },
-        after: {
-          type: Schema.Types.Mixed,
-          default: null,
-        },
-      },
-    ],
+    changes: {
+      type: [ArticleAuditLogChangeSchema],
+      default: [],
+    },
   },
   {
     timestamps: {

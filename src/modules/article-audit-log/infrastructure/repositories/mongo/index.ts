@@ -36,7 +36,8 @@ export class ArticleAuditLogRepository implements IArticleAuditLogRepository {
       actor: {
         userId: data.actorId,
         name: data.actorName,
-        role: data.actorRole,
+        surname: data.actorName,
+        email: data.actorEmail,
       },
       changes: data.changes,
     });

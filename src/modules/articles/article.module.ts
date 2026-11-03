@@ -3,6 +3,7 @@
  * @license Apache-2.0
  */
 
+import { IArticleAuditLogRepository } from "../article-audit-log/domain/repository.interface";
 import { IArticleResponseVariantRepository } from "../articleResponseVariants/domain/repository.interface";
 import { IProductCategoryRepository } from "../product-categories/domain/product-category.repository.interface";
 import { IProductRepository } from "../products/domain/product.repository.interface";
@@ -15,6 +16,7 @@ import { ArticleController } from "./presentation/article.controller";
 interface deps {
   articleRepository: IArticleRepository;
   articleResponseVariantRepository: IArticleResponseVariantRepository;
+  articleAuditLogRepository: IArticleAuditLogRepository;
   productRepository: IProductRepository;
   productCategoryRepository: IProductCategoryRepository;
   tagRepository: ITagRepository;
@@ -25,6 +27,7 @@ export function createArticleModule(deps: deps) {
   const articleService = new ArticleService(
     deps.articleRepository,
     deps.articleResponseVariantRepository,
+    deps.articleAuditLogRepository,
     deps.productRepository,
     deps.productCategoryRepository,
     deps.tagRepository,

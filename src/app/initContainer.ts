@@ -41,6 +41,7 @@ export function initContainer() {
     articleRepository: repositories.articleRepository,
     articleResponseVariantRepository:
       repositories.articleResponseVariantRepository,
+    articleAuditLogRepository: repositories.articleAuditLogRepository,
     productRepository: repositories.productRepository,
     productCategoryRepository: repositories.productCategoryRepository,
     tagRepository: repositories.tagRepository,

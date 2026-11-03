@@ -16,7 +16,7 @@ export interface CreateArticleAuditLogDTO {
 
   actorId: string;
   actorName: string;
-  actorRole: string;
-
+  actorSurname: string;
+  actorEmail: string;
   changes: ArticleAuditLogChange[];
 }
