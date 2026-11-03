@@ -566,12 +566,22 @@ export class ArticleService {
 
     appAssert(tags.length > 0, BAD_REQUEST, "At least one tag is required");
 
-    const existingTags = await this.tagRepository.findByIds(tags);
+    const [existingTags, previousTags, actor] = await Promise.all([
+      this.tagRepository.findByIds(tags),
+      this.tagRepository.findByIds(article.tags),
+      this.userRepository.findOneById(currentUserId),
+    ]);
 
     appAssert(
       existingTags.length === tags.length,
       NOT_FOUND,
       "One or more tags were not found",
+    );
+
+    appAssert(
+      previousTags.length === article.tags.length,
+      NOT_FOUND,
+      "One or more previous tags were not found",
     );
 
     appAssert(
@@ -581,9 +591,34 @@ export class ArticleService {
       "The article already has these tags",
     );
 
-    return this.articleRepository.updateTags(articleId, currentUserId, tags);
-  }
+    appAssert(actor, NOT_FOUND, "User not found");
 
+    const updatedArticle = await this.articleRepository.updateTags(
+      articleId,
+      currentUserId,
+      tags,
+    );
+
+    appAssert(updatedArticle, NOT_FOUND, "Article not found");
+
+    await this.articleAuditLogRepository.add({
+      articleId,
+      eventType: "ARTICLE_TAGS_UPDATED",
+      actorId: actor.id,
+      actorName: actor.name,
+      actorSurname: actor.surname,
+      actorEmail: actor.email,
+      changes: [
+        {
+          field: "tags",
+          before: previousTags.map((tag) => tag.name),
+          after: existingTags.map((tag) => tag.name),
+        },
+      ],
+    });
+
+    return updatedArticle;
+  }
   async find() {
     const articles = await this.articleRepository.find();
 
