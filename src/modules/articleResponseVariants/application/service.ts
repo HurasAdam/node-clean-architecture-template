@@ -98,10 +98,44 @@ export class ArticleResponseVariantService {
 
     return this.articleResponseVariantRepository.updateOne(variantId, payload);
   }
-  async deleteOne(variantId: string) {
-    const variant =
-      await this.articleResponseVariantRepository.findOne(variantId);
+  async deleteOne(variantId: string, currentUserId: string) {
+    const [variant, actor] = await Promise.all([
+      this.articleResponseVariantRepository.findOne(variantId),
+      this.userRepository.findOneById(currentUserId),
+    ]);
+
+    appAssert(variant, NOT_FOUND, "Nie znaleziono wariantu odpowiedzi");
+    appAssert(actor, NOT_FOUND, "User not found");
 
     await this.articleResponseVariantRepository.deleteOne(variantId);
+
+    await this.articleAuditLogRepository.add({
+      articleId: variant.articleId,
+      variantId: variant.id,
+      eventType: "VARIANT_DELETED",
+
+      actorId: actor.id,
+      actorName: actor.name,
+      actorSurname: actor.surname,
+      actorEmail: actor.email,
+
+      changes: [
+        {
+          field: "variantName",
+          before: variant.variantName,
+          after: null,
+        },
+        {
+          field: "variantContent",
+          before: variant.variantContent,
+          after: null,
+        },
+        {
+          field: "order",
+          before: variant.order,
+          after: null,
+        },
+      ],
+    });
   }
 }
