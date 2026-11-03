@@ -374,9 +374,36 @@ export class ArticleService {
       "An article with this title already exists",
     );
 
-    return this.articleRepository.updateTitle(articleId, currentUserId, title);
-  }
+    const actor = await this.userRepository.findOneById(currentUserId);
 
+    appAssert(actor, NOT_FOUND, "User not found");
+
+    const updatedArticle = await this.articleRepository.updateTitle(
+      articleId,
+      currentUserId,
+      title,
+    );
+
+    appAssert(updatedArticle, NOT_FOUND, "Article not found");
+
+    await this.articleAuditLogRepository.add({
+      articleId,
+      eventType: "ARTICLE_TITLE_UPDATED",
+      actorId: actor.id,
+      actorName: actor.name,
+      actorSurname: actor.surname,
+      actorEmail: actor.email,
+      changes: [
+        {
+          field: "title",
+          before: article.title,
+          after: updatedArticle.title,
+        },
+      ],
+    });
+
+    return updatedArticle;
+  }
   async updateInternalNote(
     articleId: string,
     currentUserId: string,
