@@ -238,9 +238,64 @@ export class ArticleService {
       "The article does not require verification",
     );
 
+    const [verifier, previousVerifier] = await Promise.all([
+      this.userRepository.findOneById(currentUserId),
+      article.verifiedBy
+        ? this.userRepository.findOneById(article.verifiedBy)
+        : null,
+    ]);
+
+    appAssert(verifier, NOT_FOUND, "User not found");
+
     const now = new Date();
 
-    return this.articleRepository.verifyOne(articleId, currentUserId, now);
+    const updatedArticle = await this.articleRepository.verifyOne(
+      articleId,
+      currentUserId,
+      now,
+    );
+
+    appAssert(updatedArticle, NOT_FOUND, "Article not found");
+
+    await this.articleAuditLogRepository.add({
+      articleId: article.id,
+      eventType: "ARTICLE_VERIFIED",
+      actorId: verifier.id,
+      actorName: verifier.name,
+      actorSurname: verifier.surname,
+      actorEmail: verifier.email,
+      changes: [
+        {
+          field: "reviewStatus",
+          before: article.reviewStatus,
+          after: updatedArticle.reviewStatus,
+        },
+        {
+          field: "verifiedBy",
+          before: previousVerifier
+            ? {
+                id: previousVerifier.id,
+                name: previousVerifier.name,
+                surname: previousVerifier.surname,
+                email: previousVerifier.email,
+              }
+            : null,
+          after: {
+            id: verifier.id,
+            name: verifier.name,
+            surname: verifier.surname,
+            email: verifier.email,
+          },
+        },
+        {
+          field: "lastVerifiedAt",
+          before: article.lastVerifiedAt,
+          after: updatedArticle.lastVerifiedAt,
+        },
+      ],
+    });
+
+    return updatedArticle;
   }
 
   async requestChanges(
