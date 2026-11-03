@@ -427,11 +427,35 @@ export class ArticleService {
       "The article already has this internal note",
     );
 
-    return this.articleRepository.updateInternalNote(
+    const actor = await this.userRepository.findOneById(currentUserId);
+
+    appAssert(actor, NOT_FOUND, "User not found");
+
+    const updatedArticle = await this.articleRepository.updateInternalNote(
       articleId,
       currentUserId,
       internalNote,
     );
+
+    appAssert(updatedArticle, NOT_FOUND, "Article not found");
+
+    await this.articleAuditLogRepository.add({
+      articleId,
+      eventType: "ARTICLE_INTERNAL_NOTE_UPDATED",
+      actorId: actor.id,
+      actorName: actor.name,
+      actorSurname: actor.surname,
+      actorEmail: actor.email,
+      changes: [
+        {
+          field: "internalNote",
+          before: article.internalNote,
+          after: updatedArticle.internalNote,
+        },
+      ],
+    });
+
+    return updatedArticle;
   }
 
   async updateProductCategory(
