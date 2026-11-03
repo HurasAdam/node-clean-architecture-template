@@ -469,13 +469,25 @@ export class ArticleService {
 
     const { product, category } = payload;
 
-    const [existingProduct, existingCategory] = await Promise.all([
+    const [
+      existingProduct,
+      existingCategory,
+      previousProduct,
+      previousCategory,
+      actor,
+    ] = await Promise.all([
       this.productRepository.findOne(product),
       this.productCategoryRepository.findOne(category),
+      this.productRepository.findOne(article.product),
+      this.productCategoryRepository.findOne(article.category),
+      this.userRepository.findOneById(currentUserId),
     ]);
 
     appAssert(existingProduct, NOT_FOUND, "Product not found");
     appAssert(existingCategory, NOT_FOUND, "Category not found");
+    appAssert(previousProduct, NOT_FOUND, "Previous product not found");
+    appAssert(previousCategory, NOT_FOUND, "Previous category not found");
+    appAssert(actor, NOT_FOUND, "User not found");
 
     appAssert(
       existingCategory.product === product,
@@ -483,18 +495,62 @@ export class ArticleService {
       "The selected category does not belong to the selected product",
     );
 
+    const isProductChanged = article.product !== product;
+    const isCategoryChanged = article.category !== category;
+
     appAssert(
-      article.product !== product || article.category !== category,
+      isProductChanged || isCategoryChanged,
       CONFLICT,
       "The article already has this product and category",
     );
 
-    return this.articleRepository.updateProductCategory(
+    const updatedArticle = await this.articleRepository.updateProductCategory(
       articleId,
       currentUserId,
       product,
       category,
     );
+
+    appAssert(updatedArticle, NOT_FOUND, "Article not found");
+
+    const actorData = {
+      actorId: actor.id,
+      actorName: actor.name,
+      actorSurname: actor.surname,
+      actorEmail: actor.email,
+    };
+
+    if (isProductChanged) {
+      await this.articleAuditLogRepository.add({
+        articleId,
+        eventType: "ARTICLE_PRODUCT_UPDATED",
+        ...actorData,
+        changes: [
+          {
+            field: "product",
+            before: previousProduct.name,
+            after: existingProduct.name,
+          },
+        ],
+      });
+    }
+
+    if (isCategoryChanged) {
+      await this.articleAuditLogRepository.add({
+        articleId,
+        eventType: "ARTICLE_CATEGORY_UPDATED",
+        ...actorData,
+        changes: [
+          {
+            field: "category",
+            before: previousCategory.name,
+            after: existingCategory.name,
+          },
+        ],
+      });
+    }
+
+    return updatedArticle;
   }
 
   async updateTags(
