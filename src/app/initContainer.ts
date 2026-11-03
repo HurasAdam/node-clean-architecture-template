@@ -55,6 +55,8 @@ export function initContainer() {
   const articleResponseVariantModule = createArticleResponseVariantModule({
     articleResponseVariantRepository:
       repositories.articleResponseVariantRepository,
+    articleAuditLogRepository: repositories.articleAuditLogRepository,
+    userRepository: repositories.userRepository,
   });
 
   const productModule = createProductModule({

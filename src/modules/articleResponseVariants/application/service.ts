@@ -1,17 +1,24 @@
 import { CONFLICT, NOT_FOUND } from "../../../constants/http";
 import appAssert from "../../../utils/appAssert";
+import { IArticleAuditLogRepository } from "../../article-audit-log/domain/repository.interface";
+import { IUserRepository } from "../../users/domain/user.repository.interface";
 import { IArticleResponseVariantRepository } from "../domain/repository.interface";
 
 export class ArticleResponseVariantService {
   private articleResponseVariantRepository: IArticleResponseVariantRepository;
-
+  private articleAuditLogRepository: IArticleAuditLogRepository;
+  private userRepository: IUserRepository;
   constructor(
     articleResponseVariantRepository: IArticleResponseVariantRepository,
+    articleAuditLogRepository: IArticleAuditLogRepository,
+    userRepository: IUserRepository,
   ) {
     this.articleResponseVariantRepository = articleResponseVariantRepository;
+    this.articleAuditLogRepository = articleAuditLogRepository;
+    this.userRepository = userRepository;
   }
 
-  add(
+  async add(
     currentUserId: string,
     payload: {
       articleId: string;
@@ -20,9 +27,45 @@ export class ArticleResponseVariantService {
       order: number;
     },
   ) {
-    return this.articleResponseVariantRepository.add(currentUserId, payload);
-  }
+    const [actor, variant] = await Promise.all([
+      this.userRepository.findOneById(currentUserId),
+      this.articleResponseVariantRepository.add(currentUserId, payload),
+    ]);
 
+    appAssert(actor, NOT_FOUND, "User not found");
+    appAssert(variant, NOT_FOUND, "Nie udało się dodać wariantu odpowiedzi");
+
+    await this.articleAuditLogRepository.add({
+      articleId: payload.articleId,
+      variantId: variant.id,
+      eventType: "VARIANT_CREATED",
+
+      actorId: actor.id,
+      actorName: actor.name,
+      actorSurname: actor.surname,
+      actorEmail: actor.email,
+
+      changes: [
+        {
+          field: "variantName",
+          before: null,
+          after: variant.variantName,
+        },
+        {
+          field: "variantContent",
+          before: null,
+          after: variant.variantContent,
+        },
+        {
+          field: "order",
+          before: null,
+          after: variant.order,
+        },
+      ],
+    });
+
+    return variant;
+  }
   findByArticleId(articleId: string) {}
 
   findOne(variantId: string) {}
