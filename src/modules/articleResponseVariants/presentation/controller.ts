@@ -19,8 +19,13 @@ export class ArticleResponseVariantController {
 
   updateOne = catchErrors(async (req, res) => {
     const { variantId } = req.params;
+    const { userId: currentUserId } = req;
     const payload = req.body;
-    await this.articleResponseVariantService.updateOne(variantId, payload);
+    await this.articleResponseVariantService.updateOne(
+      variantId,
+      currentUserId,
+      payload,
+    );
     return res.sendStatus(NO_CONTENT);
   });
 

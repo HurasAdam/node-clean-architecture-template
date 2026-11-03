@@ -3,6 +3,7 @@ import appAssert from "../../../utils/appAssert";
 import { IArticleAuditLogRepository } from "../../article-audit-log/domain/repository.interface";
 import { IUserRepository } from "../../users/domain/user.repository.interface";
 import { IArticleResponseVariantRepository } from "../domain/repository.interface";
+import { VariantChange } from "../domain/types";
 
 export class ArticleResponseVariantService {
   private articleResponseVariantRepository: IArticleResponseVariantRepository;
@@ -69,19 +70,24 @@ export class ArticleResponseVariantService {
   findByArticleId(articleId: string) {}
 
   findOne(variantId: string) {}
+
   async updateOne(
     variantId: string,
+    currentUserId: string,
     payload: {
       variantName?: string;
       variantContent?: string;
     },
   ) {
-    const variant =
-      await this.articleResponseVariantRepository.findOne(variantId);
+    const [variant, actor] = await Promise.all([
+      this.articleResponseVariantRepository.findOne(variantId),
+      this.userRepository.findOneById(currentUserId),
+    ]);
 
     appAssert(variant, NOT_FOUND, "Nie znaleziono wariantu odpowiedzi");
+    appAssert(actor, NOT_FOUND, "User not found");
 
-    if (payload.variantName) {
+    if (payload.variantName !== undefined) {
       const existingVariant =
         await this.articleResponseVariantRepository.findByArticleIdAndVariantName(
           variant.articleId,
@@ -96,7 +102,67 @@ export class ArticleResponseVariantService {
       );
     }
 
-    return this.articleResponseVariantRepository.updateOne(variantId, payload);
+    const changes: VariantChange[] = [];
+
+    if (
+      payload.variantName !== undefined &&
+      payload.variantName !== variant.variantName
+    ) {
+      changes.push({
+        eventType: "VARIANT_NAME_UPDATED" as const,
+        field: "variantName",
+        before: variant.variantName,
+        after: payload.variantName,
+      });
+    }
+
+    if (
+      payload.variantContent !== undefined &&
+      payload.variantContent !== variant.variantContent
+    ) {
+      changes.push({
+        eventType: "VARIANT_CONTENT_UPDATED" as const,
+        field: "variantContent",
+        before: variant.variantContent,
+        after: payload.variantContent,
+      });
+    }
+
+    appAssert(changes.length > 0, CONFLICT, "No changes detected");
+
+    const updatedVariant =
+      await this.articleResponseVariantRepository.updateOne(variantId, payload);
+
+    appAssert(
+      updatedVariant,
+      NOT_FOUND,
+      "Nie udało się zaktualizować wariantu",
+    );
+
+    await Promise.all(
+      changes.map((change) =>
+        this.articleAuditLogRepository.add({
+          articleId: variant.articleId,
+          variantId: variant.id,
+          eventType: change.eventType,
+
+          actorId: actor.id,
+          actorName: actor.name,
+          actorSurname: actor.surname,
+          actorEmail: actor.email,
+
+          changes: [
+            {
+              field: change.field,
+              before: change.before,
+              after: change.after,
+            },
+          ],
+        }),
+      ),
+    );
+
+    return updatedVariant;
   }
   async deleteOne(variantId: string, currentUserId: string) {
     const [variant, actor] = await Promise.all([
