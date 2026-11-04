@@ -44,4 +44,13 @@ export class ArticleAuditLogRepository implements IArticleAuditLogRepository {
 
     return this.toDomain(doc);
   }
+
+  async findByArticleId(articleId: string): Promise<ArticleAuditLogEntity[]> {
+    const docs = await this.model
+      .find({ articleId })
+      .sort({ createdAt: 1 })
+      .exec();
+
+    return docs.map((doc) => this.toDomain(doc));
+  }
 }

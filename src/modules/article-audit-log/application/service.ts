@@ -6,4 +6,8 @@ export class ArticleAuditLogService {
   constructor(articleAuditLogRepository: IArticleAuditLogRepository) {
     this.articleAuditLogRepository = articleAuditLogRepository;
   }
+
+  async findByArticleId(articleId: string) {
+    return this.articleAuditLogRepository.findByArticleId(articleId);
+  }
 }

@@ -15,6 +15,10 @@ export const createArticleAuditLogsRoutes = (container: Container) => {
   const router = Router();
 
   router.post("/create", container.articleAuditLog.controller.add);
+  router.get(
+    "/:articleId",
+    container.articleAuditLog.controller.findByArticleId,
+  );
 
   return router;
 };

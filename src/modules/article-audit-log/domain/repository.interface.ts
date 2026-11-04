@@ -3,4 +3,5 @@ import { ArticleAuditLogEntity } from "./entity";
 
 export interface IArticleAuditLogRepository {
   add(data: CreateArticleAuditLogDTO): Promise<ArticleAuditLogEntity>;
+  findByArticleId(articleId: string): Promise<ArticleAuditLogEntity[]>;
 }
