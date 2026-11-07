@@ -19,6 +19,17 @@ export const createAuthRoutes = (container: Container) => {
     container.auth.controller.findMe,
   );
   router.post("/login", container.auth.controller.login);
+
+  /**
+   * PATCH /auth/change-password
+   * changes password of the authenticated user
+   */
+  router.patch(
+    "/change-password",
+    container.authGuard.authenticate,
+    container.auth.controller.changePassword,
+  );
+
   router.get(
     "/logout",
     container.authGuard.authenticate,

@@ -15,6 +15,7 @@ import {
 import { IRoleRepository } from "../../roles/domain/role.repository.interface";
 import { ISessionRepository } from "../../sessions/domain/session.repository.interface";
 import { IUserRepository } from "../../users/domain/user.repository.interface";
+import { ChangePasswordDto } from "../dto/change-password.dto";
 import { LoginUserDto } from "../dto/login-user.dto";
 
 export class AuthService {
@@ -85,6 +86,41 @@ export class AuthService {
         payload.sessionId.toString(),
       );
     }
+  }
+
+  async changePassword(
+    currentUserId: string,
+    payload: ChangePasswordDto,
+  ): Promise<void> {
+    const user = await this.userRepository.findOneById(currentUserId);
+
+    appAssert(user, NOT_FOUND, "User not found");
+
+    appAssert(
+      user.isActive,
+      FORBIDDEN,
+      "Account is disabled",
+      AppErrorCode.AccountDisabled,
+    );
+
+    const isValid = await this.userRepository.verifyPassword(
+      currentUserId,
+      payload.currentPassword,
+    );
+
+    appAssert(
+      isValid,
+      UNAUTHORIZED,
+      "Invalid current password",
+      AppErrorCode.InvalidCredentials,
+    );
+
+    const updatedUser = await this.userRepository.updatePassword(
+      currentUserId,
+      payload.newPassword,
+    );
+
+    appAssert(updatedUser, NOT_FOUND, "User not found");
   }
 
   async me(id: string) {

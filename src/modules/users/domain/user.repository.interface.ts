@@ -27,4 +27,6 @@ export interface IUserRepository {
   updatePassword(id: string, password: string): Promise<any>;
 
   updateRole(id: string, roleId: String): Promise<User | null>;
+
+  verifyPassword(userId: string, password: string): Promise<boolean>;
 }

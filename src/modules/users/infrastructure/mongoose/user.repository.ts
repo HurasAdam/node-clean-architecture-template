@@ -80,6 +80,14 @@ export class UserRepository implements IUserRepository {
     return this.toDomain(user);
   }
 
+  async verifyPassword(userId: string, password: string): Promise<boolean> {
+    const user = await this.model.findById(userId);
+
+    if (!user) return false;
+
+    return user.comparePassword(password);
+  }
+
   async updatePassword(userId: string, password: string) {
     const user = await this.model.findById(userId);
     if (!user) return null;

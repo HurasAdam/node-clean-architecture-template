@@ -38,6 +38,13 @@ export class AuthController {
     return res.status(200).json(serviceResponse.user);
   });
 
+  changePassword = catchErrors(async (req, res) => {
+    const { userId: currentUserId } = req;
+    const payload = req.body;
+    await this.service.changePassword(currentUserId, payload);
+    return res.sendStatus(OK);
+  });
+
   findMe = catchErrors(async (req, res) => {
     const { userId } = req;
     const user = await this.service.me(userId);
