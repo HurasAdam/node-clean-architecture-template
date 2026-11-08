@@ -4,6 +4,7 @@
  */
 
 import { CreateArticleDto } from "../dto/create-article.dto";
+import { FindArticleDto } from "../dto/find-article.dto";
 import { UpdateArticleDto } from "../dto/update-article.dto";
 import {
   ArticleEntity,
@@ -37,7 +38,14 @@ export interface IArticleRepository {
   ): Promise<ArticleEntity | null>;
 
   submitForReview(id: string): Promise<ArticleEntity | null>;
-  find(): Promise<ArticleEntity[]>;
+  find(
+    filters: FindArticleDto,
+    matchingArticleIds?: string[],
+  ): Promise<{
+    articles: ArticleEntity[];
+    total: number;
+  }>;
+
   findOne(id: string): Promise<ArticleEntity | null>;
   findByTitle(title: string): Promise<ArticleEntity | null>;
   updateOne(id: string, data: UpdateArticleDto): Promise<ArticleEntity | null>;

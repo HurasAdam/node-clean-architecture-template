@@ -18,6 +18,7 @@ import { ITagRepository } from "../../tags/domain/tag.repository.interface";
 import { IUserRepository } from "../../users/domain/user.repository.interface";
 import { IArticleRepository } from "../domain/article.repository.interface";
 import { CreateArticleDto } from "../dto/create-article.dto";
+import { ArticleListItem, FindArticleDto } from "../dto/find-article.dto";
 import { RequestChangesDto } from "../dto/request-changes.dto";
 import { UpdateInternalNoteDto } from "../dto/update-internalNote.dto";
 import { UpdateProductAndCategoryDto } from "../dto/update-productAndCategory.dto";
@@ -619,14 +620,23 @@ export class ArticleService {
 
     return updatedArticle;
   }
-  async find() {
-    const articles = await this.articleRepository.find();
+
+  async find(filters: FindArticleDto) {
+    const matchingArticleIds = filters.search
+      ? await this.articleResponseVariantRepository.findArticleIdsBySearch(
+          filters.search,
+        )
+      : [];
+
+    const { articles, total } = await this.articleRepository.find(
+      filters,
+      matchingArticleIds,
+    );
 
     const productIds = [...new Set(articles.map((article) => article.product))];
     const categoryIds = [
       ...new Set(articles.map((article) => article.category)),
     ];
-
     const tagIds = [...new Set(articles.flatMap((article) => article.tags))];
 
     const [products, categories, tags] = await Promise.all([
@@ -665,15 +675,38 @@ export class ArticleService {
       ]),
     );
 
-    return articles.map((article) => ({
-      ...article,
-      requiresReverification: article.requiresReverification(),
+    const data: ArticleListItem[] = articles.map((article) => ({
+      id: article.id,
+      title: article.title,
+      publicationStatus: article.publicationStatus,
+      reviewStatus: article.reviewStatus,
       product: productsMap.get(article.product) ?? null,
       category: categoriesMap.get(article.category) ?? null,
       tags: article.tags
         .map((tagId) => tagsMap.get(tagId))
         .filter((tag) => tag !== undefined),
+      importantMarker: article.importantMarker,
+      createdAt: article.createdAt,
+      createdBy: article.createdBy,
+      verifiedBy: article.verifiedBy,
+      lastVerifiedAt: article.lastVerifiedAt,
+      updatedAt: article.updatedAt,
+      requiresReverification: article.requiresReverification(),
     }));
+
+    const totalPages = Math.ceil(total / filters.limit);
+
+    return {
+      data,
+      pagination: {
+        page: filters.page,
+        limit: filters.limit,
+        total,
+        totalPages,
+        hasNextPage: filters.page < totalPages,
+        hasPreviousPage: filters.page > 1,
+      },
+    };
   }
 
   async findOne(articleId: string) {

@@ -61,6 +61,19 @@ export class ArticleResponseVariantRepository implements IArticleResponseVariant
     return docs.map((doc) => this.toDomain(doc));
   }
 
+  async findArticleIdsBySearch(search: string): Promise<string[]> {
+    const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+    const articleIds = await this.model.distinct("articleId", {
+      $or: [
+        { variantName: { $regex: escapedSearch, $options: "i" } },
+        { variantContent: { $regex: escapedSearch, $options: "i" } },
+      ],
+    });
+
+    return articleIds.map((id) => id.toString());
+  }
+
   async findByArticleIdAndVariantName(
     workspaceArticleId: string,
     variantName: string,

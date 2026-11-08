@@ -16,6 +16,8 @@ export interface IArticleResponseVariantRepository {
     articleId: string,
   ) => Promise<ArticleResponseVariantEntity[]>;
 
+  findArticleIdsBySearch(search: string): Promise<string[]>;
+
   findByArticleIdAndVariantName: (
     articleId: string,
     variantName: string,

@@ -7,6 +7,7 @@ import { Model } from "mongoose";
 import { IArticleRepository } from "../../domain/article.repository.interface";
 import { ArticleEntity } from "../../domain/entity";
 import { CreateArticleDto } from "../../dto/create-article.dto";
+import { FindArticleDto } from "../../dto/find-article.dto";
 import { UpdateArticleDto } from "../../dto/update-article.dto";
 import { ArticleDocument } from "../article.model";
 
@@ -132,9 +133,53 @@ export class ArticleRepository implements IArticleRepository {
     return this.toDomain(doc);
   }
 
-  async find(): Promise<ArticleEntity[]> {
-    const docs = await this.model.find();
-    return docs.map((doc) => this.toDomain(doc));
+  async find(
+    filters: FindArticleDto,
+    matchingArticleIds: string[] = [],
+  ): Promise<{
+    articles: ArticleEntity[];
+    total: number;
+  }> {
+    const query: Record<string, unknown> = {};
+
+    if (filters.search) {
+      const escapedSearch = filters.search.replace(
+        /[.*+?^${}()|[\]\\]/g,
+        "\\$&",
+      );
+
+      const regex = {
+        $regex: escapedSearch,
+        $options: "i",
+      };
+
+      query.$or = [{ title: regex }, { _id: { $in: matchingArticleIds } }];
+    }
+
+    if (filters.product) {
+      query.product = filters.product;
+    }
+
+    if (filters.category) {
+      query.category = filters.category;
+    }
+
+    const skip = (filters.page - 1) * filters.limit;
+
+    const [docs, total] = await Promise.all([
+      this.model
+        .find(query)
+        .sort({ updatedAt: -1 })
+        .skip(skip)
+        .limit(filters.limit),
+
+      this.model.countDocuments(query),
+    ]);
+
+    return {
+      articles: docs.map((doc) => this.toDomain(doc)),
+      total,
+    };
   }
 
   async findOne(id: string) {

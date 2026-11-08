@@ -7,6 +7,7 @@ import { CREATED, NO_CONTENT, OK } from "../../../constants/http";
 import catchErrors from "../../../utils/catchErrors";
 import { ArticleService } from "../application/article.service";
 import { createArticleDto } from "../dto/create-article.dto";
+import { findArticleDto } from "../dto/find-article.dto";
 import { updateInternalNoteDto } from "../dto/update-internalNote.dto";
 import { updateProductAndCategoryDto } from "../dto/update-productAndCategory.dto";
 import { updateArticleTagsDto } from "../dto/update-tags.dto";
@@ -99,7 +100,8 @@ export class ArticleController {
   });
 
   find = catchErrors(async (req, res) => {
-    const serviceResponse = await this.service.find();
+    const filters = findArticleDto.parse(req.query);
+    const serviceResponse = await this.service.find(filters);
     return res.status(OK).json(serviceResponse);
   });
 
