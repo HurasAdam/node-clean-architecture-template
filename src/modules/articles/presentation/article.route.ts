@@ -41,6 +41,11 @@ export const createArticleRoutes = (container: Container) => {
   router.patch("/:articleId/tags", container.article.controller.updateTags);
 
   router.get("/", container.article.controller.find);
+  router.get("/drafts", container.article.controller.findDraft);
+  router.get(
+    "/review-scheduled",
+    container.article.controller.findScheduledForReview,
+  );
   router.get("/:articleId", container.article.controller.findOne);
 
   return router;

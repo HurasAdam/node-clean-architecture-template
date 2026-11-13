@@ -4,6 +4,7 @@
  */
 
 import { Model } from "mongoose";
+import { ArticleFindCriteria } from "../../domain/article-find-criteria.interface";
 import { IArticleRepository } from "../../domain/article.repository.interface";
 import { ArticleEntity } from "../../domain/entity";
 import { CreateArticleDto } from "../../dto/create-article.dto";
@@ -135,12 +136,33 @@ export class ArticleRepository implements IArticleRepository {
 
   async find(
     filters: FindArticleDto,
-    matchingArticleIds: string[] = [],
+    matchingArticleIds: string[],
+    criteria: ArticleFindCriteria,
   ): Promise<{
     articles: ArticleEntity[];
     total: number;
   }> {
-    const query: Record<string, unknown> = {};
+    const query: Record<string, unknown> = {
+      publicationStatus: criteria.publicationStatus,
+    };
+
+    if (criteria.reviewStatuses) {
+      query.reviewStatus = {
+        $in: criteria.reviewStatuses,
+      };
+    }
+
+    if (criteria.excludedReviewStatuses) {
+      query.reviewStatus = {
+        $nin: criteria.excludedReviewStatuses,
+      };
+    }
+
+    if (criteria.lastVerifiedBefore) {
+      query.lastVerifiedAt = {
+        $lte: criteria.lastVerifiedBefore,
+      };
+    }
 
     if (filters.search) {
       const escapedSearch = filters.search.replace(
@@ -181,7 +203,6 @@ export class ArticleRepository implements IArticleRepository {
       total,
     };
   }
-
   async findOne(id: string) {
     const doc = await this.model.findById(id);
     if (!doc) return null;

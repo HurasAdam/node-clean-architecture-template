@@ -16,6 +16,7 @@ import { IProductCategoryRepository } from "../../product-categories/domain/prod
 import { IProductRepository } from "../../products/domain/product.repository.interface";
 import { ITagRepository } from "../../tags/domain/tag.repository.interface";
 import { IUserRepository } from "../../users/domain/user.repository.interface";
+import { ArticleFindCriteria } from "../domain/article-find-criteria.interface";
 import { IArticleRepository } from "../domain/article.repository.interface";
 import { CreateArticleDto } from "../dto/create-article.dto";
 import { ArticleListItem, FindArticleDto } from "../dto/find-article.dto";
@@ -49,6 +50,100 @@ export class ArticleService {
     this.productCategoryRepository = productCategoryRepository;
     this.tagRepository = tagRepository;
     this.userRepository = userRepository;
+  }
+
+  private async findArticles(
+    filters: FindArticleDto,
+    criteria: ArticleFindCriteria,
+  ) {
+    const matchingArticleIds = filters.search
+      ? await this.articleResponseVariantRepository.findArticleIdsBySearch(
+          filters.search,
+        )
+      : [];
+
+    const { articles, total } = await this.articleRepository.find(
+      filters,
+      matchingArticleIds,
+      criteria,
+    );
+
+    const productIds = [...new Set(articles.map((article) => article.product))];
+
+    const categoryIds = [
+      ...new Set(articles.map((article) => article.category)),
+    ];
+
+    const tagIds = [...new Set(articles.flatMap((article) => article.tags))];
+
+    const [products, categories, tags] = await Promise.all([
+      this.productRepository.findByIds(productIds),
+      this.productCategoryRepository.findByIds(categoryIds),
+      this.tagRepository.findByIds(tagIds),
+    ]);
+
+    const productsMap = new Map(
+      products.map((product) => [
+        product.id,
+        {
+          id: product.id,
+          name: product.name,
+        },
+      ]),
+    );
+
+    const categoriesMap = new Map(
+      categories.map((category) => [
+        category.id,
+        {
+          id: category.id,
+          name: category.name,
+        },
+      ]),
+    );
+
+    const tagsMap = new Map(
+      tags.map((tag) => [
+        tag.id,
+        {
+          id: tag.id,
+          name: tag.name,
+        },
+      ]),
+    );
+
+    const data: ArticleListItem[] = articles.map((article) => ({
+      id: article.id,
+      title: article.title,
+      publicationStatus: article.publicationStatus,
+      reviewStatus: article.reviewStatus,
+      product: productsMap.get(article.product) ?? null,
+      category: categoriesMap.get(article.category) ?? null,
+      tags: article.tags
+        .map((tagId) => tagsMap.get(tagId))
+        .filter((tag) => tag !== undefined),
+      importantMarker: article.importantMarker,
+      createdAt: article.createdAt,
+      createdBy: article.createdBy,
+      verifiedBy: article.verifiedBy,
+      lastVerifiedAt: article.lastVerifiedAt,
+      updatedAt: article.updatedAt,
+      requiresReverification: article.requiresReverification(),
+    }));
+
+    const totalPages = Math.ceil(total / filters.limit);
+
+    return {
+      data,
+      pagination: {
+        page: filters.page,
+        limit: filters.limit,
+        total,
+        totalPages,
+        hasNextPage: filters.page < totalPages,
+        hasPreviousPage: filters.page > 1,
+      },
+    };
   }
 
   async create(currentUser: string, payload: CreateArticleDto) {
@@ -622,91 +717,33 @@ export class ArticleService {
   }
 
   async find(filters: FindArticleDto) {
-    const matchingArticleIds = filters.search
-      ? await this.articleResponseVariantRepository.findArticleIdsBySearch(
-          filters.search,
-        )
-      : [];
+    return this.findArticles(filters, {
+      publicationStatus: "PUBLISHED",
+      excludedReviewStatuses: ["DRAFT", "CHANGES_REQUESTED"],
+    });
+  }
 
-    const { articles, total } = await this.articleRepository.find(
-      filters,
-      matchingArticleIds,
-    );
+  async findArchived(filters: FindArticleDto) {
+    return this.findArticles(filters, {
+      publicationStatus: "ARCHIVED",
+    });
+  }
 
-    const productIds = [...new Set(articles.map((article) => article.product))];
-    const categoryIds = [
-      ...new Set(articles.map((article) => article.category)),
-    ];
-    const tagIds = [...new Set(articles.flatMap((article) => article.tags))];
+  async findDraft(filters: FindArticleDto) {
+    return this.findArticles(filters, {
+      publicationStatus: "UNPUBLISHED",
+      reviewStatuses: ["DRAFT", "CHANGES_REQUESTED"],
+    });
+  }
 
-    const [products, categories, tags] = await Promise.all([
-      this.productRepository.findByIds(productIds),
-      this.productCategoryRepository.findByIds(categoryIds),
-      this.tagRepository.findByIds(tagIds),
-    ]);
+  async findScheduledForReview(filters: FindArticleDto) {
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
 
-    const productsMap = new Map(
-      products.map((product) => [
-        product.id,
-        {
-          id: product.id,
-          name: product.name,
-        },
-      ]),
-    );
-
-    const categoriesMap = new Map(
-      categories.map((category) => [
-        category.id,
-        {
-          id: category.id,
-          name: category.name,
-        },
-      ]),
-    );
-
-    const tagsMap = new Map(
-      tags.map((tag) => [
-        tag.id,
-        {
-          id: tag.id,
-          name: tag.name,
-        },
-      ]),
-    );
-
-    const data: ArticleListItem[] = articles.map((article) => ({
-      id: article.id,
-      title: article.title,
-      publicationStatus: article.publicationStatus,
-      reviewStatus: article.reviewStatus,
-      product: productsMap.get(article.product) ?? null,
-      category: categoriesMap.get(article.category) ?? null,
-      tags: article.tags
-        .map((tagId) => tagsMap.get(tagId))
-        .filter((tag) => tag !== undefined),
-      importantMarker: article.importantMarker,
-      createdAt: article.createdAt,
-      createdBy: article.createdBy,
-      verifiedBy: article.verifiedBy,
-      lastVerifiedAt: article.lastVerifiedAt,
-      updatedAt: article.updatedAt,
-      requiresReverification: article.requiresReverification(),
-    }));
-
-    const totalPages = Math.ceil(total / filters.limit);
-
-    return {
-      data,
-      pagination: {
-        page: filters.page,
-        limit: filters.limit,
-        total,
-        totalPages,
-        hasNextPage: filters.page < totalPages,
-        hasPreviousPage: filters.page > 1,
-      },
-    };
+    return this.findArticles(filters, {
+      publicationStatus: "PUBLISHED",
+      lastVerifiedBefore: oneYearAgo,
+    });
   }
 
   async findOne(articleId: string) {

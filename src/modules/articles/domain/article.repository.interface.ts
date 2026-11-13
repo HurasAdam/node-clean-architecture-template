@@ -6,6 +6,7 @@
 import { CreateArticleDto } from "../dto/create-article.dto";
 import { FindArticleDto } from "../dto/find-article.dto";
 import { UpdateArticleDto } from "../dto/update-article.dto";
+import { ArticleFindCriteria } from "./article-find-criteria.interface";
 import {
   ArticleEntity,
   ArticlePublicationStatus,
@@ -38,9 +39,11 @@ export interface IArticleRepository {
   ): Promise<ArticleEntity | null>;
 
   submitForReview(id: string): Promise<ArticleEntity | null>;
+
   find(
     filters: FindArticleDto,
-    matchingArticleIds?: string[],
+    matchingArticleIds: string[],
+    criteria: ArticleFindCriteria,
   ): Promise<{
     articles: ArticleEntity[];
     total: number;

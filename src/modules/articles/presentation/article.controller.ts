@@ -105,6 +105,17 @@ export class ArticleController {
     return res.status(OK).json(serviceResponse);
   });
 
+  findDraft = catchErrors(async (req, res) => {
+    const filters = findArticleDto.parse(req.query);
+    const serviceResponse = await this.service.findDraft(filters);
+    return res.status(OK).json(serviceResponse);
+  });
+  findScheduledForReview = catchErrors(async (req, res) => {
+    const filters = findArticleDto.parse(req.query);
+    const serviceResponse = await this.service.findScheduledForReview(filters);
+    return res.status(OK).json(serviceResponse);
+  });
+
   findOne = catchErrors(async (req, res) => {
     const { articleId } = req.params;
     const serviceResponse = await this.service.findOne(articleId);
