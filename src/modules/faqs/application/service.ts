@@ -16,4 +16,8 @@ export class FaqService {
 
     await this.faqRepository.add(currentUserId, payload);
   }
+
+  async find() {
+    return await this.faqRepository.find();
+  }
 }

@@ -34,4 +34,9 @@ export class FaqRepository implements IFaqRepository {
     if (!doc) return null;
     return this.toDomain(doc);
   }
+
+  async find() {
+    const docs = await this.model.find();
+    return docs.map((doc) => this.toDomain(doc));
+  }
 }

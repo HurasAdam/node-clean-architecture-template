@@ -5,4 +5,6 @@ export interface IFaqRepository {
   add: (currentUserId: string, payload: AddFaqDto) => Promise<any>;
 
   findByTitle(title: string): Promise<FAqEntity | null>;
+
+  find(): Promise<FAqEntity[]>;
 }
