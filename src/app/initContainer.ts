@@ -10,6 +10,7 @@ import { createArticleResponseVariantModule } from "../modules/articleResponseVa
 import { createArticleModule } from "../modules/articles/article.module";
 import { createAuthModule } from "../modules/auth/auth.module";
 import { createContactRegistryModule } from "../modules/contactRegistry/module";
+import { createFaqItemModule } from "../modules/faq-item/module";
 import { createFaqModule } from "../modules/faqs/module";
 import { createProductCategoryModule } from "../modules/product-categories/product-category.module";
 import { createProductTopicModule } from "../modules/product-topics/product-topic.module";
@@ -135,6 +136,10 @@ export function initContainer() {
     faqRepository: repositories.faqRepository,
   });
 
+  const faqItemModule = createFaqItemModule({
+    faqItemRepository: repositories.faqItemRepository,
+  });
+
   //
   const authModule = createAuthModule({
     userRepository: repositories.userRepository,
@@ -181,6 +186,7 @@ export function initContainer() {
     workspaceArticle: workspaceArticleModule,
     workspaceArticleResponseVariant: workspaceArticleResponseVariantModule,
     faq: faqModule,
+    faqItem: faqItemModule,
   };
 }
 

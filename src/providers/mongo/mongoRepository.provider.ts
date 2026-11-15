@@ -11,6 +11,8 @@ import ArticleModel from "../../modules/articles/infrastructure/article.model";
 import { ArticleRepository } from "../../modules/articles/infrastructure/mongoose/article.repository";
 import { ContactRecordModel } from "../../modules/contactRegistry/infrastructure/models/mongo";
 import { ContactRegistryRepository } from "../../modules/contactRegistry/infrastructure/repositories/mongo";
+import { FaqItemModel } from "../../modules/faq-item/infrastructure/models/mongo";
+import { FaqItemRepository } from "../../modules/faq-item/infrastructure/repositories/mongo";
 import FaqModel from "../../modules/faqs/infrastructure/models/mongo";
 import { FaqRepository } from "../../modules/faqs/infrastructure/repositories/mongo";
 import { ProductCategoryRepository } from "../../modules/product-categories/infrastructure/mongoose/product-category.repository";
@@ -89,5 +91,7 @@ export function createMongoRepositoryProvider(): IRepositoryProvider {
       ),
 
     faqRepository: new FaqRepository(FaqModel),
+
+    faqItemRepository: new FaqItemRepository(FaqItemModel),
   };
 }
