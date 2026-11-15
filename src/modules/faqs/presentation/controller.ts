@@ -23,4 +23,10 @@ export class FaqController {
     const serviceResponse = await this.faqService.find();
     return res.status(OK).json(serviceResponse);
   });
+
+  findOneById = catchErrors(async (req, res) => {
+    const { faqId } = req.params;
+    const serviceResponse = await this.faqService.findOneById(faqId);
+    return res.status(OK).json(serviceResponse);
+  });
 }

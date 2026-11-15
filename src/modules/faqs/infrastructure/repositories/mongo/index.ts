@@ -2,6 +2,7 @@ import { Model } from "mongoose";
 import { FAqEntity } from "../../../domain/entity";
 import { IFaqRepository } from "../../../domain/repository.interface";
 import { AddFaqDto } from "../../../dto/add";
+import { FaqListItemDto } from "../../../dto/find-list";
 import { FaqDocument } from "../../models/mongo";
 
 export class FaqRepository implements IFaqRepository {
@@ -35,8 +36,23 @@ export class FaqRepository implements IFaqRepository {
     return this.toDomain(doc);
   }
 
-  async find() {
-    const docs = await this.model.find();
-    return docs.map((doc) => this.toDomain(doc));
+  async find(): Promise<FaqListItemDto[]> {
+    const docs = await this.model
+      .find()
+      .select({ title: 1, status: 1, iconKey: 1 })
+      .lean();
+
+    return docs.map((doc) => ({
+      id: doc._id.toString(),
+      title: doc.title,
+      status: doc.status,
+      iconKey: doc.iconKey,
+    }));
+  }
+
+  async findOneById(faqId: string) {
+    const doc = await this.model.findById(faqId);
+    if (!doc) return null;
+    return this.toDomain(doc);
   }
 }

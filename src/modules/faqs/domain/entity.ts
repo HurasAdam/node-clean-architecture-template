@@ -1,8 +1,10 @@
+import { FaqStatus } from "../infrastructure/models/mongo";
+
 export class FAqEntity {
   public id: string;
   public title: string;
   public description: string;
-  public status: string;
+  public status: FaqStatus;
   public iconKey: string;
   public createdBy: string;
   public createdAt: Date;
@@ -11,7 +13,7 @@ export class FAqEntity {
     id: string,
     title: string,
     description: string,
-    status: string,
+    status: FaqStatus,
     iconKey: string,
     createdBy: string,
     createdAt: Date,

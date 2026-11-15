@@ -134,6 +134,8 @@ export function initContainer() {
 
   const faqModule = createFaqModule({
     faqRepository: repositories.faqRepository,
+    faqItemRepository: repositories.faqItemRepository,
+    userRepository: repositories.userRepository,
   });
 
   const faqItemModule = createFaqItemModule({
