@@ -10,6 +10,7 @@ import { createArticleResponseVariantModule } from "../modules/articleResponseVa
 import { createArticleModule } from "../modules/articles/article.module";
 import { createAuthModule } from "../modules/auth/auth.module";
 import { createContactRegistryModule } from "../modules/contactRegistry/module";
+import { createFaqModule } from "../modules/faqs/module";
 import { createProductCategoryModule } from "../modules/product-categories/product-category.module";
 import { createProductTopicModule } from "../modules/product-topics/product-topic.module";
 import { createProductModule } from "../modules/products/product.module";
@@ -130,6 +131,10 @@ export function initContainer() {
       workspaceMemberRepository: repositories.workspaceMemberRepository,
     });
 
+  const faqModule = createFaqModule({
+    faqRepository: repositories.faqRepository,
+  });
+
   //
   const authModule = createAuthModule({
     userRepository: repositories.userRepository,
@@ -175,6 +180,7 @@ export function initContainer() {
     workspaceFolder: workspaceFolderModule,
     workspaceArticle: workspaceArticleModule,
     workspaceArticleResponseVariant: workspaceArticleResponseVariantModule,
+    faq: faqModule,
   };
 }
 

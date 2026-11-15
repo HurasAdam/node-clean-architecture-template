@@ -2,6 +2,7 @@ import { IArticleAuditLogRepository } from "../../modules/article-audit-log/doma
 import { IArticleResponseVariantRepository } from "../../modules/articleResponseVariants/domain/repository.interface";
 import { IArticleRepository } from "../../modules/articles/domain/article.repository.interface";
 import { IContactRegistryRepository } from "../../modules/contactRegistry/domain/repository.interface";
+import { IFaqRepository } from "../../modules/faqs/domain/repository.interface";
 import { IProductCategoryRepository } from "../../modules/product-categories/domain/product-category.repository.interface";
 import { IProductTopicRepository } from "../../modules/product-topics/domain/product-topic.repository.interface";
 import { IProductRepository } from "../../modules/products/domain/product.repository.interface";
@@ -36,4 +37,5 @@ export interface IRepositoryProvider {
   workspaceFolderRepository: IWorkspaceFolderRepository;
   workspaceArticleRepository: IWorkspaceArticleRepository;
   workspaceArticleResponseVariantRepository: IWorkspaceArticleResponseVariantRepository;
+  faqRepository: IFaqRepository;
 }
