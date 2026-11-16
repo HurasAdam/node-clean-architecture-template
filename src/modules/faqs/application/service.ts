@@ -6,6 +6,9 @@ import { IFaqRepository } from "../domain/repository.interface";
 import { AddFaqDto } from "../dto/add";
 import { FaqListItemDto } from "../dto/find-list";
 import { FaqDetailsDto } from "../dto/findOne";
+import { UpdateFaqDescriptionDto } from "../dto/update-description.dto";
+import { UpdateFaqIconDto } from "../dto/update-icon";
+import { UpdateFaqTitleDto } from "../dto/update-title.dto";
 
 export class FaqService {
   private faqRepository: IFaqRepository;
@@ -72,5 +75,38 @@ export class FaqService {
         email: user.email,
       },
     };
+  }
+
+  async updateTitle(faqId: string, payload: UpdateFaqTitleDto) {
+    return await this.faqRepository.updateTitle(faqId, payload);
+  }
+
+  async updateDescription(faqId: string, payload: UpdateFaqDescriptionDto) {
+    return await this.faqRepository.updateDescription(faqId, payload);
+  }
+
+  async updateIcon(faqId: string, payload: UpdateFaqIconDto) {
+    return await this.faqRepository.updateIcon(faqId, payload);
+  }
+
+  async toggleStatus(faqId: string) {
+    const faq = await this.faqRepository.findOneById(faqId);
+
+    appAssert(faq, NOT_FOUND, "FAQ not found.");
+
+    const newStatus = faq.status === "PUBLIC" ? "UNPUBLIC" : "PUBLIC";
+
+    if (newStatus === "PUBLIC") {
+      const counts = await this.faqItemRepository.countByFaqIds([faqId]);
+      const questionsCount = counts[0]?.count ?? 0;
+
+      appAssert(
+        questionsCount > 0,
+        CONFLICT,
+        "FAQ must contain at least one question before publication.",
+      );
+    }
+
+    await this.faqRepository.updateStatus(faqId, newStatus);
   }
 }
