@@ -1,4 +1,4 @@
-import { CREATED } from "../../../constants/http";
+import { CREATED, OK } from "../../../constants/http";
 import catchErrors from "../../../utils/catchErrors";
 import { FaqItemService } from "../application/service";
 import { addFaqItemDto } from "../dto/add";
@@ -17,5 +17,12 @@ export class FaqItemController {
     await this.faqItemService.add(currentUserId, payload);
 
     return res.sendStatus(CREATED);
+  });
+
+  findByFaqId = catchErrors(async (req, res) => {
+    const { faqId } = req.params;
+
+    const serviceResponse = await this.faqItemService.findByFaqIq(faqId);
+    return res.status(OK).json(serviceResponse);
   });
 }

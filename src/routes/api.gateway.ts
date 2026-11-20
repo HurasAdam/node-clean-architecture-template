@@ -11,6 +11,7 @@ import { createArticleResponseVariantRoutes } from "../modules/articleResponseVa
 import { createArticleRoutes } from "../modules/articles/presentation/article.route";
 import { createAuthRoutes } from "../modules/auth/presentation/auth.route";
 import { createContactRegistryRoutes } from "../modules/contactRegistry/presentation/route";
+import { createFaqItemRoutes } from "../modules/faq-item/presentation/route";
 import { createFaqRoutes } from "../modules/faqs/presentation/routes";
 import { createProductCategoryRoutes } from "../modules/product-categories/presentation/product-category.route";
 import { createProductTopicRoutes } from "../modules/product-topics/presentation/product-topic.route";
@@ -131,6 +132,16 @@ export function createApiRouter(container: Container) {
     "/faqs",
     container.authGuard.authenticate,
     createFaqRoutes(container),
+  );
+
+  /**
+   * Faq Items
+   */
+
+  router.use(
+    "/faq-items",
+    container.authGuard.authenticate,
+    createFaqItemRoutes(container),
   );
 
   /**

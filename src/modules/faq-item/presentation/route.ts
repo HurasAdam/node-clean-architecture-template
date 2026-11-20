@@ -15,7 +15,7 @@ export const createFaqItemRoutes = (container: Container) => {
   const router = Router();
 
   router.post("/", container.faqItem.controller.add);
-  router.get("/", container.faqItem.controller.find);
+  router.get("/:faqId/items", container.faqItem.controller.findByFaqId);
 
   return router;
 };

@@ -11,4 +11,8 @@ export class FaqItemService {
   async add(currentUserId: string, payload: AddFaqItemDto) {
     return this.faqItemRepository.add(currentUserId, payload);
   }
+
+  async findByFaqIq(faqId: string) {
+    return this.faqItemRepository.findByFaqId(faqId);
+  }
 }
